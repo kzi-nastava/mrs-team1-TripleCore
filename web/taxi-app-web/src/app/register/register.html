@@ -1,0 +1,24 @@
+<div class="register-page">
+
+  <div class="register-container">
+    <div class="profile-pic">
+      <img src="https://img.icons8.com/?size=100&id=23239&format=png&color=000000" alt="Profile Picture">
+      <p>Profile Picture</p>
+    </div>
+
+    <form (ngSubmit)="register()">
+      <input type="text" placeholder="First Name" [(ngModel)]="firstName" name="firstName" required>
+      <input type="text" placeholder="Last Name" [(ngModel)]="lastName" name="lastName" required>
+      <input type="text" placeholder="Address" [(ngModel)]="address" name="address" required>
+      <input type="text" placeholder="Phone" [(ngModel)]="phone" name="phone" required>
+      <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required>
+      <input type="password" placeholder="Password" [(ngModel)]="password" name="password" required>
+      <input type="password" placeholder="Confirm Password" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+
+      <div class="buttons">
+        <button type="button" (click)="cancel()">Cancel</button>
+        <button type="submit">Register</button>
+      </div>
+    </form>
+  </div>
+</div>
