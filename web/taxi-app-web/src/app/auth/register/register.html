@@ -1,10 +1,11 @@
 <div class="register-page">
-
   <div class="register-container">
-    <div class="profile-pic">
-      <img src="icons/profile.png" alt="Profile Picture">
-      <p>Profile Picture</p>
-    </div>
+
+    <label class="profile-pic">
+      <img [src]="profilePic" alt="Profile Picture">
+      <input type="file" (change)="onFileSelected($event)" hidden accept="image/*">
+    </label>
+    <p class="profile-pic-instruction">Click the image to change profile picture</p>
 
     <form (ngSubmit)="register()">
       <input type="text" placeholder="First Name" [(ngModel)]="firstName" name="firstName" required>
