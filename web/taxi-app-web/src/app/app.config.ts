@@ -23,6 +23,10 @@ const routes: Routes = [
     loadComponent: () => import('./auth/reset-password/reset-password').then(m => m.ResetPasswordComponent)
   },
   {
+    path: 'home',
+    loadComponent: () => import('./home/home').then(m => m.HomeComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
