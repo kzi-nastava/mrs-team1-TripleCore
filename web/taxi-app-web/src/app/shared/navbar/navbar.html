@@ -1,0 +1,33 @@
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container-fluid">
+    <!-- Logo image and text -->
+    <a class="navbar-brand" class="me-auto" href="#">
+        <div class="logo-container">
+            <img src="icons/icons8-taxi-64.png" alt="Taxi App Logo" class="logo-img"/>
+            <span class="logo-text">Taxi App</span>
+        </div>
+    </a>
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+        <!-- Title from the hamburger menu -->
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
+            <div class="logo-container">
+                <img src="icons/icons8-taxi-64.png" alt="Taxi App Logo" class="logo-img"/>
+                <span class="logo-text">Taxi App</span>
+            </div>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <!-- List of navbar links -->
+        <ul id="navbar-links" class="navbar-nav justify-content-end flex-grow-1 pe-3 navbar-list">
+            <ng-content></ng-content>
+        </ul>
+      </div>
+    </div>
+    <!-- Hamburger button -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+</nav>
