@@ -8,11 +8,15 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadComponent: () => import('./login/login').then(m => m.LoginComponent)
+    loadComponent: () => import('./auth/login/login').then(m => m.LoginComponent)
   },
   {
     path: 'register',
-    loadComponent: () => import('./register/register').then(m => m.RegisterComponent)
+    loadComponent: () => import('./auth/register/register').then(m => m.RegisterComponent)
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () => import('./auth/forgot-password/forgot-password').then(m => m.ForgotPasswordComponent)
   }
 ];
 

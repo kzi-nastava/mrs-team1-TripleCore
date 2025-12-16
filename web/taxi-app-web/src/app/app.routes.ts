@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login';
-import { RegisterComponent } from './register/register';
+import { LoginComponent } from './auth/login/login';
+import { RegisterComponent } from './auth/register/register';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password';
 
 export const appRoutes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: '**', redirectTo: '' } 
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: '**', redirectTo: '' },
 ];
