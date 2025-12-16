@@ -17,6 +17,14 @@ const routes: Routes = [
   {
     path: 'forgot-password',
     loadComponent: () => import('./auth/forgot-password/forgot-password').then(m => m.ForgotPasswordComponent)
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./auth/reset-password/reset-password').then(m => m.ResetPasswordComponent)
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
 

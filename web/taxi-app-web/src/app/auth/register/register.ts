@@ -52,16 +52,15 @@ export class RegisterComponent {
       phone: this.phone,
       email: this.email,
       password: this.password,
-      profilePic: this.profilePic
+      profilePic: this.profilePic,
+      activated: false 
     };
 
     let users = JSON.parse(localStorage.getItem('users') || '[]');
     users.push(user);
     localStorage.setItem('users', JSON.stringify(users));
 
-    console.log('User registered (stored locally):', user);
-    alert('Registration successful!');
-
+    alert(`Registration successful! Activation email sent to ${this.email}.`);
     this.resetForm();
   }
 
