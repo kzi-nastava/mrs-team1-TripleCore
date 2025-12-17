@@ -1,0 +1,32 @@
+<app-navbar>
+
+  <li class="nav-item">
+    <a class="nav-link img-and-link" routerLink="/driver-home"> Ride history </a>
+  </li>
+
+  <li class="nav-item">
+    <span [matTooltip]="isActive ? 'Must go Inactive first' : ''">
+      <button class="nav-link nav-btn" 
+              (click)="logout()" 
+              [disabled]="isActive">
+        Log out
+      </button>
+    </span>
+  </li>
+
+  <a class="nav-link img-and-link" routerLink="/driver-home" matTooltip="My Profile">
+  <img src="icons/icons8-test-account-48.png" alt="My Profile" class="nav-item-icon">
+  </a>
+
+  <a class="nav-link img-and-link" routerLink="/home" matTooltip="Live Chat">
+    <img src="icons/icons8-chat-48.png" alt="Live Chat" class="nav-item-icon">
+  </a>
+</app-navbar>
+
+<app-map></app-map>
+
+<button class="status-btn" 
+        [ngClass]="isActive ? 'active-btn' : 'inactive-btn'" 
+        (click)="toggleActive()">
+  {{ isActive ? 'Go Inactive' : 'Go Active' }}
+</button>

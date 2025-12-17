@@ -25,11 +25,6 @@ a {
   gap: 6px;
 }
 
-.nav-item-icon {
-  height: 25px;
-  width: 25px;
-}
-
 .selected-nav-link {
   color: #600EA8;
 }
@@ -44,4 +39,22 @@ a {
   font-weight: 500;
   cursor: pointer;
 }
+
+.nav-item-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    transition: transform 0.2s ease-in-out;
+}
+
+.nav-item-icon:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+.nav-link.nav-btn:hover {
+    background-color: #4b0d88;
+    color: white;
+}
+
 /* End of navbar styles*/

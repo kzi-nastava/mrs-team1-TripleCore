@@ -27,6 +27,10 @@ const routes: Routes = [
     loadComponent: () => import('./home/home').then(m => m.HomeComponent)
   },
   {
+    path: 'driver-home',
+    loadComponent: () => import('./driver-home/driver-home').then(m => m.DriverHomeComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
