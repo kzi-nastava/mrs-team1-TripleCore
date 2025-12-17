@@ -1,16 +1,16 @@
-.logo-img{
+.logo-img {
     height: 40px;
     width: 40px;
 }
 
-.logo-text{
+.logo-text {
     font-family: "Faster One", system-ui;
     font-weight: 400;
     color: #600EA8;
     font-size: 30px;
 }
 
-.logo-container{
+.logo-container {
     display: flex;
     align-items: center;
     gap: 15px;
@@ -25,13 +25,22 @@
     border-radius: 30px;
     padding-left: 2%;
     padding-right: 2%;
-    vertical-align: middle;
 }
 
-#navbar-links {
+.navbar-nav {
     display: flex;
     align-items: center;
-    align-self: flex-end;
-    vertical-align: middle;
     gap: 20px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #000;
+}
+
+.nav-link.nav-btn {
+    background-color: #600EA8;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
 }

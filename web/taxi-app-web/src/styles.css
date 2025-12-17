@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Faster+One&display=swap');
 
 html, body, app-root {
   height: 100%;
@@ -6,8 +7,6 @@ html, body, app-root {
   padding: 0;
 }
 body { margin: 0; font-family: 'Istok Web', sans-serif; }
-
-@import url('https://fonts.googleapis.com/css2?family=Faster+One&display=swap');
 
 .faster-one-regular {
   font-family: "Faster One", system-ui;
