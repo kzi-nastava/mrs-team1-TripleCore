@@ -39,8 +39,15 @@
 }
 
 .nav-link.nav-btn {
-    background-color: #600EA8;
-    color: white;
+    background-color: #600EA8; 
+    color: white;              
     padding: 5px 15px;
     border-radius: 20px;
+    transition: background-color 0.2s ease, color 0.2s ease; 
 }
+
+.nav-link.nav-btn:hover {
+    background-color: #4b0d88 !important;
+    color: white !important;
+}
+

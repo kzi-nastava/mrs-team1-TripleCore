@@ -1,0 +1,49 @@
+.status-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  z-index: 1000;
+  font-size: 16px;
+  border: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.active-btn {
+  background-color: #F7164A; 
+  color: white;
+}
+
+.active-btn:hover {
+  background-color: #d0143f;
+}
+
+.inactive-btn {
+  background-color: white;
+  color: #F7164A;
+  border: 2px solid #F7164A;
+}
+
+.inactive-btn:hover {
+  background-color: #ffe6ec; 
+}
+
+.nav-item-icon {
+    width: 30px;   
+    height: 30px;  
+    border-radius: 50%; 
+}
+
+.nav-item-icon:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.nav-link.nav-btn:disabled {
+    background-color: #cccccc; 
+    color: #666666;
+    cursor: not-allowed;
+}
