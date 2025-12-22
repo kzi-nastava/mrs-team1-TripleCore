@@ -31,6 +31,14 @@ const routes: Routes = [
     loadComponent: () => import('./driver-home/driver-home').then(m => m.DriverHomeComponent)
   },
   {
+    path: 'driver-ride-history',
+    loadComponent: () => import('./driver/driver-ride-history/driver-ride-history').then(m => m.DriverRideHistoryComponent)
+  },
+  {
+    path: 'ride-details',
+    loadComponent: () => import('./shared/ride-details/ride-details').then(m => m.RideDetailsComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

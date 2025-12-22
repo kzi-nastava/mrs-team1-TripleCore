@@ -1,0 +1,67 @@
+/* These are not the only styles for this component */
+/* Styles for the input fields are in styles.css */
+
+.ride-history-container {
+  background-color: #ffffff;
+  margin: 24px;
+  margin-top: 120px;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+table{
+    background-color: #ffffff;
+}
+
+.filter-container {
+  display: flex;
+  gap: 20px;            
+  margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+
+/* Input styles */
+.filter-container mat-form-field {
+  width: 160px;        
+}
+
+.filter-container input {
+  font-size: 15px;    
+}
+
+
+/* Button styles */
+button{
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  width: 100px;
+  height: 40px;
+}
+
+#apply-btn {
+  background-color: #600EA8;
+  color: #ffffff;
+  
+}
+
+#apply-btn:hover {
+  background-color: #4b0d85; /* slightly darker on hover */
+}
+
+#clear-btn {
+  background-color: #ffffff;
+  color: #600EA8;
+}
+
+#clear-btn:hover {
+  background-color: #f2f0f7; /* light grey hover */
+}
