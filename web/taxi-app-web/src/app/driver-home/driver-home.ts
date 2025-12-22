@@ -4,12 +4,13 @@ import { MapComponent } from '../map/map';
 import { NavbarComponent } from '../shared/navbar/navbar';
 import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DriverRideHistoryComponent } from '../driver/driver-ride-history/driver-ride-history';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-driver-home',
   standalone: true,
-  imports: [CommonModule, MapComponent, NavbarComponent, MatTooltipModule, RouterModule],
+  imports: [CommonModule, MapComponent, NavbarComponent, MatTooltipModule, DriverRideHistoryComponent, RouterModule],
   templateUrl: './driver-home.html',
   styleUrls: ['./driver-home.css']
 })

@@ -6,6 +6,8 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password';
 import { HomeComponent } from './home/home';
 import { DriverHomeComponent } from './driver-home/driver-home';
 import { UserInfoComponent } from './user-info/user-info';
+import { DriverRideHistoryComponent } from './driver/driver-ride-history/driver-ride-history';
+import { RideDetailsComponent } from './shared/ride-details/ride-details';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -16,5 +18,7 @@ export const appRoutes: Routes = [
   { path: 'user-info', component: UserInfoComponent },
   { path: 'driver-home', component: DriverHomeComponent },
 
+  { path: 'driver-ride-history', component: DriverRideHistoryComponent },
+  { path: 'ride-details', component: RideDetailsComponent },
   { path: '**', redirectTo: '' },
 ];

@@ -33,6 +33,15 @@ const routes: Routes = [
   {
     path: 'user-info',
     loadComponent: () => import('./user-info/user-info').then(m => m.UserInfoComponent)
+
+  },
+  {
+    path: 'driver-ride-history',
+    loadComponent: () => import('./driver/driver-ride-history/driver-ride-history').then(m => m.DriverRideHistoryComponent)
+  },
+  {
+    path: 'ride-details',
+    loadComponent: () => import('./shared/ride-details/ride-details').then(m => m.RideDetailsComponent)
   },
   {
     path: '**',

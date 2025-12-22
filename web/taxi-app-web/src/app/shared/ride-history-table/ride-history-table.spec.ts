@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DriverHomeComponent } from './driver-home';
+import { RideHistoryTableComponent } from './ride-history-table';
 
-describe('DriverHomeComponent', () => {
-  let component: DriverHomeComponent;
-  let fixture: ComponentFixture<DriverHomeComponent>;
+describe('RideHistoryTable', () => {
+  let component: RideHistoryTableComponent;
+  let fixture: ComponentFixture<RideHistoryTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DriverHomeComponent]
+      imports: [RideHistoryTableComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DriverHomeComponent);
+    fixture = TestBed.createComponent(RideHistoryTableComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
