@@ -31,6 +31,11 @@ const routes: Routes = [
     loadComponent: () => import('./driver-home/driver-home').then(m => m.DriverHomeComponent)
   },
   {
+    path: 'user-info',
+    loadComponent: () => import('./user-info/user-info').then(m => m.UserInfoComponent)
+
+  },
+  {
     path: 'driver-ride-history',
     loadComponent: () => import('./driver/driver-ride-history/driver-ride-history').then(m => m.DriverRideHistoryComponent)
   },
