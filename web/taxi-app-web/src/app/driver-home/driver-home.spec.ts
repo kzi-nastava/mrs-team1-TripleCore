@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DriverHome } from './driver-home';
+import { DriverHomeComponent } from './driver-home';
 
-describe('DriverHome', () => {
+describe('DriverHomeComponent', () => {
   let component: DriverHome;
   let fixture: ComponentFixture<DriverHome>;
 

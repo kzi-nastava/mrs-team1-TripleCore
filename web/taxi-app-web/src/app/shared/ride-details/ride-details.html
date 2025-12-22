@@ -1,1 +1,72 @@
-<p>ride-details works!</p>
+
+<app-navbar>
+    <li class="nav-item">
+        <a class="img-and-link" routerLink="/driver-home">
+            <span class="nav-link">Home</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="img-and-link" routerLink="/driver-ride-history">
+            <img src="icons\icons8-history-48.png" alt="" class="nav-item-icon">
+            <span class="nav-link">Ride History</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-btn" routerLink="/home">Log out</a>
+    </li>
+</app-navbar>
+
+<div class="page-container">
+  <div class="column left-column">
+      <div id="map-container">
+        <h2 class="heading">Route</h2>
+        <app-map></app-map>
+      </div>
+      <div class="info-container">
+        <h2 class="heading">Inconsistencies</h2>
+        <p class="info">No inconsistencies</p>
+      </div>
+      <div class="info-container">
+        <h2 class="heading">Ride ratings</h2>
+        <p class="info">Passenger rating: 4.5</p>
+      </div>
+  </div>
+
+  <div class="column right-column">
+    <div class="info-container">
+        <h2 class="heading">Ride info</h2>
+        <p class="info">
+            Route: Bulevar1 -> Bulevar2 <br>
+            Start Time: 14:30 <br>
+            End Time: 14:50 <br>
+            Price: 600RSD <br>
+            Status: Completed
+        </p>
+        
+    </div>
+    <div class="info-container">
+        <h2 class="heading">Driver</h2>
+        <p class="info">
+            Name: Marko Markovic <br>
+            Vehicle: Audi A3 <br>
+            Rating: 4.5 <br>
+        </p>
+    </div>
+    <div class="info-container">
+        <h2 class="heading">Passengers</h2>
+        <p class="info">
+            Orderer: Ana Misic <br>
+            Ivana Ilic
+        </p>
+    </div>
+    <div class="info-container">
+        <h2 class="heading">PANIC info</h2>
+        <p class="info">
+            Triggered: Yes <br>
+            Triggered by: Ana Misic <br>
+            Time: 14:50
+        </p>
+    </div>
+
+  </div>
+</div>

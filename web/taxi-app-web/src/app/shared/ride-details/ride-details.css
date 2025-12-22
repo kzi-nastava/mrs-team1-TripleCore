@@ -1,0 +1,44 @@
+.page-container {
+  background-color: #ffffff;
+  margin: 24px;
+  margin-top: 120px;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;      /* allows columns to wrap on small screens */
+}
+
+.heading{
+    font-size: 20px;
+    /* font needs replacing */
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: #600EA8;
+}
+
+.column {
+  flex: 1 1 300px;      /* grow, shrink, minimum width 300px */
+  height: 100vh;
+  padding: 30px;
+}
+
+.info-container{
+    margin-top: 30px;
+    border-bottom: #600EA8 1px solid;
+}
+
+.info{
+    font-size: medium;
+    font-weight: 500;
+}
+
+/* Map styling  */
+
+::ng-deep app-map #map {
+  height: 400px !important;
+}
+
+::ng-deep app-map .map-frame {
+  border: none !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
