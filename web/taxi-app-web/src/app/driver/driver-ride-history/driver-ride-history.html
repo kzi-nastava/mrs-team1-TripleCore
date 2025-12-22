@@ -1,4 +1,21 @@
-<app-navbar></app-navbar>
+<!-- Links for not implemented pages will be added to the navbar later -->
+
+<app-navbar>
+    <li class="nav-item">
+        <a class="img-and-link" routerLink="/driver-home">
+            <span class="nav-link">Home</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="img-and-link" routerLink="/driver-ride-history">
+            <img src="icons\icons8-history-48.png" alt="" class="nav-item-icon">
+            <span class="nav-link selected-nav-link">Ride History</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="#" class="nav-btn">Log out</a>
+    </li>
+</app-navbar>
 
 <app-ride-history-table></app-ride-history-table>
 
