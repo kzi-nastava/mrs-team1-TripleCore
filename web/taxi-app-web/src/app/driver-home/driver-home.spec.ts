@@ -3,16 +3,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DriverHomeComponent } from './driver-home';
 
 describe('DriverHomeComponent', () => {
-  let component: DriverHome;
-  let fixture: ComponentFixture<DriverHome>;
+  let component: DriverHomeComponent;
+  let fixture: ComponentFixture<DriverHomeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DriverHome]
+      imports: [DriverHomeComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DriverHome);
+    fixture = TestBed.createComponent(DriverHomeComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
