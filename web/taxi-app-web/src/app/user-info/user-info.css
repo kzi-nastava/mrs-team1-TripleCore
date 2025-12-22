@@ -77,6 +77,10 @@ input:focus {
   background-color: #ccc; 
 }
 
+.buttons button[type="button"]:hover {
+  background-color: #b3b3b3; 
+}
+
 .buttons button[type="submit"] {
   background-color: #600EA8;
 }

@@ -29,6 +29,12 @@ export class LoginComponent {
       this.router.navigate(['/driver-home']); 
     } else {
       alert('Invalid credentials');
+      this.reset();
     }
+  }
+
+  reset() {
+    this.username = '';
+    this.password = '';
   }
 }
