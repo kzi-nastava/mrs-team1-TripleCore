@@ -1,0 +1,149 @@
+.user-info-page {
+  text-align: center;
+  font-family: 'Istok Web', sans-serif;
+}
+
+.user-info-container {
+  width: 420px;
+  margin: 0 auto; 
+  margin-top: 50px;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background-color: #fff;
+  text-align: center;
+}
+
+.profile-pic img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 5px;
+  cursor: pointer; 
+  transition: transform 0.2s, box-shadow 0.2s; 
+}
+
+.profile-pic img:hover {
+  transform: scale(1.05); 
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+}
+
+.profile-pic-instruction {
+  margin: 0 0 15px 0;
+  font-size: 0.9em;
+  color: #8e8e8e;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 90%;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 30px;
+  border: 2px solid #ccc;
+  background-color: #EDE6F5; 
+  color: #000;
+  font-size: 14px;
+}
+
+input::placeholder {
+  color: #8e8e8e; 
+}
+
+input:focus {
+  outline: none;
+  border: 2px solid #600EA8;
+  background-color: #EDE6F5;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.buttons button {
+  width: 45%;
+  padding: 10px;
+  border-radius: 30px;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.buttons button[type="button"] {
+  background-color: #ccc; 
+}
+
+.buttons button[type="submit"] {
+  background-color: #600EA8;
+}
+
+.buttons button[type="submit"]:hover {
+  background-color: #4b0b87;
+}
+
+.form-row{
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.form-row label{
+    width: 110px;
+    text-align: right;
+    margin-right: 10px;
+    font-size: 13px;
+    color: #000;
+
+}
+
+.form-row input{
+    flex: 1;
+    padding-right: 40px;
+}
+
+.input-wrapper{
+    display: flex;
+    align-items: center;
+    flex: 1;
+    position: relative;
+}
+
+.icon-btn{
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.icon-btn img{
+    width: 18px;
+    height: 18px;
+    opacity: 0.7;
+}
+
+.icon-btn img:hover{
+    opacity: 1;
+}
+
+.form-link{
+    display: flex;
+    justify-content: flex-end;
+    margin: 20px 0 20px 0;
+}
+
+.form-link a{
+    font-size: 12px;
+    color: #600EA8;
+    text-decoration: none;
+}
+
+.form-link a:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}

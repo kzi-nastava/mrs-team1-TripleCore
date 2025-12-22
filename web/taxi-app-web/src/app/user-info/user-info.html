@@ -1,0 +1,76 @@
+<div class="user-info-page">
+  <div class="user-info-container">
+
+    <label class="profile-pic">
+      <img [src]="profilePic" alt="Profile Picture">
+      <input type="file" (change)="onFileSelected($event)" hidden accept="image/*">
+    </label>
+    <p class="profile-pic-instruction">Click the image to change profile picture</p>
+
+    <form>
+        <div class="form-row">
+            <label>First Name</label>
+                    <div class="input-wrapper">
+                        <input type="text" [(ngModel)]="firstName" name="firstName" [readonly]="!editable['firstName']" (input)="markChanged()" required >
+                        <button type="button" class="icon-btn" (click)="enableEdit('firstName')">
+                            <img src="icons/icons8-pencil-48.png" alt="edit icon">
+                        </button>
+                </div>
+        </div>
+      
+        <div class="form-row">
+                <label>Last Name</label>
+                        <div class="input-wrapper">
+                            <input type="text" [(ngModel)]="lastName" name="lastName"  [readonly]="!editable['lastName']" (input)="markChanged()" required>
+                            <button type="button" class="icon-btn" (click)="enableEdit('lastName')">
+                                <img src="icons/icons8-pencil-48.png" alt="edit icon">
+                            </button>
+                </div>
+             
+        </div>
+
+        <div class="form-row">
+            <label>Address</label>
+                <div class="input-wrapper">
+                <input type="text" [(ngModel)]="address" name="address"  [readonly]="!editable['address']" (input)="markChanged()" required>
+                    <button type="button" class="icon-btn" (click)="enableEdit('address')">
+                        <img src="icons/icons8-pencil-48.png" alt="edit icon">
+                    </button>
+                </div> 
+        </div>
+      
+        <div class="form-row">
+            <label>Phone</label> 
+                <div class="input-wrapper">
+                    <input type="text" [(ngModel)]="phone" name="phone"  [readonly]="!editable['phone']" (input)="markChanged()" required>
+                        <button type="button" class="icon-btn" (click)="enableEdit('phone')">
+                            <img src="icons/icons8-pencil-48.png" alt="edit icon">
+                        </button>
+                </div>
+        </div>
+      
+        <div class ="form-row">
+            <label>Email</label>
+                <div class="input-wrapper">
+                    <input type="text" [(ngModel)]="email" name="email"  [readonly]="!editable['email']" (input)="markChanged()" required>
+                        <button type="button" class="icon-btn" (click)="enableEdit('email')">
+                            <img src="icons/icons8-pencil-48.png" alt="edit icon">
+                        </button>
+                </div>
+        </div>     
+
+      <div class="form-link">
+        <a routerLink="/change-password">Change Password</a>
+      </div>
+
+    
+      <div class="buttons">
+        <button type="button" [disabled]="!hasChanges" (click)="resetEdit()">Reset edit</button>
+        <button type="submit" [disabled]="!hasChanges" (click)="submitChanges()">Submit Changes</button>
+      </div>
+
+
+
+    </form>
+  </div>
+</div>
