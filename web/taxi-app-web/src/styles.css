@@ -58,3 +58,31 @@ a {
 }
 
 /* End of navbar styles*/
+
+/* Ride history table styles */
+.filter-input .mat-mdc-text-field-wrapper {
+  background-color: #ffffff !important;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  padding: auto;
+  overflow: hidden;
+
+}
+
+/* Remove Material fill underline */
+.filter-input .mdc-line-ripple,
+.filter-input .mdc-line-ripple::before,
+.filter-input .mdc-line-ripple::after {
+  display: none !important;
+}
+
+/* Remove default fill background layer */
+.filter-input .mdc-text-field--filled {
+  background-color: transparent !important;
+}
+
+/* Text color */
+.filter-input .mat-mdc-input-element {
+  color: #600EA8;
+}
+
