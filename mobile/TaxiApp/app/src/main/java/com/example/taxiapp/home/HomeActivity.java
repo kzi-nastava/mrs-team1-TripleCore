@@ -1,6 +1,5 @@
-package com.example.taxiapp;
+package com.example.taxiapp.home;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -9,17 +8,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.taxiapp.home.HomeActivity;
+import com.example.taxiapp.R;
 
-public class MainActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
-
-        // zatvara MainActivity da se ne vidi
-        finish();
+        setContentView(R.layout.activity_home);
     }
 }
