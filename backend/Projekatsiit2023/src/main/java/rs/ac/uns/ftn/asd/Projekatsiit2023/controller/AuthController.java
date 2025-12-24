@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.LoginRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RegisterRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.LoginResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RegisterResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
 
 @RestController
@@ -103,5 +105,49 @@ public class AuthController {
         }
 
         return ResponseEntity.ok("User ID " + userId + " logged out successfully.");
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            return ResponseEntity.badRequest().body("Passwords do not match");
+        }
+
+        if (emailExists(request.getEmail())) {
+            return ResponseEntity.badRequest().body("Email already registered");
+        }
+
+        RegisterResponse response = getRegisterResponse(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    private static RegisterResponse getRegisterResponse(RegisterRequest request) {
+        Long newUserId = 100L;
+
+        return new RegisterResponse(
+                newUserId,
+                request.getEmail(),
+                request.getFirstName(),
+                request.getLastName(),
+                request.getAddress(),
+                request.getPhoneNumber(),
+                "default-avatar.png",
+                UserRole.PASSENGER,
+                false,
+                "Registration successful! Check your email for activation link."
+        );
+    }
+
+    @GetMapping("/activate")
+    public ResponseEntity<?> activateAccount(@RequestParam("token") String token) {
+        if (token != null && !token.isEmpty()) {
+            return ResponseEntity.ok("Account activated successfully!");
+        }
+        return ResponseEntity.badRequest().body("Invalid activation token");
+    }
+
+    private boolean emailExists(String email) {
+        return "existing@example.com".equals(email);
     }
 }
