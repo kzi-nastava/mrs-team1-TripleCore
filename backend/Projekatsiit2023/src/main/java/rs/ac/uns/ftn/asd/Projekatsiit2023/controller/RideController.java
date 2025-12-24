@@ -5,9 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RideCancelRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RideEstimateRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RideStopRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideCancelResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideEstimateResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideStopResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/rides")
@@ -109,5 +113,74 @@ public class RideController {
 
     private boolean rideExists(Long id) {
         return id >= 1 && id <= 5;
+    }
+
+    @PostMapping("/{id}/stop")
+    public ResponseEntity<?> stopRide(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody RideStopRequest request) {
+
+        if (!rideExists(id)) {
+            return ResponseEntity.status(404)
+                    .body("Ride with ID " + id + " not found");
+        }
+
+        if (!isRideInProgress(id)) {
+            return ResponseEntity.badRequest()
+                    .body("Ride is not in progress. Only rides in progress can be stopped.");
+        }
+
+        // 3. Provera koordinate i adrese
+        Double latitude = request.getLatitude();
+        Double longitude = request.getLongitude();
+        String address = request.getAddress();
+
+        // 4. Računanje nove cene
+        Double originalPrice = getOriginalPrice(id);
+        Double originalDistance = getOriginalDistance(id);
+        Double newDistance = calculateNewDistance(id, latitude, longitude);
+        Double newPrice = recalculatePrice(originalPrice, originalDistance, newDistance);
+
+        updateRideWithNewDestination(id, address, latitude, longitude, newPrice, newDistance);
+
+        RideStopResponse response = new RideStopResponse(
+                true,
+                String.format("Ride #%d stopped successfully at %s", id, address),
+                newPrice,
+                newDistance,
+                LocalDateTime.now(),
+                address
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    private boolean isRideInProgress(Long id) {
+        return id == 2 || id == 4;
+    }
+
+    private Double getOriginalPrice(Long id) {
+        return 1500.0;
+    }
+
+    private Double getOriginalDistance(Long id) {
+        return 7.5;
+    }
+
+    private Double calculateNewDistance(Long id, Double lat, Double lng) {
+        return 5.2;
+    }
+
+    private Double recalculatePrice(Double originalPrice, Double originalDistance, Double newDistance) {
+        double pricePerKm = originalPrice / originalDistance;
+        return pricePerKm * newDistance;
+    }
+
+    private void updateRideWithNewDestination(Long id, String address,
+                                              Double lat, Double lng,
+                                              Double newPrice, Double newDistance) {
+        System.out.printf("Ride #%d updated - New destination: %s (%.6f, %.6f), " +
+                        "New price: %.2f, New distance: %.2f km%n",
+                id, address, lat, lng, newPrice, newDistance);
     }
 }
