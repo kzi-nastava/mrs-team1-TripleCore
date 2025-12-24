@@ -3,8 +3,11 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RideCancelRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RideEstimateRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideCancelResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideEstimateResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
 
 @RestController
 @RequestMapping("/api/rides")
@@ -56,19 +59,55 @@ public class RideController {
             return 300.0; // default STANDARD
         }
 
-        switch (vehicleType.toUpperCase()) {
-            case "STANDARD":
-                return 300.0;
-            case "LUXURY":
-                return 800.0;
-            case "VAN":
-                return 600.0;
-            default:
-                return 300.0;
-        }
+        return switch (vehicleType.toUpperCase()) {
+            case "STANDARD" -> 300.0;
+            case "LUXURY" -> 800.0;
+            case "VAN" -> 600.0;
+            default -> 300.0;
+        };
     }
 
     private String generateRouteCoordinates() {
         return "44.7866,20.4489;44.8125,20.4612;44.8150,20.4630";
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<?> cancelRide(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody RideCancelRequest request) {
+
+        if (!rideExists(id)) {
+            return ResponseEntity.status(404)
+                    .body("Ride with ID " + id + " not found");
+        }
+
+        CancelerType cancelerType = request.getCancelerType();
+        String reason = request.getReason();
+
+        if (cancelerType == CancelerType.DRIVER && (reason == null || reason.trim().isEmpty())) {
+            return ResponseEntity.badRequest()
+                    .body("Driver must provide a cancellation reason");
+        }
+
+        if (cancelerType == CancelerType.PASSENGER) {
+            if (!canPassengerCancel(id)) {
+                return ResponseEntity.badRequest()
+                        .body("Passenger can only cancel 10 minutes before ride start");
+            }
+        }
+
+        boolean success = true;
+
+        RideCancelResponse response = new RideCancelResponse(success, cancelerType, reason);
+
+        return ResponseEntity.ok(response);
+    }
+
+    private boolean canPassengerCancel(Long id) {
+        return id >= 3;
+    }
+
+    private boolean rideExists(Long id) {
+        return id >= 1 && id <= 5;
     }
 }
