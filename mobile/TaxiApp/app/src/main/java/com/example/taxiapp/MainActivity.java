@@ -1,25 +1,23 @@
 package com.example.taxiapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.taxiapp.home.HomeActivity;
+import com.example.taxiapp.home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
+        setContentView(R.layout.activity_main);
 
-        // zatvara MainActivity da se ne vidi
-        finish();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_container, new HomeFragment())
+                    .commit();
+        }
     }
 }
