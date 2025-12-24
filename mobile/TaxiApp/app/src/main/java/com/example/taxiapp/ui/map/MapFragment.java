@@ -1,4 +1,4 @@
-package com.example.taxiapp.map;
+package com.example.taxiapp.ui.map;
 import com.example.taxiapp.R;
 
 import android.os.Bundle;

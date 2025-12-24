@@ -1,4 +1,4 @@
-package com.example.taxiapp.home;
+package com.example.taxiapp.ui.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
-import com.example.taxiapp.map.MapFragment;
+import com.example.taxiapp.ui.map.MapFragment;
 
 public class HomeFragment extends Fragment {
 
