@@ -145,4 +145,18 @@ public class AdminController {
                 )
         );
     }
+
+    @GetMapping("/rides/{id}")
+    public ResponseEntity<?> getRideDetails(@PathVariable("id") Long id) {
+
+        List<RideHistoryItemResponse> allRides = generateMockRides();
+
+        for (RideHistoryItemResponse ride : allRides) {
+            if (ride.getId().equals(id)) {
+                return ResponseEntity.ok(ride);  
+            }
+        }
+
+        return ResponseEntity.status(404).body("Ride with ID " + id + " not found");
+    }
 }
