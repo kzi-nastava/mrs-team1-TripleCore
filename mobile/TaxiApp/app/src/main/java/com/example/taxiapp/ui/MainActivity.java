@@ -12,6 +12,7 @@ import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.home.HomeFragment;
 import com.example.taxiapp.ui.login.LoginFragment;
 import com.example.taxiapp.ui.register.RegisterFragment;
+import com.example.taxiapp.ui.shared.RideHistoryFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
         );
 
         setupMenu();
-        loadFragment(new HomeFragment(), false);
+//        loadFragment(new HomeFragment(), false);
+        loadFragment(new RideHistoryFragment(), false);
     }
 
     private void setupMenu() {
