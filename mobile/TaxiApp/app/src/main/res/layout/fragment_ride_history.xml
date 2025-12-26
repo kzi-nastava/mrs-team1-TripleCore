@@ -125,6 +125,7 @@
 
     <!-- Here goes the card layout -->
         <include
+            android:id="@+id/card1"
             layout="@layout/view_ride_card"/>
         <include
             layout="@layout/view_ride_card"/>

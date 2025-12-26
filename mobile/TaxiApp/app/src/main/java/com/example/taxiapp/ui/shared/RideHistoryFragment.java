@@ -10,6 +10,7 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
@@ -22,8 +23,8 @@ public class RideHistoryFragment extends Fragment {
     private TextInputEditText etDateTo;
     private TextInputEditText etTextFilter;
 
-    private Button clearBtn;
     private Button applyBtn;
+    private MaterialCardView selectedCard;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,8 +36,9 @@ public class RideHistoryFragment extends Fragment {
         etDateFrom = view.findViewById(R.id.etDateFrom);
         etDateTo = view.findViewById(R.id.etDateTo);
         etTextFilter = view.findViewById(R.id.etTextFilter);
-        clearBtn = view.findViewById(R.id.btnClear);
+        Button clearBtn = view.findViewById(R.id.btnClear);
         applyBtn = view.findViewById(R.id.btnApply);
+        selectedCard = view.findViewById(R.id.card1);
 
         // Postavi klik listener da prikaže DatePickerDialog
         etDateFrom.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +59,13 @@ public class RideHistoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 clearInputs();
+            }
+        });
+
+        selectedCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openRideDetails();
             }
         });
 
@@ -94,4 +103,15 @@ public class RideHistoryFragment extends Fragment {
         etDateFrom.setText("");
         etDateTo.setText("");
     }
+
+    private void openRideDetails() {
+        RideDetailsFragment fragment = new RideDetailsFragment();
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
 }
