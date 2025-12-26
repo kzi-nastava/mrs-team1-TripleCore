@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.example.taxiapp.ui.driver.DriverRideHistoryFragment;
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.home.HomeFragment;
 import com.example.taxiapp.ui.login.LoginFragment;
@@ -34,14 +35,9 @@ public class MainActivity extends AppCompatActivity {
         );
 
         setupMenu();
-//        loadFragment(new HomeFragment(), false);
         if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.main_container, new RideHistoryFragment())
-                    .commit();
+            loadFragment(new HomeFragment(), false);
         }
-//        loadFragment(new RideHistoryFragment(), false);
     }
 
     private void setupMenu() {
@@ -67,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
             } else if (id == R.id.nav_home) {
                 loadFragment(new HomeFragment(), true);
+
+            } else if (id == R.id.nav_ride_history) {
+                loadFragment(new RideHistoryFragment(), true);
 
             } else if (id == R.id.nav_logout) {
                 isLoggedIn = false;

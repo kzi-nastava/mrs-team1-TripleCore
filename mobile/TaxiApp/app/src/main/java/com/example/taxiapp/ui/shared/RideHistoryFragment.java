@@ -1,11 +1,15 @@
 package com.example.taxiapp.ui.shared;
 
+import static com.google.android.material.internal.ViewUtils.hideKeyboard;
+
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 
@@ -32,7 +36,8 @@ public class RideHistoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_ride_history, container, false);
 
-        // Dohvati referencu na prvi date picker
+        LinearLayout rootLayout = view.findViewById(R.id.root_layout);
+
         etDateFrom = view.findViewById(R.id.etDateFrom);
         etDateTo = view.findViewById(R.id.etDateTo);
         etTextFilter = view.findViewById(R.id.etTextFilter);
@@ -40,7 +45,15 @@ public class RideHistoryFragment extends Fragment {
         applyBtn = view.findViewById(R.id.btnApply);
         selectedCard = view.findViewById(R.id.card1);
 
-        // Postavi klik listener da prikaže DatePickerDialog
+        rootLayout.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                etTextFilter.clearFocus();
+                hideKeyboard(v);
+            }
+            return false;
+        });
+
+
         etDateFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

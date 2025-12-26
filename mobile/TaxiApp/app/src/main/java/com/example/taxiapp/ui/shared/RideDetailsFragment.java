@@ -55,6 +55,7 @@ public class RideDetailsFragment extends Fragment {
         if (mapFragment != null) mapFragment.onPause();
     }
 
+    // when the device is rotated save the state of the map
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
