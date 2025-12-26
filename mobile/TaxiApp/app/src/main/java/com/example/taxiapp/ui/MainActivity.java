@@ -35,7 +35,13 @@ public class MainActivity extends AppCompatActivity {
 
         setupMenu();
 //        loadFragment(new HomeFragment(), false);
-        loadFragment(new RideHistoryFragment(), false);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_container, new RideHistoryFragment())
+                    .commit();
+        }
+//        loadFragment(new RideHistoryFragment(), false);
     }
 
     private void setupMenu() {
