@@ -2,20 +2,18 @@ package com.example.taxiapp.ui;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
-import com.example.taxiapp.ui.driver.DriverHomeFragment;
-import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
-import com.example.taxiapp.ui.driver_profile.DriverProfileFragment;
-import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
-import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
+import com.example.taxiapp.ui.driver.DriverHomeFragment;
+import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
+import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
+import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.shared.RideHistoryFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -26,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+
     private boolean isLoggedIn = false;
     private String currentFragmentTag = null;
 
@@ -49,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
         setupMenu();
 
         if (savedInstanceState == null) {
-            Fragment startFragment = isLoggedIn ? new DriverHomeFragment() : new GuestHomeFragment();
+            Fragment startFragment = isLoggedIn
+                    ? new DriverHomeFragment()
+                    : new GuestHomeFragment();
             loadFragment(startFragment, false);
         }
     }
@@ -65,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-
             Fragment fragmentToLoad = null;
 
             if (id == R.id.nav_estimate) {
@@ -83,12 +83,17 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_ride_history) {
                 fragmentToLoad = new RideHistoryFragment();
 
+            } else if (id == R.id.nav_profile) {
+                fragmentToLoad = new DriverAdditionalInfoFragment();
+
             } else if (id == R.id.nav_logout) {
                 isLoggedIn = false;
                 setupMenu();
                 fragmentToLoad = new GuestHomeFragment();
-            } else if (id == R.id.nav_profile){
-                fragmentToLoad = new DriverAdditionalInfoFragment();
+            }
+
+            if (fragmentToLoad != null) {
+                loadFragment(fragmentToLoad, true);
             }
 
             drawerLayout.closeDrawer(GravityCompat.END);
@@ -114,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_container, fragment)
+                    .replace(R.id.main_container, fragment, currentFragmentTag)
                     .commit();
         }
     }
@@ -122,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         outState.putBoolean(KEY_IS_LOGGED_IN, isLoggedIn);
         outState.putString(KEY_CURRENT_FRAGMENT, currentFragmentTag);
     }
