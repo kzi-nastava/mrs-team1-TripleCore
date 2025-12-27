@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@color/white">
+
+        <!-- Primer teksta ili detalja voznje -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Route Details"
+            style="@style/HeadingText"/>
+
+        <!-- Fragment container za mapu -->
+        <FrameLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+        <TextView
+            style="@style/HeadingText"
+            android:text="Inconsistency Reports"/>
+        <TextView
+            style="@style/DetailsParagraph"
+            android:text="Unexpected stop"/>
+        <View style="@style/HorizontalSeparator"/>
+
+        <TextView
+            style="@style/HeadingText"
+            android:text="Ride Ratings"/>
+        <TextView
+            style="@style/DetailsParagraph"
+            android:text="4.7"/>
+        <View style="@style/HorizontalSeparator"/>
+
+        <TextView
+            style="@style/HeadingText"
+            android:text="Ride Info"/>
+        <TextView
+            style="@style/DetailsParagraph"
+            android:text="Route: Bulevar Oslobođenja → Trg Republike\nStart time: 14:30\nEnd time: 15:05\nPrice: 600 RSD\nStatus: Completed"/>
+        <View style="@style/HorizontalSeparator"/>
+
+        <TextView
+            style="@style/HeadingText"
+            android:text="Driver"/>
+        <TextView
+            style="@style/DetailsParagraph"
+            android:text="Name: Marko Marković\nVehicle: Audi A3\nRating:    4.8"/>
+        <View style="@style/HorizontalSeparator"/>
+
+        <TextView
+            style="@style/HeadingText"
+            android:text="Passengers"/>
+        <TextView
+            style="@style/DetailsParagraph"
+            android:text="Ana Petrović, Ivana Ilić"/>
+        <View style="@style/HorizontalSeparator"/>
+
+        <TextView
+            style="@style/HeadingText"
+            android:text="PANIC Info"/>
+        <TextView
+            style="@style/DetailsParagraph"
+            android:text="Triggered: Yes\nTriggered by: Passenger\nTime: 10:42"/>
+
+
+
+    </LinearLayout>
+</ScrollView>
