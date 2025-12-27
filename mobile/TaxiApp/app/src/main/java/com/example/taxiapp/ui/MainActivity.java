@@ -18,9 +18,13 @@ import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
+    private static final String KEY_CURRENT_FRAGMENT = "currentFragment";
+
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private boolean isLoggedIn = false;
+    private String currentFragmentTag = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +38,16 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.openDrawer(GravityCompat.END)
         );
 
+        if (savedInstanceState != null) {
+            isLoggedIn = savedInstanceState.getBoolean(KEY_IS_LOGGED_IN, false);
+            currentFragmentTag = savedInstanceState.getString(KEY_CURRENT_FRAGMENT, null);
+        }
+
         setupMenu();
+
         if (savedInstanceState == null) {
-            loadFragment(new GuestHomeFragment(), false);
+            Fragment startFragment = isLoggedIn ? new DriverHomeFragment() : new GuestHomeFragment();
+            loadFragment(startFragment, false);
         }
     }
 
@@ -52,25 +63,31 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
+            Fragment fragmentToLoad = null;
+
             if (id == R.id.nav_estimate) {
-                loadFragment(new EstimateRouteFragment(), true);
+                fragmentToLoad = new EstimateRouteFragment();
 
             } else if (id == R.id.nav_login) {
-                loadFragment(new LoginFragment(), true);
+                fragmentToLoad = new LoginFragment();
 
             } else if (id == R.id.nav_register) {
-                loadFragment(new RegisterFragment(), true);
+                fragmentToLoad = new RegisterFragment();
 
             } else if (id == R.id.nav_home) {
-                loadFragment(new GuestHomeFragment(), true);
+                fragmentToLoad = new GuestHomeFragment();
 
             } else if (id == R.id.nav_ride_history) {
-                loadFragment(new RideHistoryFragment(), true);
+                fragmentToLoad = new RideHistoryFragment();
 
             } else if (id == R.id.nav_logout) {
                 isLoggedIn = false;
                 setupMenu();
-                loadFragment(new GuestHomeFragment(), false);
+                fragmentToLoad = new GuestHomeFragment();
+            }
+
+            if (fragmentToLoad != null) {
+                loadFragment(fragmentToLoad, true);
             }
 
             drawerLayout.closeDrawer(GravityCompat.END);
@@ -85,17 +102,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadFragment(Fragment fragment, boolean addToBackStack) {
+        currentFragmentTag = fragment.getClass().getSimpleName();
+
         if (addToBackStack) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_container, fragment)
-                    .addToBackStack(null)
+                    .replace(R.id.main_container, fragment, currentFragmentTag)
+                    .addToBackStack(currentFragmentTag)
                     .commit();
         } else {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_container, fragment)
+                    .replace(R.id.main_container, fragment, currentFragmentTag)
                     .commit();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(KEY_IS_LOGGED_IN, isLoggedIn);
+        outState.putString(KEY_CURRENT_FRAGMENT, currentFragmentTag);
     }
 }
