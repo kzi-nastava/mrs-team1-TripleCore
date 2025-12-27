@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import com.example.taxiapp.R;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
+import com.example.taxiapp.ui.auth.reset_password.ResetPasswordFragment;
 import com.example.taxiapp.ui.driver.DriverHomeFragment;
 import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
@@ -90,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
                 isLoggedIn = false;
                 setupMenu();
                 fragmentToLoad = new GuestHomeFragment();
+            } else if (id == R.id.reset_password) {
+                fragmentToLoad = new ResetPasswordFragment();
             }
 
             if (fragmentToLoad != null) {
