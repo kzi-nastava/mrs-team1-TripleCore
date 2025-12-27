@@ -2,6 +2,7 @@ package com.example.taxiapp.ui;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -34,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.menu_icon).setOnClickListener(v ->
                 drawerLayout.openDrawer(GravityCompat.END)
         );
+
+        if (savedInstanceState != null){
+            isLoggedIn = savedInstanceState.getBoolean("isLoggedIn", false);
+        }
 
         setupMenu();
         if (savedInstanceState == null) {
@@ -101,4 +106,11 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
     }
+
+    @Override
+    protected  void onSaveInstanceState(@NonNull Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isLoggedIn", isLoggedIn);
+    }
+
 }
