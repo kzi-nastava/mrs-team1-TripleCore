@@ -8,6 +8,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
+import com.example.taxiapp.ui.driver_profile.DriverProfileFragment;
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.home.HomeFragment;
 import com.example.taxiapp.ui.login.LoginFragment;
@@ -64,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                 isLoggedIn = false;
                 setupMenu();
                 loadFragment(new HomeFragment(), false);
+            } else if (id == R.id.nav_profile){
+                loadFragment(new DriverAdditionalInfoFragment(), true);
             }
 
             drawerLayout.closeDrawer(GravityCompat.END);

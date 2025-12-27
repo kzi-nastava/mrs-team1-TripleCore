@@ -2,4 +2,37 @@
     <string name="app_name">Taxi App</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="driver_first_name">Boban</string>
+    <string name="driver_last_name">Rajovic</string>
+    <string name="driver_address">Beograd, Srbija</string>
+    <string name="driver_phone">+381 66 1234567</string>
+    <string name="driver_email">driver@example.com</string>
+    <string name="profile_information">Profile information</string>
+    <string name="user_profile_info">User profile info</string>
+    <string name="active_hours_in_last_24_hours_8_hours">Active hours in last 24 hours: 8 hours</string>
+    <string name="view_and_change_profile_info">View and change profile info</string>
+    <string name="change_info">Change info</string>
+    <string name="vehicle_info">Vehicle info</string>
+    <string name="vehicle_model_audi_a3">Vehicle model: Audi A3</string>
+    <string name="vehicle_type_standard">Vehicle type: Standard</string>
+    <string name="licence_plate_number_bg123_ab">Licence plate number: BG123-AB</string>
+    <string name="number_of_seats_5">Number of seats: 5</string>
+    <string name="baby_transport_available_yes">Baby transport available: Yes</string>
+    <string name="pets_transport_available_yes">Pets transport available: Yes</string>
+    <string name="change_password">Change password</string>
+    <string name="reset_edit">Reset Edit</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="address">Address</string>
+    <string name="phone">Phone</string>
+    <string name="email">Email</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="click_the_image_to_change_the_profile_picture">Click the image to change the profile picture</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="change_password_picture">Change password picture</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="password_change_link_expired">This password change link expired please request a new one</string>
+
 </resources>
