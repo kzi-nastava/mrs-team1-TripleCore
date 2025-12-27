@@ -6,10 +6,13 @@ import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideHistoryItemResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideHistoryResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideSortBy;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.SortOrder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -18,11 +21,19 @@ public class AdminController {
 
     @GetMapping("/rides")
     public ResponseEntity<RideHistoryResponse> getRides(
-            @RequestParam(value = "userId", required = false) Long userId,
-            @RequestParam(value = "startDate", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(value = "endDate", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @RequestParam(name = "userId", required = false) Long userId,
+
+            @RequestParam(name = "startDate", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate startDate,
+
+            @RequestParam(name = "endDate", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate endDate,
+
+            @RequestParam(name = "sortBy", required = false) RideSortBy sortBy,
+            @RequestParam(name = "sortOrder", required = false) SortOrder sortOrder
+    ) {
 
         List<RideHistoryItemResponse> filteredRides = generateMockRides();
 
@@ -37,6 +48,8 @@ public class AdminController {
         if (endDate != null) {
             filteredRides = filterByEndDate(filteredRides, endDate);
         }
+
+        filteredRides = sortRides(filteredRides, sortBy, sortOrder);
 
         return ResponseEntity.ok(new RideHistoryResponse(filteredRides));
     }
@@ -158,5 +171,46 @@ public class AdminController {
         }
 
         return ResponseEntity.status(404).body("Ride with ID " + id + " not found");
+    }
+
+    private List<RideHistoryItemResponse> sortRides(
+            List<RideHistoryItemResponse> rides,
+            RideSortBy sortBy,
+            SortOrder sortOrder
+    ) {
+        if (sortBy == null) {
+            sortBy = RideSortBy.START_TIME;
+        }
+        if (sortOrder == null) {
+            sortOrder = SortOrder.DESC;
+        }
+
+        Comparator<RideHistoryItemResponse> comparator;
+
+        switch (sortBy) {
+            case PRICE ->
+                    comparator = Comparator.comparing(RideHistoryItemResponse::getPrice);
+
+            case END_TIME ->
+                    comparator = Comparator.comparing(
+                            RideHistoryItemResponse::getEndTime,
+                            Comparator.nullsLast(Comparator.naturalOrder())
+                    );
+
+            case CANCELLED ->
+                    comparator = Comparator.comparing(RideHistoryItemResponse::isCancelled);
+
+            case PANIC ->
+                    comparator = Comparator.comparing(RideHistoryItemResponse::isPanicButtonPressed);
+
+            default ->
+                    comparator = Comparator.comparing(RideHistoryItemResponse::getStartTime);
+        }
+
+        if (sortOrder == SortOrder.DESC) {
+            comparator = comparator.reversed();
+        }
+
+        return rides.stream().sorted(comparator).toList();
     }
 }

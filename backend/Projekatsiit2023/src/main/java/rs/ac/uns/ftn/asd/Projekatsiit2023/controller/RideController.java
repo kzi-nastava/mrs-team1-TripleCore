@@ -130,12 +130,10 @@ public class RideController {
                     .body("Ride is not in progress. Only rides in progress can be stopped.");
         }
 
-        // 3. Provera koordinate i adrese
         Double latitude = request.getLatitude();
         Double longitude = request.getLongitude();
         String address = request.getAddress();
 
-        // 4. Računanje nove cene
         Double originalPrice = getOriginalPrice(id);
         Double originalDistance = getOriginalDistance(id);
         Double newDistance = calculateNewDistance(id, latitude, longitude);
