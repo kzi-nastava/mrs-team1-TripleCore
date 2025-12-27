@@ -1,4 +1,4 @@
-package com.example.taxiapp.ui.login;
+package com.example.taxiapp.ui.auth.login;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -40,8 +40,15 @@ public class LoginFragment extends Fragment {
 
         TextView tvForgotPassword = view.findViewById(R.id.tvForgotPassword);
         tvForgotPassword.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), "Forgot password clicked", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to ForgotPasswordFragment
+            // navigate to ForgotPasswordFragment
+            tvForgotPassword.setOnClickListener(view1 -> {
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_container, new com.example.taxiapp.ui.auth.forgot_password.ForgotPasswordFragment())
+                        .addToBackStack(null)
+                        .commit();
+            });
+
         });
 
         return view;
