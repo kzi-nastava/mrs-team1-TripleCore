@@ -2,6 +2,7 @@ package com.example.taxiapp.ui;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -9,6 +10,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
 import com.example.taxiapp.ui.driver.DriverHomeFragment;
+import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
+import com.example.taxiapp.ui.driver_profile.DriverProfileFragment;
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
@@ -84,10 +87,8 @@ public class MainActivity extends AppCompatActivity {
                 isLoggedIn = false;
                 setupMenu();
                 fragmentToLoad = new GuestHomeFragment();
-            }
-
-            if (fragmentToLoad != null) {
-                loadFragment(fragmentToLoad, true);
+            } else if (id == R.id.nav_profile){
+                fragmentToLoad = new DriverAdditionalInfoFragment();
             }
 
             drawerLayout.closeDrawer(GravityCompat.END);
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_container, fragment, currentFragmentTag)
+                    .replace(R.id.main_container, fragment)
                     .commit();
         }
     }
