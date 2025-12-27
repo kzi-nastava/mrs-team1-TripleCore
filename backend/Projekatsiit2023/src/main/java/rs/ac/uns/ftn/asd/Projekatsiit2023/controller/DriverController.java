@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/drivers")
 public class DriverController {
 
-    @PutMapping("/{id}/availability")
+    @PatchMapping("/{id}/availability")
     public ResponseEntity<?> changeDriverAvailability(
             @PathVariable("id") Long id,
             @RequestParam("available") boolean available) {
