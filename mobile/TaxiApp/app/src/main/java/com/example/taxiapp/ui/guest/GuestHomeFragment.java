@@ -1,4 +1,4 @@
-package com.example.taxiapp.ui.home;
+package com.example.taxiapp.ui.guest;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,9 +12,9 @@ import androidx.fragment.app.Fragment;
 import com.example.taxiapp.R;
 import com.example.taxiapp.ui.map.MapFragment;
 
-public class HomeFragment extends Fragment {
+public class GuestHomeFragment extends Fragment {
 
-    public HomeFragment() {
+    public GuestHomeFragment() {
     }
 
     @Nullable
@@ -24,7 +24,7 @@ public class HomeFragment extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState
     ) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        return inflater.inflate(R.layout.fragment_guest_home, container, false);
     }
 
     @Override
