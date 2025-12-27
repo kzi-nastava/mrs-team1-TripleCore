@@ -1,4 +1,4 @@
-package com.example.taxiapp.ui.register;
+package com.example.taxiapp.ui.auth.register;
 
 import android.app.AlertDialog;
 import android.content.Intent;

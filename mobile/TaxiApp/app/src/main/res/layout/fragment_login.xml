@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:fillViewport="true"
-    tools:context=".ui.login.LoginFragment">
+    tools:context=".ui.auth.login.LoginFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
