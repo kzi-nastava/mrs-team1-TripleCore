@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="purple">#600EA8</color>
     <color name="light_purple">#CBC3E3</color>
+    <color name="btn_active_red">#F7164A</color>
 </resources>

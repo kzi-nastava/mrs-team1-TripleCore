@@ -8,8 +8,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.example.taxiapp.ui.driver.DriverHomeFragment;
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
-import com.example.taxiapp.ui.home.HomeFragment;
+import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
 import com.example.taxiapp.ui.shared.RideHistoryFragment;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         setupMenu();
         if (savedInstanceState == null) {
-            loadFragment(new HomeFragment(), false);
+            loadFragment(new GuestHomeFragment(), false);
         }
     }
 
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 loadFragment(new RegisterFragment(), true);
 
             } else if (id == R.id.nav_home) {
-                loadFragment(new HomeFragment(), true);
+                loadFragment(new GuestHomeFragment(), true);
 
             } else if (id == R.id.nav_ride_history) {
                 loadFragment(new RideHistoryFragment(), true);
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_logout) {
                 isLoggedIn = false;
                 setupMenu();
-                loadFragment(new HomeFragment(), false);
+                loadFragment(new GuestHomeFragment(), false);
             }
 
             drawerLayout.closeDrawer(GravityCompat.END);
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     public void onLoginSuccess() {
         isLoggedIn = true;
         setupMenu();
-        loadFragment(new HomeFragment(), false);
+        loadFragment(new DriverHomeFragment(), false);
     }
 
     private void loadFragment(Fragment fragment, boolean addToBackStack) {
