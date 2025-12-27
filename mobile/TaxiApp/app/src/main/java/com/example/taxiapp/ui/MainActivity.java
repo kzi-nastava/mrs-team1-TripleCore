@@ -8,7 +8,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
-import com.example.taxiapp.ui.driver.DriverRideHistoryFragment;
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.home.HomeFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
