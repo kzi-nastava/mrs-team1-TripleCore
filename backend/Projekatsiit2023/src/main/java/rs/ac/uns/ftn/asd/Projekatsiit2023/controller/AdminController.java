@@ -185,7 +185,7 @@ public class AdminController {
             sortOrder = SortOrder.DESC;
         }
 
-        Comparator<RideHistoryItemResponse> comparator = null;
+        Comparator<RideHistoryItemResponse> comparator;
 
         switch (sortBy) {
             case PRICE ->
