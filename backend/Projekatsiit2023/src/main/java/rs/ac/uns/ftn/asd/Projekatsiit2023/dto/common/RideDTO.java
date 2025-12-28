@@ -1,12 +1,15 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common;
 
+import java.util.List;
+
 public class RideDTO {
     private String pickup;
     private String dropoff;
     private long estimatedTime;
     private double estimatedDistance;
     private double estimatedPrice;
-    private Long passengerId;
+    private Long driverId;
+    private List<Long> passengerIds;
 
     public RideDTO() {
     }
@@ -51,11 +54,15 @@ public class RideDTO {
         this.estimatedPrice = estimatedPrice;
     }
 
-    public Long getPassengerId() {
-        return passengerId;
+    public Long getDriverId() { return driverId; }
+
+    public void setDriverId(Long driverId) { this.driverId = driverId; }
+
+    public List<Long> getPassengerIds() {
+        return passengerIds;
     }
 
-    public void setPassengerId(Long passengerId) {
-        this.passengerId = passengerId;
+    public void setPassengerIds(List<Long> passengerIds) {
+        this.passengerIds = passengerIds;
     }
 }
