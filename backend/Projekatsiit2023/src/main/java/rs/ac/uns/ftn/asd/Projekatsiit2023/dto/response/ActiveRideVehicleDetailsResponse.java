@@ -1,13 +1,13 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response;
 
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.Location;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.LocationDTO;
 
 public class ActiveRideVehicleDetailsResponse {
-    private Location location;
+    private LocationDTO location;
     private long estimatedTime;
 
     public ActiveRideVehicleDetailsResponse(double latitude, double longitude, long estimatedTime){
-        this.location = new Location(latitude, longitude);
+        this.location = new LocationDTO(latitude, longitude);
         this.estimatedTime = estimatedTime;
     }
 
