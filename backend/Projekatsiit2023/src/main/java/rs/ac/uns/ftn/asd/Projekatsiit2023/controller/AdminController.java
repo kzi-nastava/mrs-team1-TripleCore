@@ -1,19 +1,24 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideHistoryItemResponse;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideHistoryResponse;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideSortBy;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.SortOrder;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RegisterDriverRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RegisterRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.UpdateUserProfileRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.controller.AuthController.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+
 
 @RestController
 @RequestMapping("/api/admin")
@@ -213,4 +218,88 @@ public class AdminController {
 
         return rides.stream().sorted(comparator).toList();
     }
+
+    @PostMapping("/registerDriver")
+    public ResponseEntity<?> registerDriver(@Valid @RequestBody RegisterDriverRequest request) {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            return ResponseEntity.badRequest().body("Passwords do not match");
+        }
+
+        if (emailExists(request.getEmail())) {
+            return ResponseEntity.badRequest().body("Email already registered");
+        }
+
+        RegisterDriverResponse response = getRegisterDriverResponse(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    private static RegisterDriverResponse getRegisterDriverResponse(RegisterDriverRequest request) {
+        Long newUserId = 200L;
+
+        return new RegisterDriverResponse(
+                newUserId,
+                request.getEmail(),
+                request.getFirstName(),
+                request.getLastName(),
+                request.getAddress(),
+                request.getPhoneNumber(),
+                "default-avatar.png",
+                UserRole.DRIVER,
+                false,
+                "Registration successful! Driver can check his email for activation link",
+                request.getVehicleModel(),
+                request.getVehicleType(),
+                request.getPlateNum(),
+                request.getSeatNum(),
+                request.isBabySafe(),
+                request.isPetSafe()
+        );
+    }
+
+
+    private boolean emailExists(String email) {
+        return "existing@example.com".equals(email);
+    }
+
+    @GetMapping("/driver-profile-requests")
+    public ResponseEntity<List<DriverProfileChangeRequestResponse>> getRequests() {
+        return ResponseEntity.ok(mockRequests);
+    }
+
+    private List<DriverProfileChangeRequestResponse> mockRequests = new ArrayList<>(List.of(
+            new DriverProfileChangeRequestResponse(
+                    1L,
+                    41L,
+                    new UpdateUserProfileRequest(),
+                    DriverUpdateRequestStatus.PENDING
+            ),
+            new DriverProfileChangeRequestResponse(
+                    2L,
+                    42L,
+                    new UpdateUserProfileRequest(),
+                    DriverUpdateRequestStatus.PENDING
+            )
+    ));
+
+    @PutMapping("/driver-profile-requests/{id}/approve")
+    public ResponseEntity<Void> approve(@PathVariable Long id) {
+        mockRequests.stream()
+                .filter(r -> r.getRequestId().equals(id))
+                .findFirst()
+                .ifPresent(r -> r.setStatus(DriverUpdateRequestStatus.APPROVED));
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/driver-profile-requests/{id}/reject")
+    public ResponseEntity<Void> reject(@PathVariable Long id) {
+        mockRequests.stream()
+                .filter(r -> r.getRequestId().equals(id))
+                .findFirst()
+                .ifPresent(r -> r.setStatus(DriverUpdateRequestStatus.REJECTED));
+
+        return ResponseEntity.ok().build();
+    }
+
 }
