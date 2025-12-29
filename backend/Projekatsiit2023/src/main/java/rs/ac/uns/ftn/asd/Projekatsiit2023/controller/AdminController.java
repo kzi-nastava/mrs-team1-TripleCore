@@ -71,7 +71,7 @@ public class AdminController {
         return List.of();
     }
 
-    private List<RideHistoryItemResponse> filterByStartDate(
+    public static List<RideHistoryItemResponse> filterByStartDate(
             List<RideHistoryItemResponse> rides, LocalDate startDate) {
         List<RideHistoryItemResponse> filtered = new ArrayList<>();
         for (RideHistoryItemResponse ride : rides) {
@@ -95,7 +95,7 @@ public class AdminController {
         return filtered;
     }
 
-    private List<RideHistoryItemResponse> generateMockRides() {
+    public static List<RideHistoryItemResponse> generateMockRides() {
         return List.of(
                 new RideHistoryItemResponse(
                         1L,

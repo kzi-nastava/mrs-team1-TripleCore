@@ -1,6 +1,7 @@
 package com.example.taxiapp.ui;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentToLoad = new RegisterFragment();
 
             } else if (id == R.id.nav_home) {
-                fragmentToLoad = new GuestHomeFragment();
+                fragmentToLoad = isLoggedIn ? new DriverHomeFragment() : new GuestHomeFragment();
 
             } else if (id == R.id.nav_ride_history) {
                 fragmentToLoad = new RideHistoryFragment();
@@ -91,17 +92,20 @@ public class MainActivity extends AppCompatActivity {
                 isLoggedIn = false;
                 setupMenu();
                 fragmentToLoad = new GuestHomeFragment();
+
             } else if (id == R.id.reset_password) {
                 fragmentToLoad = new ResetPasswordFragment();
             }
 
             if (fragmentToLoad != null) {
-                loadFragment(fragmentToLoad, true);
+                boolean addToBackStack = id != R.id.nav_home;
+                loadFragment(fragmentToLoad, addToBackStack);
             }
 
             drawerLayout.closeDrawer(GravityCompat.END);
             return true;
         });
+
     }
 
     public void onLoginSuccess() {
@@ -133,4 +137,16 @@ public class MainActivity extends AppCompatActivity {
         outState.putBoolean(KEY_IS_LOGGED_IN, isLoggedIn);
         outState.putString(KEY_CURRENT_FRAGMENT, currentFragmentTag);
     }
+
+    public void setLogoutEnabled(boolean enabled, String title) {
+        NavigationView navView = findViewById(R.id.navigation_view);
+        if (navView != null) {
+            MenuItem logoutItem = navView.getMenu().findItem(R.id.nav_logout);
+            if (logoutItem != null) {
+                logoutItem.setEnabled(enabled);
+                logoutItem.setTitle(title);
+            }
+        }
+    }
+
 }

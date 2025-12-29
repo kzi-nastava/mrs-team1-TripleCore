@@ -5,15 +5,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideCancelResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideEstimateResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideFinishResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideStopResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 @RequestMapping("/api/rides")
-public class RideController {
+public class  RideController {
 
     @PostMapping("/estimate")
     public ResponseEntity<RideEstimateResponse> estimateRide(
@@ -179,6 +185,46 @@ public class RideController {
                         "New price: %.2f, New distance: %.2f km%n",
                 id, address, lat, lng, newPrice, newDistance);
     }
+
+    @PostMapping ("/{id}/finish")
+    public ResponseEntity<?> finishRide(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody RideFinishRequest request){
+
+        if (!rideExists(id)) {
+            return ResponseEntity.status(404)
+                    .body("Ride with ID " + id + " not found");
+        }
+
+        if (!isRideInProgress(id)) {
+            return ResponseEntity.badRequest()
+                    .body("Ride is not in progress. Only rides in progress can be finished.");
+        }
+
+        // did the price change
+        boolean priceChanged = getRandomBoolean();
+        double newPrice = 0;
+        if (priceChanged) newPrice = 1500;
+
+        RideFinishResponse response = new RideFinishResponse(
+                String.format("Ride #%d finished successfully", id),
+                priceChanged,
+                newPrice
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    public boolean getRandomBoolean() {
+        return ThreadLocalRandom.current().nextBoolean();
+    }
+
+//    @PatchMapping("/{id}/start")
+//    public ResponseEntity<?> finishRide(
+//            @PathVariable("id") Long id,
+//            @Valid @RequestBody RideStartRequest request){
+//
+//    }
 
 
     @PostMapping
