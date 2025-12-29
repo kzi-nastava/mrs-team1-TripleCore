@@ -3,15 +3,13 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RideCancelRequest;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RideEstimateRequest;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RideStopRequest;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideCancelResponse;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideEstimateResponse;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideStopResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/rides")
@@ -181,4 +179,97 @@ public class RideController {
                         "New price: %.2f, New distance: %.2f km%n",
                 id, address, lat, lng, newPrice, newDistance);
     }
+
+
+    @PostMapping
+    public ResponseEntity<RideResponse> orderRide(@Valid @RequestBody RideRequest request) {
+
+
+        boolean hasActiveDrivers = true;
+        boolean driversBusy = false;
+        boolean driverOverworked = false;
+
+
+        if (!hasActiveDrivers) {
+            System.out.println("notification: No active drivers available");
+            return ResponseEntity.ok(new RideResponse(null, RideStatus.REJECTED, 0, null,
+                    "notification: there are no active drivers at the moment"));
+        }
+
+        if (driversBusy) {
+            System.out.println("notification: all drivers are currently busy");
+            return ResponseEntity.ok(new RideResponse(null, RideStatus.REJECTED, 0, null,
+                    "notification: no driver available at the moment"));
+        }
+
+
+        if (driverOverworked) {
+            System.out.println("notification: driver is currently busy");
+            return ResponseEntity.ok(new RideResponse(null, RideStatus.REJECTED, 0, null,
+                    "notification: no driver available at the moment"));
+        }
+
+
+        if (request.getScheduledTime() != null &&
+                request.getScheduledTime().isAfter(LocalDateTime.now().plusHours(5))) {
+            return ResponseEntity.badRequest().body(new RideResponse(null, RideStatus.REJECTED, 0, null,
+                    "notification: scheduled rides can only be booked up to 5 hours in advance"));
+        }
+
+        // calucating price = basePrice + distance * 120
+        double basePrice = request.getVehicleType() != null ? switch (request.getVehicleType()) {
+            case STANDARD -> 300;
+            case VAN -> 500;
+            case LUXURY -> 800;
+        } : 300; // default
+        double price = basePrice + request.getDistanceInKm() * 120;
+
+
+        Long driverId = 50L;
+        Long rideId = 100L;
+
+
+        System.out.println("notification: new ride for passenger");
+        System.out.println("notification: mew ride for driver id " + driverId);
+
+        if (request.getScheduledTime() != null) {
+            System.out.println("reminder: scheduled ride in 5 hours for driver id " + driverId);
+        }
+
+        return ResponseEntity.ok(new RideResponse(rideId, RideStatus.ACCEPTED, price, driverId,
+                "notification: ride accepted"));
+    }
+
+    @PostMapping("/favorites")
+    public ResponseEntity<FavoriteRouteResponse> addFavoriteRoute(
+            @Valid @RequestBody FavoriteRouteRequest request) {
+
+        Long routeId = 101L;
+
+        FavoriteRouteResponse response = new FavoriteRouteResponse(
+                routeId,
+                request.getStartLocation(),
+                request.getEndLocation(),
+                "Route added to favorites"
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/favorites/{userId}")
+    public ResponseEntity<List<FavoriteRouteResponse>> getFavoriteRoutes(@PathVariable Long userId) {
+
+        List<FavoriteRouteResponse> favorites = List.of(
+                new FavoriteRouteResponse(101L, "Beograd, Nemanjina 1", "Beograd, Bulevar Kralja Aleksandra 10", "Favorite route 1"),
+                new FavoriteRouteResponse(102L, "Beograd, Studentski trg 5", "Beograd, Trg Slavija 2", "Favorite route 2")
+        );
+        return ResponseEntity.ok(favorites);
+    }
+
+    @PostMapping("/{rideId}/start") public ResponseEntity<String> startRide(@PathVariable Long rideId) {
+        System.out.println("Ride " + rideId + " started");
+        return ResponseEntity.ok("Ride started");
+    }
+
+
 }
