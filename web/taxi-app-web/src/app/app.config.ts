@@ -3,7 +3,7 @@ import { provideRouter, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
@@ -42,6 +42,10 @@ const routes: Routes = [
   {
     path: 'ride-details',
     loadComponent: () => import('./shared/ride-details/ride-details').then(m => m.RideDetailsComponent)
+  },
+  {
+    path: 'estimate-route',
+    loadComponent: () => import('./estimate-route/estimate-route').then(m => m.EstimateRouteComponent)
   },
   {
     path: '**',
