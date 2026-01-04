@@ -1,0 +1,44 @@
+<div class="login-backdrop">
+  <div class="login-container estimate-route-container">
+    <h2>Estimate Route</h2>
+
+    <form (ngSubmit)="estimateRoute()">
+
+      <input
+        type="text"
+        placeholder="Start point"
+        [(ngModel)]="startQuery"
+        name="startQuery"
+        (input)="searchStart()"
+        autocomplete="off"
+        required
+      >
+
+      <ul class="results" *ngIf="startResults.length">
+        <li *ngFor="let place of startResults"
+            (click)="selectStart(place)">
+          {{ place.display_name }}
+        </li>
+      </ul>
+
+      <input
+        type="text"
+        placeholder="Destination point"
+        [(ngModel)]="destinationQuery"
+        name="destinationQuery"
+        (input)="searchDestination()"
+        autocomplete="off"
+        required
+      >
+
+      <ul class="results" *ngIf="destinationResults.length">
+        <li *ngFor="let place of destinationResults"
+            (click)="selectDestination(place)">
+          {{ place.display_name }}
+        </li>
+      </ul>
+
+      <button type="submit">Estimate</button>
+    </form>
+  </div>
+</div>
