@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
             } else if (id == R.id.reset_password) {
                 fragmentToLoad = new ResetPasswordFragment();
+            } else if (id == R.id.nav_estimate) {
+                fragmentToLoad = new EstimateRouteFragment();
             }
 
             if (fragmentToLoad != null) {

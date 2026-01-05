@@ -1,66 +1,135 @@
 package com.example.taxiapp.ui.estimate_route;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.google.android.material.button.MaterialButton;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EstimateRouteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class EstimateRouteFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "OSM";
+    private AutoCompleteTextView startPointEditText, destinationPointEditText;
+    private MaterialButton estimateButton;
+    private OsmService osmService;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public EstimateRouteFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EstimateRideFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EstimateRouteFragment newInstance(String param1, String param2) {
-        EstimateRouteFragment fragment = new EstimateRouteFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_estimate_route, container, false);
+
+        startPointEditText = view.findViewById(R.id.startPointEditText);
+        destinationPointEditText = view.findViewById(R.id.destinationPointEditText);
+        estimateButton = view.findViewById(R.id.estimateButton);
+
+        setupRetrofit();
+        setupAutoComplete(startPointEditText);
+        setupAutoComplete(destinationPointEditText);
+
+        estimateButton.setOnClickListener(v -> {
+            String start = startPointEditText.getText().toString();
+            String dest = destinationPointEditText.getText().toString();
+
+            if (start.isEmpty() || dest.isEmpty()) {
+                Toast.makeText(getContext(), "Please fill both fields", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Route estimated from " + start + " to " + dest, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Start: " + start + ", Destination: " + dest);
+
+                startPointEditText.setText("");
+                destinationPointEditText.setText("");
+            }
+        });
+
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_estimate_ride, container, false);
+    private void setupRetrofit() {
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+                    Request request = chain.request().newBuilder()
+                            .header("User-Agent", "TaxiApp/1.0 (Android)")
+                            .build();
+                    return chain.proceed(request);
+                })
+                .connectTimeout(20, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(20, java.util.concurrent.TimeUnit.SECONDS)
+                .writeTimeout(20, java.util.concurrent.TimeUnit.SECONDS)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://nominatim.openstreetmap.org/")
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        osmService = retrofit.create(OsmService.class);
+    }
+
+    private void setupAutoComplete(AutoCompleteTextView editText) {
+        editText.setThreshold(3); // Start suggesting after 3 characters
+
+        editText.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() >= 3) {
+                    searchPlaces(s.toString(), editText);
+                }
+            }
+        });
+    }
+
+    private void searchPlaces(String query, AutoCompleteTextView editText) {
+        osmService.search(query, "json", 10).enqueue(new Callback<List<OsmPlace>>() {
+            @Override
+            public void onResponse(Call<List<OsmPlace>> call, Response<List<OsmPlace>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<OsmPlace> places = response.body();
+                    List<String> placeNames = new ArrayList<>();
+                    for (OsmPlace place : places) {
+                        placeNames.add(place.getDisplayName());
+                        Log.d(TAG, "Found place: " + place.getDisplayName() + " (" + place.getLat() + "," + place.getLon() + ")");
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_dropdown_item_1line, placeNames);
+                    editText.setAdapter(adapter);
+
+                    editText.post(() -> {
+                        if (editText.isFocused()) {
+                            editText.showDropDown();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<OsmPlace>> call, Throwable t) {
+                Log.e(TAG, "OSM search failed", t);
+            }
+        });
     }
 }
