@@ -1,13 +1,16 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, Input } from '@angular/core';
 import * as L from 'leaflet';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.html',
   styleUrls: ['./map.css'],
+  standalone: true,
 })
 export class MapComponent implements AfterViewInit {
   private map: any;
+
+  @Input() route: any;
 
   constructor() {}
 

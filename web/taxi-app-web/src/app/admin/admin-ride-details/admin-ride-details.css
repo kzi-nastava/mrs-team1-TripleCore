@@ -1,0 +1,39 @@
+.page-container {
+  background-color: #ffffff;
+  margin: 24px;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.heading {
+  font-size: 20px;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  color: #600EA8;
+}
+
+.column {
+  flex: 1 1 300px;
+  height: 100vh;
+  padding: 30px;
+}
+
+.info-container {
+  margin-top: 30px;
+  border-bottom: #600EA8 1px solid;
+}
+
+.info {
+  font-size: medium;
+  font-weight: 500;
+}
+
+::ng-deep app-map #map {
+  height: 400px !important;
+}
+
+::ng-deep app-map .map-frame {
+  border: none !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
