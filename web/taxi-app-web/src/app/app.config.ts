@@ -48,6 +48,18 @@ const routes: Routes = [
     loadComponent: () => import('./estimate-route/estimate-route').then(m => m.EstimateRouteComponent)
   },
   {
+    path: 'admin-home',
+    loadComponent: () => import('./admin/admin-home/admin-home').then(m => m.AdminHomeComponent)
+  },
+  {
+    path: 'admin-ride-history',
+    loadComponent: () => import('./admin/admin-ride-history/admin-ride-history').then(m => m.AdminRideHistoryComponent)
+  },
+  {
+    path: 'admin-ride-details/:id',
+    loadComponent: () => import('./admin/admin-ride-details/admin-ride-details').then(m => m.AdminRideDetailsComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

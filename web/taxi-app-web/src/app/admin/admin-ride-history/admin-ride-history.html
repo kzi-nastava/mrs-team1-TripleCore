@@ -1,0 +1,35 @@
+<app-navbar>
+
+  <li class="nav-item">
+    <a class="nav-link img-and-link selected-nav-link" routerLink="/admin-ride-history">
+      Ride history
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link img-and-link" routerLink="/admin-home">
+      Dashboard
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link img-and-link" routerLink="/admin-home">
+      Notifications
+    </a>
+  </li>
+
+  <a class="nav-link img-and-link" routerLink="/user-info" matTooltip="My Profile">
+    <img src="icons/icons8-test-account-48.png" class="nav-item-icon">
+  </a>
+
+  <li class="nav-item">
+    <button class="nav-link nav-btn" (click)="logout()">Log out</button>
+  </li>
+
+  <a class="nav-link img-and-link" routerLink="/home" matTooltip="Live Chat">
+    <img src="icons/icons8-chat-48.png" class="nav-item-icon">
+  </a>
+
+</app-navbar>
+
+<app-admin-ride-history-table></app-admin-ride-history-table>

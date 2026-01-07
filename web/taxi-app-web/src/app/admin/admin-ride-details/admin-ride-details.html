@@ -1,0 +1,78 @@
+<div class="page-container">
+  <div class="column left-column">
+    <div id="map-container">
+      <h2 class="heading">Route</h2>
+      <app-map></app-map>
+    </div>
+    
+    <div class="info-container">
+      <h2 class="heading">Inconsistencies</h2>
+      <p class="info">
+        <span *ngIf="rideData?.reports?.length; else noInconsistencies">
+          <span *ngFor="let r of rideData.reports">{{ r.description }}<br></span>
+        </span>
+        <ng-template #noInconsistencies>
+          No inconsistencies
+        </ng-template>
+      </p>
+    </div>
+    
+    <div class="info-container">
+      <h2 class="heading">Ride ratings</h2>
+      <p class="info">Passenger rating: {{ rideData?.rating ?? 'N/A' }}</p>
+    </div>
+  </div>
+
+  <div class="column right-column">
+    <div class="info-container">
+      <h2 class="heading">Ride info</h2>
+      <p class="info">
+        Route: {{ rideData?.pickup }} → {{ rideData?.destination }}<br>
+        Start: {{ rideData?.startDate | date:'short' }}<br>
+        End: {{ rideData?.endDate | date:'short' }}<br>
+        Price: {{ rideData?.price }} €<br>
+        Status: {{ rideData?.status || (rideData?.cancelled ? 'Cancelled' : 'Completed') }}<br>
+        <span *ngIf="rideData?.cancelled">
+          Cancelled by: {{ rideData?.cancelledBy }}
+        </span>
+      </p>
+    </div>
+    
+    <div class="info-container">
+      <h2 class="heading">Driver</h2>
+      <p class="info">
+        Name: {{ rideData?.driver?.name }}<br>
+        Vehicle: {{ rideData?.driver?.vehicle }}<br>
+        Rating: {{ rideData?.driver?.rating }}
+      </p>
+    </div>
+    
+    <div class="info-container">
+      <h2 class="heading">Passengers</h2>
+      <p class="info">
+        <span *ngIf="rideData?.passengers?.length">
+          <span *ngFor="let p of rideData.passengers; let i = index">
+            {{ i === 0 ? 'Orderer: ' : '' }}{{ p.name }}<br>
+          </span>
+        </span>
+        <span *ngIf="!rideData?.passengers?.length">
+          No passengers
+        </span>
+      </p>
+    </div>
+    
+    <div class="info-container" *ngIf="rideData?.panicTriggered">
+      <h2 class="heading">PANIC info</h2>
+      <p class="info">
+        Triggered: Yes<br>
+        Triggered by: {{ getPanicTriggeredBy() }}<br>
+        Time: {{ rideData?.endDate | date:'HH:mm' }}
+      </p>
+    </div>
+    
+    <div style="margin-top: 30px;">
+      <button mat-raised-button color="primary" style="margin-right: 10px;" (click)="repeatRouteNow()">Repeat Now</button>
+      <button mat-stroked-button color="accent" (click)="repeatRouteLater()">Repeat Later</button>
+    </div>
+  </div>
+</div>

@@ -22,12 +22,20 @@ export class LoginComponent {
     password: 'driver123'
   };
 
+  defaultAdmin = {
+    email: 'a',
+    password: 'a'
+  }
+
   constructor(private router: Router) {}
 
   login() {
     if (this.username === this.defaultDriver.email && this.password === this.defaultDriver.password) {
       this.router.navigate(['/driver-home']); 
-    } else {
+    } else if (this.username === this.defaultAdmin.email && this.password === this.defaultAdmin.password) {
+      this.router.navigate(['/admin-home']); 
+    }
+    else {
       alert('Invalid credentials');
       this.reset();
     }
