@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/white">
+
+        <!-- Route -->
+        <TextView
+            android:id="@+id/tvAdminRoute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Route Details"
+            style="@style/HeadingText"/>
+
+        <!-- Fragment container za mapu  -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginBottom="16dp">
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+        <!-- Ride Info -->
+        <TextView
+            style="@style/HeadingText"
+            android:text="Ride Info"/>
+        <TextView
+            android:id="@+id/tvAdminRideInfo"
+            style="@style/DetailsParagraph"
+            android:text="Route: Novi Sad → Beograd\nStart: 01.12.2025 10:00\nEnd: 01.12.2025 11:15\nPrice: 2500 €\nStatus: Completed"/>
+        <View style="@style/HorizontalSeparator"/>
+
+        <!-- Driver -->
+        <TextView
+            style="@style/HeadingText"
+            android:text="Driver"/>
+        <TextView
+            android:id="@+id/tvAdminDriver"
+            style="@style/DetailsParagraph"
+            android:text="Name: Marko Marković\nVehicle: Audi A3\nRating: 4.5"/>
+        <View style="@style/HorizontalSeparator"/>
+
+        <!-- Passengers -->
+        <TextView
+            style="@style/HeadingText"
+            android:text="Passengers"/>
+        <TextView
+            android:id="@+id/tvAdminPassengers"
+            style="@style/DetailsParagraph"
+            android:text="Ana Anić, Ivana Ilić"/>
+        <View style="@style/HorizontalSeparator"/>
+
+        <!-- Inconsistencies -->
+        <TextView
+            style="@style/HeadingText"
+            android:text="Inconsistencies"/>
+        <TextView
+            android:id="@+id/tvAdminInconsistencies"
+            style="@style/DetailsParagraph"
+            android:text="No inconsistencies"/>
+        <View style="@style/HorizontalSeparator"/>
+
+        <!-- Ratings -->
+        <TextView
+            style="@style/HeadingText"
+            android:text="Ride Ratings"/>
+        <TextView
+            android:id="@+id/tvAdminRating"
+            style="@style/DetailsParagraph"
+            android:text="Passenger rating: 4.5"/>
+        <View style="@style/HorizontalSeparator"/>
+
+        <!-- PANIC Info (samo ako je aktivirano) -->
+        <TextView
+            android:id="@+id/tvAdminPanicTitle"
+            style="@style/HeadingText"
+            android:text="PANIC Info"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tvAdminPanic"
+            style="@style/DetailsParagraph"
+            android:visibility="gone"/>
+
+        <!-- Buttons (kao na webu) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp">
+
+            <Button
+                android:id="@+id/btnAdminRepeatNow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Repeat Now"
+                android:backgroundTint="@color/purple"
+                android:textColor="@color/white"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnAdminRepeatLater"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Repeat Later"
+                android:backgroundTint="@color/light_purple"
+                android:textColor="@color/purple"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

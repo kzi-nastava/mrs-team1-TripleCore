@@ -9,6 +9,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.example.taxiapp.ui.admin.AdminHomeFragment;
+import com.example.taxiapp.ui.admin.AdminRideHistoryFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
 import com.example.taxiapp.ui.auth.reset_password.ResetPasswordFragment;
@@ -23,12 +25,14 @@ import androidx.core.splashscreen.SplashScreen;
 public class MainActivity extends AppCompatActivity {
 
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
+    private static final String KEY_USER_TYPE = "userType"; // driver, admin, guest
     private static final String KEY_CURRENT_FRAGMENT = "currentFragment";
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
     private boolean isLoggedIn = false;
+    private String userType = "guest"; // "guest", "driver", "admin"
     private String currentFragmentTag = null;
 
     @Override
@@ -46,15 +50,21 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             isLoggedIn = savedInstanceState.getBoolean(KEY_IS_LOGGED_IN, false);
+            userType = savedInstanceState.getString(KEY_USER_TYPE, "guest");
             currentFragmentTag = savedInstanceState.getString(KEY_CURRENT_FRAGMENT, null);
         }
 
         setupMenu();
 
         if (savedInstanceState == null) {
-            Fragment startFragment = isLoggedIn
-                    ? new DriverHomeFragment()
-                    : new GuestHomeFragment();
+            Fragment startFragment;
+            if (userType.equals("admin")) {
+                startFragment = new AdminHomeFragment(); // ADMIN
+            } else if (isLoggedIn) {
+                startFragment = new DriverHomeFragment(); // DRIVER
+            } else {
+                startFragment = new GuestHomeFragment(); // GUEST
+            }
             loadFragment(startFragment, false);
         }
     }
@@ -62,8 +72,10 @@ public class MainActivity extends AppCompatActivity {
     private void setupMenu() {
         navigationView.getMenu().clear();
 
-        if (isLoggedIn) {
-            navigationView.inflateMenu(R.menu.drawer_menu);
+        if (userType.equals("admin")) {
+            navigationView.inflateMenu(R.menu.drawer_menu_admin);
+        } else if (isLoggedIn) {
+            navigationView.inflateMenu(R.menu.drawer_menu_driver);
         } else {
             navigationView.inflateMenu(R.menu.drawer_menu_guest);
         }
@@ -74,31 +86,43 @@ public class MainActivity extends AppCompatActivity {
 
             if (id == R.id.nav_estimate) {
                 fragmentToLoad = new EstimateRouteFragment();
-
-            } else if (id == R.id.nav_login) {
-                fragmentToLoad = new LoginFragment();
-
-            } else if (id == R.id.nav_register) {
-                fragmentToLoad = new RegisterFragment();
-
             } else if (id == R.id.nav_home) {
-                fragmentToLoad = isLoggedIn ? new DriverHomeFragment() : new GuestHomeFragment();
+                if (userType.equals("admin")) {
+                    fragmentToLoad = new AdminHomeFragment();
+                } else if (isLoggedIn) {
+                    fragmentToLoad = new DriverHomeFragment();
+                } else {
+                    fragmentToLoad = new GuestHomeFragment();
+                }
+            }
 
-            } else if (id == R.id.nav_ride_history) {
+            // GUEST ONLY
+            else if (id == R.id.nav_login && !isLoggedIn) {
+                fragmentToLoad = new LoginFragment();
+            } else if (id == R.id.nav_register && !isLoggedIn) {
+                fragmentToLoad = new RegisterFragment();
+            } else if (id == R.id.reset_password && !isLoggedIn) {
+                fragmentToLoad = new ResetPasswordFragment();
+            }
+
+            // DRIVER ONLY
+            else if (id == R.id.nav_ride_history && isLoggedIn && userType.equals("driver")) {
                 fragmentToLoad = new RideHistoryFragment();
-
-            } else if (id == R.id.nav_profile) {
+            } else if (id == R.id.nav_profile && isLoggedIn && userType.equals("driver")) {
                 fragmentToLoad = new DriverAdditionalInfoFragment();
+            }
 
-            } else if (id == R.id.nav_logout) {
+            // ADMIN ONLY
+            else if (id == R.id.nav_admin_ride_history && userType.equals("admin")) {
+                fragmentToLoad = new AdminRideHistoryFragment();
+            }
+
+            // LOGOUT
+            else if (id == R.id.nav_logout && (isLoggedIn || userType.equals("admin"))) {
                 isLoggedIn = false;
+                userType = "guest";
                 setupMenu();
                 fragmentToLoad = new GuestHomeFragment();
-
-            } else if (id == R.id.reset_password) {
-                fragmentToLoad = new ResetPasswordFragment();
-            } else if (id == R.id.nav_estimate) {
-                fragmentToLoad = new EstimateRouteFragment();
             }
 
             if (fragmentToLoad != null) {
@@ -109,11 +133,18 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.END);
             return true;
         });
+    }
 
+    public void onAdminLoginSuccess() {
+        isLoggedIn = true;
+        userType = "admin";
+        setupMenu();
+        loadFragment(new AdminHomeFragment(), false);
     }
 
     public void onLoginSuccess() {
         isLoggedIn = true;
+        userType = "driver";
         setupMenu();
         loadFragment(new DriverHomeFragment(), false);
     }
@@ -139,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_IS_LOGGED_IN, isLoggedIn);
+        outState.putString(KEY_USER_TYPE, userType);
         outState.putString(KEY_CURRENT_FRAGMENT, currentFragmentTag);
     }
 
@@ -152,5 +184,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }
