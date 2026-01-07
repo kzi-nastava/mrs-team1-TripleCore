@@ -59,10 +59,18 @@ public class LoginFragment extends Fragment {
         String password = etPassword.getText().toString().trim();
 
         if (email.equals("driver@example.com") && password.equals("driver123")) {
-            Toast.makeText(getActivity(), "Login successful!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Driver login successful!", Toast.LENGTH_SHORT).show();
 
             if (getActivity() instanceof com.example.taxiapp.ui.MainActivity) {
                 ((com.example.taxiapp.ui.MainActivity) getActivity()).onLoginSuccess();
+            }
+
+            clearFields();
+        } else if (email.equals("a") && password.equals("a")) {
+            Toast.makeText(getActivity(), "Admin login successful!", Toast.LENGTH_SHORT).show();
+
+            if (getActivity() instanceof com.example.taxiapp.ui.MainActivity) {
+                ((com.example.taxiapp.ui.MainActivity) getActivity()).onAdminLoginSuccess();
             }
 
             clearFields();
@@ -70,7 +78,6 @@ public class LoginFragment extends Fragment {
             Toast.makeText(getActivity(), "Invalid credentials", Toast.LENGTH_SHORT).show();
             clearFields();
         }
-
     }
 
     private void clearFields() {
