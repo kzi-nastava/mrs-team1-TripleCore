@@ -1,0 +1,204 @@
+<app-navbar>
+    <li class="nav-item">
+        <a class="img-and-link" routerLink="/driver-home">
+            <span class="nav-link">Home</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="img-and-link" routerLink="/driver-my-rides">
+            <span class="nav-link selected-nav-link">My Rides</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="img-and-link" routerLink="/driver-ride-history">
+            <img src="icons/icons8-history-48.png" alt="" class="nav-item-icon">
+            <span class="nav-link">Ride History</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-btn" (click)="logout()">Log out</a>
+    </li>
+</app-navbar>
+
+<div class="ride-history-container">
+    <h2 class="page-title">My Rides</h2>
+
+    <div class="filter-container">
+        <mat-form-field appearance="fill" class="filter-input">
+            <mat-label>Status</mat-label>
+            <mat-select [(value)]="statusFilter">
+                <mat-option value="ALL">All</mat-option>
+                <mat-option value="ASSIGNED">Assigned</mat-option>
+                <mat-option value="STARTED">In Progress</mat-option>
+                <mat-option value="FINISHED">Finished</mat-option>
+                <mat-option value="CANCELED">Canceled</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="filter-input">
+            <input matInput [matDatepicker]="from" placeholder="From" [(ngModel)]="fromDate">
+            <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+            <mat-datepicker #from></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="filter-input">
+            <input matInput [matDatepicker]="to" placeholder="To" [(ngModel)]="toDate">
+            <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
+            <mat-datepicker #to></mat-datepicker>
+        </mat-form-field>
+
+        <button mat-raised-button id="apply-btn" (click)="applyFilters()">
+            Apply
+        </button>
+
+        <button mat-stroked-button id="clear-btn" (click)="clearFilters()">
+            Clear
+        </button>
+    </div>
+        
+    <table mat-table [dataSource]="filteredRides" class="rides-table">
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> ID </th>
+            <td mat-cell *matCellDef="let ride"> #{{ride.id}} </td>
+        </ng-container>
+
+        <!-- Passenger Column -->
+        <ng-container matColumnDef="passenger">
+            <th mat-header-cell *matHeaderCellDef> Passenger </th>
+            <td mat-cell *matCellDef="let ride">
+                <div class="passenger-cell">
+                    <img [src]="ride.passengerImage || 'assets/default-avatar.png'" 
+                         class="passenger-avatar">
+                    <div class="passenger-info">
+                        <div class="passenger-name">{{ride.passengerName}}</div>
+                        <div class="passenger-rating">
+                            <mat-icon class="star-icon">star</mat-icon>
+                            {{ride.passengerRating || 'No rating'}}
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </ng-container>
+
+        <!-- Route Column -->
+        <ng-container matColumnDef="route">
+            <th mat-header-cell *matHeaderCellDef> Route </th>
+            <td mat-cell *matCellDef="let ride">
+                <div class="route-cell">
+                    <div class="pickup">
+                        <mat-icon class="location-icon">radio_button_checked</mat-icon>
+                        <span class="location-text">{{ride.pickup}}</span>
+                    </div>
+                    <div class="destination">
+                        <mat-icon class="location-icon">place</mat-icon>
+                        <span class="location-text">{{ride.destination}}</span>
+                    </div>
+                </div>
+            </td>
+        </ng-container>
+
+        <!-- Date/Time Column -->
+        <ng-container matColumnDef="datetime">
+            <th mat-header-cell *matHeaderCellDef> Date & Time </th>
+            <td mat-cell *matCellDef="let ride">
+                <div class="datetime-cell">
+                    <div class="date">{{ride.date | date:'dd.MM.yyyy'}}</div>
+                    <div class="time">{{ride.scheduledTime || '10:00'}} - {{ride.estimatedEnd || '10:30'}}</div>
+                    <div class="duration" *ngIf="ride.duration">
+                        <mat-icon class="time-icon">schedule</mat-icon>
+                        {{ride.duration}} min
+                    </div>
+                </div>
+            </td>
+        </ng-container>
+
+        <!-- Status Column - dynamic class based on status --> 
+        <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef> Status </th>
+            <td mat-cell *matCellDef="let ride">
+                <span [class]="'status-badge ' + getStatusClass(ride.status)"> 
+                    {{getStatusText(ride.status)}}
+                </span>
+            </td>
+        </ng-container>
+
+        <!-- Price Column -->
+        <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef> Price </th>
+            <td mat-cell *matCellDef="let ride">
+                <div class="price-cell" *ngIf="ride.status !== 'CANCELED'">
+                    {{ride.price | currency:'RSD':'symbol':'1.0-0'}}
+                </div>
+                <div class="price-cell canceled" *ngIf="ride.status === 'CANCELED'">
+                    -
+                </div>
+            </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let ride">
+                <div class="actions-cell">
+                    <!-- View Details -->
+                    <button mat-icon-button 
+                            [routerLink]="['/driver-ride-details', ride.id]"
+                            matTooltip="View details"
+                            class="action-btn view-btn">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    
+                    <!-- Cancel Ride Button (only for ASSIGNED) -->
+                    <button *ngIf="ride.status === 'ASSIGNED'"
+                            mat-icon-button 
+                            (click)="openCancelDialog(ride)"
+                            matTooltip="Cancel ride"
+                            class="action-btn cancel-btn">
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                    
+                    <!-- Start Ride Button (only for ASSIGNED) -->
+                    <button *ngIf="ride.status === 'ASSIGNED'"
+                            mat-icon-button 
+                            (click)="startRide(ride)"
+                            matTooltip="Start ride"
+                            class="action-btn start-btn">
+                        <mat-icon>play_arrow</mat-icon>
+                    </button>
+                    
+                    <!-- Finish Ride Button (only for STARTED) -->
+                    <button *ngIf="ride.status === 'STARTED'"
+                            mat-icon-button 
+                            (click)="finishRide(ride)"
+                            matTooltip="Finish ride"
+                            class="action-btn finish-btn">
+                        <mat-icon>flag</mat-icon>
+                    </button>
+                    
+                    <!-- Panic Button (only for STARTED) -->
+                    <button *ngIf="ride.status === 'STARTED'"
+                            mat-icon-button 
+                            (click)="panicAlert(ride)"
+                            matTooltip="Panic alert"
+                            class="action-btn panic-btn">
+                        <mat-icon>warning</mat-icon>
+                    </button>
+                </div>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <!-- Empty state -->
+    <div *ngIf="filteredRides.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">directions_car</mat-icon>
+        <h3>No rides found</h3>
+        <p>You don't have any rides with the current filters.</p>
+        <button mat-stroked-button (click)="clearFilters()" class="clear-filters-btn">
+            Clear filters
+        </button>
+    </div>
+</div>

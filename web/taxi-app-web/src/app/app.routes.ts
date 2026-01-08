@@ -12,6 +12,7 @@ import { EstimateRouteComponent } from './estimate-route/estimate-route';
 import { AdminHomeComponent } from './admin/admin-home/admin-home';
 import { AdminRideHistoryComponent } from './admin/admin-ride-history/admin-ride-history';
 import { AdminRideDetailsComponent } from './admin/admin-ride-details/admin-ride-details';
+import { DriverMyRidesComponent } from './driver/driver-my-rides/driver-my-rides';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -27,5 +28,6 @@ export const appRoutes: Routes = [
   { path: 'admin-home', component: AdminHomeComponent },
   { path: 'admin-ride-history', component: AdminRideHistoryComponent },
   { path: 'admin/admin-ride-details/:id', component: AdminRideDetailsComponent },
+  { path: 'driver-my-rides', component: DriverMyRidesComponent },
   { path: '**', redirectTo: '' },
 ];

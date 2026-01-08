@@ -60,6 +60,10 @@ const routes: Routes = [
     loadComponent: () => import('./admin/admin-ride-details/admin-ride-details').then(m => m.AdminRideDetailsComponent)
   },
   {
+    path: 'driver-my-rides',
+    loadComponent: () => import('./driver/driver-my-rides/driver-my-rides').then(m => m.DriverMyRidesComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
