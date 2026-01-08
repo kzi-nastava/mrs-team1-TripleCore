@@ -84,27 +84,6 @@ export class PassengerMyRidesComponent implements OnInit {
       isRated: false,
       panicActivated: false
     },
-    {
-      id: 1002,
-      driverName: 'Ivan Ivanović',
-      driverImage: 'assets/avatars/driver2.jpg',
-      driverRating: 4.5,
-      vehicleModel: 'Toyota Corolla',
-      vehicleType: 'STANDARD',
-      licensePlate: 'NS-456-CD',
-      babyFriendly: false,
-      petFriendly: true,
-      pickup: 'Kneza Mihaila',
-      destination: 'Ada Mall',
-      date: new Date(Date.now() - 300000), // 5 minutes ago
-      scheduledTime: '10:00',
-      estimatedEnd: '10:25',
-      duration: 25,
-      price: 650,
-      status: 'STARTED',
-      isRated: false,
-      panicActivated: false
-    },
      {
       id: 1002,
       driverName: 'Ivan Ivanović',
