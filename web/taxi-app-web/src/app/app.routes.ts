@@ -13,6 +13,8 @@ import { AdminHomeComponent } from './admin/admin-home/admin-home';
 import { AdminRideHistoryComponent } from './admin/admin-ride-history/admin-ride-history';
 import { AdminRideDetailsComponent } from './admin/admin-ride-details/admin-ride-details';
 import { DriverMyRidesComponent } from './driver/driver-my-rides/driver-my-rides';
+import { PassengerMyRidesComponent } from './passenger/passenger-my-rides/passenger-my-rides';
+import { PassengerHomeComponent } from './passenger/passenger-home/passenger-home';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -29,5 +31,7 @@ export const appRoutes: Routes = [
   { path: 'admin-ride-history', component: AdminRideHistoryComponent },
   { path: 'admin/admin-ride-details/:id', component: AdminRideDetailsComponent },
   { path: 'driver-my-rides', component: DriverMyRidesComponent },
+  {path: 'passenger-home', component: PassengerHomeComponent},
+  { path: 'passenger/passenger-my-rides', component: PassengerMyRidesComponent },
   { path: '**', redirectTo: '' },
 ];
