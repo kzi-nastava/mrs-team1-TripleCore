@@ -27,6 +27,11 @@ export class LoginComponent {
     password: 'a'
   }
 
+  defaultPassenger = {
+    email: 'p',
+    password: 'p'
+  };
+
   constructor(private router: Router) {}
 
   login() {
@@ -34,6 +39,8 @@ export class LoginComponent {
       this.router.navigate(['/driver-home']); 
     } else if (this.username === this.defaultAdmin.email && this.password === this.defaultAdmin.password) {
       this.router.navigate(['/admin-home']); 
+    } else if (this.username === this.defaultPassenger.email && this.password === this.defaultPassenger.password) {
+      this.router.navigate(['/passenger-home']); 
     }
     else {
       alert('Invalid credentials');

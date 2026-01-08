@@ -1,0 +1,101 @@
+<h2 mat-dialog-title>Cancel Ride</h2>
+
+<mat-dialog-content>
+  <div class="dialog-content">
+    <p class="confirmation-text">Are you sure you want to cancel this ride?</p>
+    
+    <div class="ride-info-card">
+      <h3 class="ride-info-title">Ride Details</h3>
+      
+      <div class="info-row">
+        <span class="info-label">Ride ID:</span>
+        <span class="info-value">#{{data.ride.id}}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="info-label">Driver:</span>
+        <span class="info-value">{{data.ride.driverName}}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="info-label">From:</span>
+        <span class="info-value">{{data.ride.pickup}}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="info-label">To:</span>
+        <span class="info-value">{{data.ride.destination}}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="info-label">Scheduled:</span>
+        <span class="info-value">{{data.ride.date | date:'dd.MM.yyyy HH:mm'}}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="info-label">Time until:</span>
+        <span class="info-value">{{minutesUntilRide}} minutes</span>
+      </div>
+    </div>
+
+    <!-- WARNING SECTION -->
+    <div class="warning-card" *ngIf="minutesUntilRide < 10">
+      <mat-icon class="warning-icon">warning</mat-icon>
+      <div class="warning-content">
+        <h4 class="warning-title">Late Cancellation Warning</h4>
+        <p class="warning-text">
+          You are canceling within 10 minutes of ride start.<br>
+          This may affect your rating and a cancellation fee may apply.
+        </p>
+      </div>
+    </div>
+
+    <div class="warning-card" *ngIf="minutesUntilRide <= 0">
+      <mat-icon class="warning-icon">error</mat-icon>
+      <div class="warning-content">
+        <h4 class="warning-title">Cannot Cancel</h4>
+        <p class="warning-text">
+          This ride has already started or passed.<br>
+          You cannot cancel at this time.
+        </p>
+      </div>
+    </div>
+
+    <div class="notes-section" *ngIf="minutesUntilRide > 0">
+      <h3 class="notes-title">Additional Notes (Optional)</h3>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Leave a note for the driver</mat-label>
+        <textarea matInput 
+                  [(ngModel)]="additionalNotes" 
+                  rows="3" 
+                  placeholder="Optional: Let the driver know why you're canceling...">
+        </textarea>
+      </mat-form-field>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close class="back-btn">
+    <mat-icon>arrow_back</mat-icon>
+    Back
+  </button>
+  
+  <button mat-raised-button 
+          color="warn" 
+          *ngIf="minutesUntilRide > 0"
+          (click)="confirmCancel()"
+          class="confirm-btn">
+    <mat-icon>cancel</mat-icon>
+    Confirm Cancellation
+  </button>
+  
+  <button mat-raised-button 
+          color="primary" 
+          *ngIf="minutesUntilRide <= 0"
+          mat-dialog-close
+          class="close-btn">
+    <mat-icon>close</mat-icon>
+    Close
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,171 @@
+.dialog-content {
+  min-width: 400px;
+  max-width: 500px;
+}
+
+.confirmation-text {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.ride-info-card {
+  background: #f8f5ff;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 24px;
+  border-left: 4px solid #600EA8;
+}
+
+.ride-info-title {
+  color: #600EA8;
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-weight: 500;
+  color: #666;
+  font-size: 14px;
+}
+
+.info-value {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-word;
+}
+
+.form-section {
+  margin-bottom: 24px;
+}
+
+.form-title {
+  color: #600EA8;
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.warning-card {
+  display: flex;
+  background: #fff3e0;
+  border: 1px solid #ffe0b2;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.warning-icon {
+  color: #f57c00;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.warning-content {
+  flex: 1;
+}
+
+.warning-title {
+  color: #f57c00;
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.warning-text {
+  color: #bf360c;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Buttons */
+.back-btn {
+  color: #666;
+  font-weight: 500;
+}
+
+.back-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.confirm-btn {
+  font-weight: 600;
+  padding: 0 24px;
+}
+
+.confirm-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.confirm-btn:disabled {
+  opacity: 0.6;
+}
+
+/* Form field styling */
+::ng-deep .mat-form-field-outline {
+  background-color: #fff;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #ddd;
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #600EA8;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .dialog-content {
+    min-width: unset;
+    max-width: 100%;
+  }
+  
+  .info-row {
+    flex-direction: column;
+  }
+  
+  .info-value {
+    text-align: left;
+    max-width: 100%;
+    margin-top: 2px;
+  }
+}
