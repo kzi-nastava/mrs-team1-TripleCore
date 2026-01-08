@@ -18,8 +18,10 @@ export class DriverHomeComponent {
 
   constructor(private router: Router) {}
   
-  logout() {
-  this.router.navigate(['/home']); 
+  logout(): void {
+    if (confirm('Are you sure you want to log out?')) {
+      this.router.navigate(['/login']);
+    }
   }
 
   toggleActive() {

@@ -16,7 +16,9 @@ import { CommonModule } from '@angular/common';
 export class AdminRideHistoryComponent {
   constructor(private router: Router) {}
 
-  logout() {
-    this.router.navigate(['/login']);
+  logout(): void {
+    if (confirm('Are you sure you want to log out?')) {
+      this.router.navigate(['/login']);
+    }
   }
 }
