@@ -1,8 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +14,11 @@ public class Driver extends User{
     @Column(nullable = false)
     private double workingHoursToday;
 
-    private LocalDateTime lastStatusChange;
+    private LocalDateTime lastWorkStart;
 
-    private Long vehicleId;
+    private boolean isAvailable;
+
+    @OneToOne   // automatically recognizes it as a foreign key
+    @JoinColumn(name = "vehicle_id", unique = true)
+    private Vehicle vehicle;
 }
