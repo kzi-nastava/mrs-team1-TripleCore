@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,6 +48,7 @@ public class Route {
     // no need to force loading later
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderBy("stopOrder ASC") // to make sure the stops are fetched in the right order
+    @JsonManagedReference
     private List<RouteStop> stops = new ArrayList<>();
 
     private Long estimatedDurationSeconds;

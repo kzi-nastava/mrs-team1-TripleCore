@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class RouteStop {
 
     @ManyToOne
     @JoinColumn(name = "route_id", nullable = false)
+    @JsonBackReference
     private Route route;
 }
 
