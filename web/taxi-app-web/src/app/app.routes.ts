@@ -15,6 +15,7 @@ import { AdminRideDetailsComponent } from './admin/admin-ride-details/admin-ride
 import { DriverMyRidesComponent } from './driver/driver-my-rides/driver-my-rides';
 import { PassengerMyRidesComponent } from './passenger/passenger-my-rides/passenger-my-rides';
 import { PassengerHomeComponent } from './passenger/passenger-home/passenger-home';
+import { DriverAdditionalInfo } from './driver-additional-info/driver-additional-info'; 
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -33,5 +34,6 @@ export const appRoutes: Routes = [
   { path: 'driver-my-rides', component: DriverMyRidesComponent },
   {path: 'passenger-home', component: PassengerHomeComponent},
   { path: 'passenger/passenger-my-rides', component: PassengerMyRidesComponent },
+  { path: 'driver-additional-info', component: DriverAdditionalInfo},
   { path: '**', redirectTo: '' },
 ];
