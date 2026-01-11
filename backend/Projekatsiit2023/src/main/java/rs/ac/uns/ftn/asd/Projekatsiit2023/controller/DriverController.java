@@ -8,6 +8,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.DriverProfileChangeReques
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.DriverUpdateRequestStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.RideDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.AssignedRideResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Driver;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.DriverService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +18,12 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/drivers")
 public class DriverController {
+
+    private final DriverService driverService;
+
+    public DriverController(DriverService driverService) {
+        this.driverService = driverService;
+    }
 
     @PatchMapping("/{id}/availability")
     public ResponseEntity<?> changeDriverAvailability(
@@ -122,5 +131,9 @@ public class DriverController {
         return List.of(ride1, ride2, ride3);
     }
 
-
+    @PostMapping("/create")
+    public ResponseEntity<?> CreateTestDriver(){
+        driverService.createDriverWithVehicle();
+        return ResponseEntity.ok("Test driver created");
+    }
 }

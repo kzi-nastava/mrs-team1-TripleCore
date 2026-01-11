@@ -1,6 +1,9 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
 
 import java.time.LocalDateTime;
@@ -8,6 +11,9 @@ import java.time.LocalDateTime;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
 public abstract class User {
 
     @Id
