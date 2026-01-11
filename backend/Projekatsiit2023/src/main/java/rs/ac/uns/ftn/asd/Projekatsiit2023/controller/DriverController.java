@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -131,9 +132,22 @@ public class DriverController {
         return List.of(ride1, ride2, ride3);
     }
 
+    // Testing database
     @PostMapping("/create")
     public ResponseEntity<?> CreateTestDriver(){
         driverService.createDriverWithVehicle();
         return ResponseEntity.ok("Test driver created");
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> GetDriver(@PathVariable("id") Long id){
+        Driver driver;
+        try{
+            driver = driverService.getDriverById(id);
+        }
+        catch (EntityNotFoundException nfe){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
+        }
+        return ResponseEntity.ok(driver);
     }
 }

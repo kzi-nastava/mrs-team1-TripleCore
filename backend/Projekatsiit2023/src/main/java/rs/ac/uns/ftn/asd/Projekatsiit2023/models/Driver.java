@@ -24,7 +24,7 @@ public class Driver extends User{
 
     private boolean isAvailable;
 
-    @OneToOne   // automatically recognizes it as a foreign key
+    @OneToOne(fetch = FetchType.EAGER)   // automatically recognizes it as a foreign key
     @JoinColumn(name = "vehicle_id", unique = true)
     private Vehicle vehicle;
 }

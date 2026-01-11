@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request;
+package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.test;
 
 public class CreateAnimalRequest {
     private String name;

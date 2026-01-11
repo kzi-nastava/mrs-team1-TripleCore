@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.VehicleType;
@@ -58,6 +59,11 @@ public class DriverService {
         driver = driverRepository.save(driver);
 
         return driver;
+    }
+
+    public Driver getDriverById(Long id){
+        return driverRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Driver with id: " + id + " not found"));
     }
 
 }
