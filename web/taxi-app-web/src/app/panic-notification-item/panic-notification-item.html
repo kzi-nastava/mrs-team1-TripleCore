@@ -1,0 +1,46 @@
+<div class="alert-item" 
+     [class.new]="!alert.read && !alert.resolved"
+     [class.resolved]="alert.resolved">
+  
+  <!-- Alert Header -->
+  <div class="alert-header">
+    <div class="driver-name">
+      <span class="driver-label">Driver:</span>
+      {{alert.driverName}}
+      <span *ngIf="!alert.read && !alert.resolved" class="new-tag">NEW</span>
+      <span *ngIf="alert.resolved" class="resolved-tag">RESOLVED</span>
+    </div>
+    <div class="alert-time">{{alert.time | date:'HH:mm'}}</div>
+  </div>
+  
+  <!-- Alert Body -->
+  <div class="passenger-info">
+    <span class="passenger-label">Passenger:</span>
+    {{alert.passengerName}}
+  </div>
+  
+  <div class="location-info">
+    {{alert.location}}
+  </div>
+  
+  <!-- Alert Actions -->
+  <div class="alert-actions">
+    <button class="view-btn" (click)="onViewDetails()">
+      View Details
+    </button>
+    
+    <button *ngIf="!alert.resolved" 
+            class="resolve-btn"
+            (click)="onMarkAsResolved()">
+      ✅ Mark Resolved
+    </button>
+  </div>
+  
+  <!-- Additional Info -->
+  <div class="vehicle-info">
+    {{alert.vehicle}}
+    <span *ngIf="alert.licensePlate" class="license-plate">
+      ({{alert.licensePlate}})
+    </span>
+  </div>
+</div>
