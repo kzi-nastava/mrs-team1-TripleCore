@@ -1,6 +1,9 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.*;
@@ -12,6 +15,8 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideFinishResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideStopResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +25,12 @@ import java.util.concurrent.ThreadLocalRandom;
 @RestController
 @RequestMapping("/api/rides")
 public class  RideController {
+
+    private final RideService rideService;
+
+    public RideController(RideService rideService){
+        this.rideService = rideService;
+    }
 
     @PostMapping("/estimate")
     public ResponseEntity<RideEstimateResponse> estimateRide(
@@ -315,6 +326,29 @@ public class  RideController {
     @PostMapping("/{rideId}/start") public ResponseEntity<String> startRide(@PathVariable Long rideId) {
         System.out.println("Ride " + rideId + " started");
         return ResponseEntity.ok("Ride started");
+    }
+
+    // Database test
+    @PostMapping("/create")
+    public ResponseEntity<?> createTestRide(){
+        try{
+            rideService.createTestRide();
+            return ResponseEntity.ok("Ride created");
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getRideById(@PathVariable("id") Long id){
+        try{
+            Ride ride = rideService.getRideById(id);
+            return ResponseEntity.ok(ride);
+        }
+        catch (EntityNotFoundException nfe) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
+        }
     }
 
 
