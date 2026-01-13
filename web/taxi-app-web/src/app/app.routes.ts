@@ -16,6 +16,7 @@ import { DriverMyRidesComponent } from './driver/driver-my-rides/driver-my-rides
 import { PassengerMyRidesComponent } from './passenger/passenger-my-rides/passenger-my-rides';
 import { PassengerHomeComponent } from './passenger/passenger-home/passenger-home';
 import { DriverAdditionalInfo } from './driver-additional-info/driver-additional-info'; 
+import { DriverRegistrationComponent } from './auth/register-driver/driver-registration-component/driver-registration-component'; 
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -35,5 +36,6 @@ export const appRoutes: Routes = [
   {path: 'passenger-home', component: PassengerHomeComponent},
   { path: 'passenger/passenger-my-rides', component: PassengerMyRidesComponent },
   { path: 'driver-additional-info', component: DriverAdditionalInfo},
+  { path: 'register-driver', component: DriverRegistrationComponent },
   { path: '**', redirectTo: '' },
 ];

@@ -1,0 +1,53 @@
+.registration-card {
+  max-width: 600px; 
+  margin: 40px auto;
+  background-color: white;
+}
+
+.purple-text {
+  color: #7A1FA2;
+}
+
+.custom-input {
+  width: 100%;
+  background-color: #E0E0E0; 
+  border: none;
+  border-radius: 50px; 
+  padding: 10px 20px;
+  outline: none;
+  color: #666;
+  font-size: 0.95rem;
+  appearance: none; 
+}
+
+.divider {
+  border-top: 2px solid #6A1B9A;
+  opacity: 0.3;
+  margin: 10px 0;
+}
+
+.btn-next {
+  background-color: #6A1B9A;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 40px;
+}
+
+.btn-cancel {
+  background-color: white;
+  color: #6A1B9A;
+  border: 1px solid #E0E0E0;
+  font-weight: bold;
+  padding: 10px 40px;
+}
+
+.btn-next:disabled {
+  background-color: #BDBDBD;
+}
+
+
+input[type="radio"] {
+  accent-color: #7A1FA2;
+  margin-right: 5px;
+}
