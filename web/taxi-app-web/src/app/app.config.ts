@@ -76,6 +76,10 @@ const routes: Routes = [
     loadComponent: () => import('./driver-additional-info/driver-additional-info').then(m => m.DriverAdditionalInfo)
   },
   {
+    path: 'register-driver',
+    loadComponent: () => import('./auth/register-driver/driver-registration-component/driver-registration-component').then(m => m.DriverRegistrationComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

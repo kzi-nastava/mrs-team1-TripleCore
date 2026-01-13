@@ -1,0 +1,49 @@
+<div class="registration-container registration-card p-4 mx-auto">
+  <h2 class="text-center purple-text fw-bold mt-2">Register Driver</h2>
+  <p class="text-center purple-text small fw-bold mb-4">Vehicle info</p>
+
+  <form [formGroup]="form">
+    <div class="row justify-content-center">
+      <div class="col-md-9">
+        
+        <input class="custom-input mb-3" placeholder="Vehicle model" formControlName="model">
+        
+        <select class="custom-input mb-3" formControlName="type">
+          <option value="" disabled selected>Vehicle type</option>
+          <option *ngFor="let vehicleType of vehicleTypes" [value]="vehicleType">
+            {{ vehicleType }}
+          </option>
+        </select>
+
+        <input class="custom-input mb-3" placeholder="Licence plate number" formControlName="licensePlate">
+        <input class="custom-input mb-4" placeholder="Number of seats" formControlName="seats">
+
+        <hr class="divider mb-4">
+
+        <div class="d-flex align-items-center mb-3 justify-content-between px-2">
+          <span class="purple-text fw-bold small">Baby transport available:</span>
+          <div class="d-flex gap-3">
+            <label class="purple-text small"><input type="radio" [value]="true" formControlName="babyTransport"> Yes</label>
+            <label class="purple-text small"><input type="radio" [value]="false" formControlName="babyTransport"> No</label>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center mb-4 justify-content-between px-2">
+          <span class="purple-text fw-bold small">Pets transport available:</span>
+          <div class="d-flex gap-3">
+            <label class="purple-text small"><input type="radio" [value]="true" formControlName="petsTransport"> Yes</label>
+            <label class="purple-text small"><input type="radio" [value]="false" formControlName="petsTransport"> No</label>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3 mt-2">
+          <button type="button" class="btn btn-cancel rounded-pill px-5" (click)="back.emit()">Cancel</button>
+          <button type="button" class="btn btn-next rounded-pill px-5" (click)="onRegister()" [disabled]="form.invalid">
+            Register
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </form>
+</div>

@@ -52,19 +52,19 @@
     padding-top: 60px !important;
 }
 
-/* Naslov stranice */
+
 .profile-title {
-    color: #6a1b9a; /* Ljubičasta boja sa slike */
+    color: #6a1b9a; 
     font-weight: bold;
     margin-top: 20px;
     margin-bottom: 40px;
     text-align: center;
 }
 
-/* Stil za kartice */
+
 .custom-card {
-    border: 1px solid #000; /* Crni tanki okvir kao na slici */
-    border-radius: 0; /* Kartice na slici imaju oštre ivice */
+    border: 1px solid #000; 
+    border-radius: 0; 
     padding: 30px;
     min-height: 400px; 
     width: 400px;
@@ -77,14 +77,14 @@
     font-weight: bold;
 }
 
-/* Ikone unutar kartica */
+
 .card-icon {
     width: 30px;
     height: 30px;
     object-fit: contain;
 }
 
-/* Dugme "Change info" */
+
 .btn-purple {
     background-color: #6a1b9a;
     color: white;
@@ -97,7 +97,7 @@
     color: white;
 }
 
-/* Poravnanje stavki */
+
 .info-item {
     font-size: 0.9rem;
     color: #333;

@@ -1,0 +1,10 @@
+<app-driver-form-component
+    *ngIf="step == 1"
+    (next)="onDriverNext($event)">
+</app-driver-form-component>
+
+<app-vehicle-form-component
+    *ngIf="step == 2"
+    (back)="onBack()"
+    (register)="onRegister($event)">
+</app-vehicle-form-component>
