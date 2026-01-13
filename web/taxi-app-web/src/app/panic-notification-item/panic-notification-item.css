@@ -1,0 +1,232 @@
+.alert-item {
+  padding: 16px;
+  border-bottom: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.alert-item:hover {
+  background-color: #f8fafc;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.alert-item:last-child {
+  border-bottom: none;
+}
+
+.alert-item.new {
+  background: linear-gradient(90deg, #fff8f8 0%, #fff 100%);
+  border-left: 4px solid #ff4757;
+  position: relative;
+  animation: slideIn 0.4s ease-out;
+}
+
+.alert-item.new::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, #ff4757, #ff6b81);
+}
+
+.alert-item.resolved {
+  background: #f8fff9;
+  border-left: 4px solid #2ed573;
+  opacity: 0.9;
+}
+
+.alert-item.resolved:hover {
+  opacity: 1;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-15px) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+}
+
+.alert-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.driver-name {
+  font-weight: 600;
+  color: #2d3436;
+  font-size: 1rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.alert-time {
+  font-size: 0.8rem;
+  color: #636e72;
+  white-space: nowrap;
+  background: #f1f2f6;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.new-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff4757, #ff6b81);
+  color: white;
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(255, 71, 87, 0.2);
+}
+
+.resolved-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #2ed573, #7bed9f);
+  color: white;
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(46, 213, 115, 0.2);
+}
+
+.passenger-info {
+  font-size: 0.9rem;
+  color: #495057;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.passenger-info::before {
+  content: '👤';
+  font-size: 0.8rem;
+}
+
+.location-info {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8f9fa;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid #74b9ff;
+}
+
+.location-info::before {
+  content: '📍';
+  font-size: 0.8rem;
+}
+
+.alert-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.view-btn {
+  background: linear-gradient(135deg, #3742fa, #5352ed);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(55, 66, 250, 0.2);
+}
+
+.view-btn:hover {
+  background: linear-gradient(135deg, #2f3542, #3742fa);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(55, 66, 250, 0.3);
+}
+
+.view-btn::before {
+  content: '🔍';
+  font-size: 0.8rem;
+}
+
+.resolve-btn {
+  background: linear-gradient(135deg, #2ed573, #7bed9f);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(46, 213, 115, 0.2);
+}
+
+.resolve-btn:hover {
+  background: linear-gradient(135deg, #26c464, #2ed573);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(46, 213, 115, 0.3);
+}
+
+.vehicle-info {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #e0e0e0;
+  font-size: 0.85rem;
+  color: #636e72;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vehicle-info::before {
+  content: '🚗';
+  font-size: 0.8rem;
+}
+
+.driver-label {
+  color: #6c757d;
+  font-weight: 500;
+  margin-right: 4px;
+  font-size: 0.9rem;
+}
+
+.passenger-label {
+  color: #6c757d;
+  font-weight: 500;
+  margin-right: 4px;
+  font-size: 0.9rem;
+}
+
+.license-plate {
+  font-weight: 600;
+  color: #2d3436;
+}

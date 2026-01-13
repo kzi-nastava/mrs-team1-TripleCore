@@ -1,10 +1,15 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.ReviewDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.MakeReviewRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Passenger;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.PassengerService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +17,12 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/passengers")
 public class PassengerController {
+    private final PassengerService passengerService;
+
+    public PassengerController(PassengerService passengerService) {
+        this.passengerService = passengerService;
+    }
+
     @PostMapping("/{id}/make-review")
     public ResponseEntity<?> makeReview(
             @PathVariable("id") Long id,
@@ -44,5 +55,18 @@ public class PassengerController {
                 new ReviewDTO(2L, 107L, 5, 5, "Perfect!"),
                 new ReviewDTO(3L, 108L, 3, 4, "It was okay.")
         );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPassenger(@PathVariable("id") Long id){
+        Passenger passenger;
+        try{
+            passenger = passengerService.getPassengerById(id);
+            return ResponseEntity.ok(passenger);
+        }
+        catch (EntityNotFoundException nfe){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
+        }
+
     }
 }

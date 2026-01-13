@@ -1,22 +1,24 @@
-<app-navbar>
+<div class="admin-home-container">
+  <app-navbar>
+    <li class="nav-item">
+      <a class="nav-link img-and-link" routerLink="/admin-ride-history">
+        Ride history
+      </a>
+    </li>
 
-  <li class="nav-item">
-    <a class="nav-link img-and-link" routerLink="/admin-ride-history">
-      Ride history
-    </a>
-  </li>
+    <li class="nav-item">
+      <a class="nav-link img-and-link selected-nav-link" routerLink="/admin-home">
+        Dashboard
+      </a>
+    </li>
 
-  <li class="nav-item">
-    <a class="nav-link img-and-link selected-nav-link" routerLink="/admin-home">
-      Dashboard
-    </a>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link img-and-link" routerLink="/admin-home">
-      Notifications
-    </a>
-  </li>
+    <!-- Test Panic Button -->
+    <li class="nav-item">
+      <button class="nav-link img-and-link" (click)="simulatePanicAlert()" 
+              matTooltip="Test panic alert">
+         Test Panic
+      </button>
+    </li>
 
   
   <li class="nav-item">
@@ -25,18 +27,44 @@
     </a>
   </li>
 
-  <a class="nav-link img-and-link" routerLink="/user-info" matTooltip="My Profile">
-    <img src="icons/icons8-test-account-48.png" class="nav-item-icon">
-  </a>
+    <!-- Panic Notifications Component -->
+    <app-panic-notifications
+      [alerts]="panicAlerts"  
+      [showDropdown]="showNotifications"
+      [showResolved]="showResolvedAlerts"
+      (toggleDropdown)="showNotifications = !showNotifications"
+      (markAsResolved)="onMarkAsResolved($event)"
+      (markAsUnresolved)="onMarkAsUnresolved($event)"
+      (viewDetails)="onViewDetails($event)"
+      (toggleResolvedView)="onToggleResolvedView($event)"
+      (markAllAsRead)="onMarkAllAsRead()">
+    </app-panic-notifications>
 
-  <li class="nav-item">
-    <button class="nav-link nav-btn" (click)="logout()">Log out</button>
-  </li>
+    <!-- Profile -->
+    <a class="nav-link img-and-link" routerLink="/user-info" matTooltip="My Profile">
+      <img src="icons/icons8-test-account-48.png" class="nav-item-icon">
+    </a>
 
-  <a class="nav-link img-and-link" routerLink="/home" matTooltip="Live Chat">
-    <img src="icons/icons8-chat-48.png" class="nav-item-icon">
-  </a>
+    <!-- Logout -->
+    <li class="nav-item">
+      <button class="nav-link nav-btn" (click)="logout()">Log out</button>
+    </li>
 
-</app-navbar>
+    <!-- Chat -->
+    <a class="nav-link img-and-link" routerLink="/home" matTooltip="Live Chat">
+      <img src="icons/icons8-chat-48.png" class="nav-item-icon">
+    </a>
 
-<app-map></app-map>
+    <!-- Sound Toggle -->
+    <li class="nav-item">
+      <button class="nav-link img-and-link sound-toggle" 
+              [class.muted]="isSoundMuted()"
+              (click)="toggleSound()" 
+              matTooltip="{{isSoundMuted() ? 'Sound OFF' : 'Sound ON'}}">
+        {{isSoundMuted() ? '🔇' : '🔊'}}
+      </button>
+    </li>
+  </app-navbar>
+
+  <app-map></app-map>
+</div>
