@@ -12,4 +12,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   styleUrls: ['./home.css'],
 })
 export class HomeComponent {
+  vehicleLocations = [
+    { lat: 45.242, lng: 19.822, label: 'Vehicle 1' },
+    { lat: 45.238, lng: 19.825, label: 'Vehicle 2' },
+    { lat: 45.240, lng: 19.819, label: 'Vehicle 3' },
+  ];
 }
