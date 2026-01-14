@@ -1,11 +1,6 @@
 import { Component, AfterViewInit, Input, OnChanges, SimpleChanges} from '@angular/core';
+import { VehicleLocation } from '../models/vehicle-location';
 import * as L from 'leaflet';
-
-export interface MapLocation {
-  lat: number;
-  lng: number;
-  label?: string;
-}
 
 @Component({
   selector: 'app-map',
@@ -19,7 +14,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
   private markersLayer = L.layerGroup(); // layer that shows vehicle location markers
 
   @Input() route: any;
-  @Input() vehicleLocations: MapLocation[] = []; // this input holds vehicle locations to be displayed on the map
+  @Input() vehicleLocations: VehicleLocation[] = []; // this input holds vehicle locations to be displayed on the map
   private locationIcon = L.icon({
     iconUrl: '/icons/location-purple.png',
     iconSize: [32, 32],       
@@ -64,12 +59,16 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
     this.vehicleLocations.forEach(loc => {
       const marker = L.marker(
-        [loc.lat, loc.lng],
+        [loc.latitude, loc.longitude],
         { icon: this.locationIcon }
       );
 
-      if (loc.label) {
-        marker.bindPopup(loc.label);
+      if (loc.available) {
+        if (loc.available == true) {
+          marker.bindPopup("Available");
+        } else {
+          marker.bindPopup("Not Available");
+        }
       }
 
       marker.addTo(this.markersLayer);
@@ -77,7 +76,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
     if (this.vehicleLocations.length > 0) { // Adjust map view to fit all markers
       const bounds = L.latLngBounds(
-        this.vehicleLocations.map(l => [l.lat, l.lng] as [number, number])
+        this.vehicleLocations.map(l => [l.latitude, l.longitude] as [number, number])
       );
       this.map.fitBounds(bounds, { padding: [30, 30] });
     }
