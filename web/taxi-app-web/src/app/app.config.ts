@@ -27,7 +27,7 @@ const routes: Routes = [
     loadComponent: () => import('./home/home').then(m => m.HomeComponent)
   },
   {
-    path: 'driver-home',
+    path: 'driver-home/',
     loadComponent: () => import('./driver/driver-home/driver-home').then(m => m.DriverHomeComponent)
   },
   {
@@ -36,11 +36,11 @@ const routes: Routes = [
 
   },
   {
-    path: 'driver-ride-history',
+    path: 'driver/:driver-id/ride-history',
     loadComponent: () => import('./driver/driver-ride-history/driver-ride-history').then(m => m.DriverRideHistoryComponent)
   },
   {
-    path: 'ride-details',
+    path: 'driver/:driver-id/ride-details/:ride-id',
     loadComponent: () => import('./shared/ride-details/ride-details').then(m => m.RideDetailsComponent)
   },
   {

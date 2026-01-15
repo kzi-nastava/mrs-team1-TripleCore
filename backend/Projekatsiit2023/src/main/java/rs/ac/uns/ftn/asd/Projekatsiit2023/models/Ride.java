@@ -60,4 +60,11 @@ public class Ride {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RideStatus status;
+
+    private boolean panic;
+    @ManyToOne
+    @JoinColumn(name = "panic_triggered_by")
+    private Passenger panicTriggeredBy;
+    private LocalDateTime panicTriggeredAt;
+
 }
