@@ -55,6 +55,7 @@ public class Ride {
     private Double price;
     private boolean babyFriendly;
     private boolean petFriendly;
+    private String inconsistencies;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
