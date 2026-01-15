@@ -67,4 +67,8 @@ public class Ride {
     private Passenger panicTriggeredBy;
     private LocalDateTime panicTriggeredAt;
 
+    @ManyToOne
+    @JoinColumn(name = "cancelled_by_id")
+    private User cancelledBy;
+
 }

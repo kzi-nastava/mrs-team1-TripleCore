@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.UpdateUserProfileRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.DriverProfileChangeRequestResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.DriverUpdateRequestStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.RideDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.AssignedRideResponse;
@@ -132,12 +133,6 @@ public class DriverController {
         return List.of(ride1, ride2, ride3);
     }
 
-    // Testing database
-    @PostMapping("/create")
-    public ResponseEntity<?> CreateTestDriver(){
-        driverService.createDriverWithVehicle();
-        return ResponseEntity.ok("Test driver created");
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> GetDriver(@PathVariable("id") Long id){
@@ -149,5 +144,11 @@ public class DriverController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
         }
         return ResponseEntity.ok(driver);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> GetDriverRideHistory(@PathVariable Long id){
+        List<RideDetailsResponse> response =  driverService.getRideHistory(id);
+        return ResponseEntity.ok(response);
     }
 }

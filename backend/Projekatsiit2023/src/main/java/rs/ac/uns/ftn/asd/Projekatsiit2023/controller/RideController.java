@@ -329,16 +329,16 @@ public class  RideController {
     }
 
     // Database test
-    @PostMapping("/create")
-    public ResponseEntity<?> createTestRide(){
-        try{
-            rideService.createTestRide();
-            return ResponseEntity.ok("Ride created");
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(e.getMessage());
-        }
-    }
+//    @PostMapping("/create")
+//    public ResponseEntity<?> createTestRide(){
+//        try{
+//            rideService.createTestRide();
+//            return ResponseEntity.ok("Ride created");
+//        }
+//        catch (Exception e){
+//            return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(e.getMessage());
+//        }
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getRideById(@PathVariable("id") Long id){
