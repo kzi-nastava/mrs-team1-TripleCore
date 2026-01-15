@@ -89,51 +89,6 @@ public class DriverController {
         return response;
     }
 
-    @GetMapping("/{id}/ride-history")
-    public ResponseEntity<?> getRideHistory(@PathVariable("id") Long id){
-        List<RideDTO> rides = getMockRides();
-        List<RideDTO> response = new ArrayList<>();
-
-        for(RideDTO ride : rides){
-            if (Objects.equals(ride.getDriverId(), id)) { response.add(ride); }
-
-        }
-
-        return ResponseEntity.ok(response);
-    }
-
-    private List<RideDTO> getMockRides() {
-        RideDTO ride1 = new RideDTO();
-        ride1.setPickup("Bulevar Oslobođenja 45, Novi Sad");
-        ride1.setDropoff("Trg Slobode 1, Novi Sad");
-        ride1.setEstimatedTime(18);
-        ride1.setEstimatedDistance(6.4);
-        ride1.setEstimatedPrice(820.0);
-        ride1.setDriverId(1L);
-        ride1.setPassengerIds(List.of(1L, 2L));
-
-        RideDTO ride2 = new RideDTO();
-        ride2.setPickup("Narodnog Fronta 12, Novi Sad");
-        ride2.setDropoff("Železnička stanica, Novi Sad");
-        ride2.setEstimatedTime(12);
-        ride2.setEstimatedDistance(4.1);
-        ride2.setEstimatedPrice(520.0);
-        ride2.setDriverId(1L);
-        ride2.setPassengerIds(List.of(3L));
-
-        RideDTO ride3 = new RideDTO();
-        ride3.setPickup("Futoški put 25, Novi Sad");
-        ride3.setDropoff("SPENS, Novi Sad");
-        ride3.setEstimatedTime(20);
-        ride3.setEstimatedDistance(7.8);
-        ride3.setEstimatedPrice(930.0);
-        ride3.setDriverId(2L);
-        ride3.setPassengerIds(List.of(4L, 5L));
-
-        return List.of(ride1, ride2, ride3);
-    }
-
-
     @GetMapping("/{id}")
     public ResponseEntity<?> GetDriver(@PathVariable("id") Long id){
         Driver driver;
@@ -146,7 +101,7 @@ public class DriverController {
         return ResponseEntity.ok(driver);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/ride-history")
     public ResponseEntity<?> GetDriverRideHistory(@PathVariable Long id){
         List<RideDetailsResponse> response =  driverService.getRideHistory(id);
         return ResponseEntity.ok(response);

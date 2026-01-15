@@ -17,6 +17,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.test.TestService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,9 +28,11 @@ import java.util.concurrent.ThreadLocalRandom;
 public class  RideController {
 
     private final RideService rideService;
+    private final TestService testService;
 
-    public RideController(RideService rideService){
+    public RideController(RideService rideService, TestService testService){
         this.rideService = rideService;
+        this.testService = testService;
     }
 
     @PostMapping("/estimate")
@@ -328,17 +331,17 @@ public class  RideController {
         return ResponseEntity.ok("Ride started");
     }
 
-    // Database test
-//    @PostMapping("/create")
-//    public ResponseEntity<?> createTestRide(){
-//        try{
-//            rideService.createTestRide();
-//            return ResponseEntity.ok("Ride created");
-//        }
-//        catch (Exception e){
-//            return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(e.getMessage());
-//        }
-//    }
+//     Database test
+    @PostMapping("/create")
+    public ResponseEntity<?> createTestRide(){
+        try{
+            testService.generateMockRides();
+            return ResponseEntity.ok("Ride created");
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(e.getMessage());
+        }
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getRideById(@PathVariable("id") Long id){
