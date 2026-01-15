@@ -9,57 +9,20 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RegisterRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.LoginResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RegisterResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.LoginService;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+    private final LoginService loginService;
+
+    public AuthController(LoginService loginService) {
+        this.loginService = loginService;
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
-        String email = request.getEmail();
-        String password = request.getPassword();
-
-        if ("driver@example.com".equals(email) && "driver123".equals(password)) {
-            LoginResponse response = new LoginResponse(
-                    1L,
-                    email,
-                    UserRole.DRIVER,
-                    "Marko",
-                    "Markovic",
-                    "jwt-token-123",
-                    true
-            );
-            return ResponseEntity.ok(response);
-        }
-
-        if ("passenger@example.com".equals(email) && "passenger123".equals(password)) {
-            LoginResponse response = new LoginResponse(
-                    2L,
-                    email,
-                    UserRole.PASSENGER,
-                    "Ana",
-                    "Anic",
-                    "jwt-token-456",
-                    false
-            );
-            return ResponseEntity.ok(response);
-        }
-
-        if ("admin@example.com".equals(email) && "admin123".equals(password)) {
-            LoginResponse response = new LoginResponse(
-                    3L,
-                    email,
-                    UserRole.ADMIN,
-                    "Petar",
-                    "Petrovic",
-                    "jwt-token-789",
-                    false
-            );
-            return ResponseEntity.ok(response);
-        }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Invalid credentials.");
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(loginService.login(request));
     }
 
     @PostMapping("/forgot-password")
