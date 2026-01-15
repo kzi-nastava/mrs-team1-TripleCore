@@ -4,7 +4,7 @@ import { RegisterComponent } from './auth/register/register';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password';
 import { HomeComponent } from './home/home';
-import { DriverHomeComponent } from './driver-home/driver-home';
+import { DriverHomeComponent } from './driver/driver-home/driver-home';
 import { UserInfoComponent } from './user-info/user-info';
 import { DriverRideHistoryComponent } from './driver/driver-ride-history/driver-ride-history';
 import { RideDetailsComponent } from './shared/ride-details/ride-details';
@@ -15,7 +15,7 @@ import { AdminRideDetailsComponent } from './admin/admin-ride-details/admin-ride
 import { DriverMyRidesComponent } from './driver/driver-my-rides/driver-my-rides';
 import { PassengerMyRidesComponent } from './passenger/passenger-my-rides/passenger-my-rides';
 import { PassengerHomeComponent } from './passenger/passenger-home/passenger-home';
-import { DriverAdditionalInfo } from './driver-additional-info/driver-additional-info'; 
+import { DriverAdditionalInfo } from './driver/driver-additional-info/driver-additional-info'; 
 import { DriverRegistrationComponent } from './auth/register-driver/driver-registration-component/driver-registration-component'; 
 
 export const appRoutes: Routes = [

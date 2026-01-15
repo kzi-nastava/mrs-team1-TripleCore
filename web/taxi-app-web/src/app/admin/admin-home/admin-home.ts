@@ -5,7 +5,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MapComponent } from '../../map/map';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { RouterModule } from '@angular/router';
-import { PanicAlert, PanicNotificationsComponent } from '../../panic-notifications/panic-notifications';
+import { PanicAlert, PanicNotificationsComponent } from '../../panic/panic-notifications/panic-notifications';
 import { NotificationSoundService } from '../../services/notification-sound-service';
 
 @Component({
