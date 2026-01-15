@@ -28,7 +28,7 @@ const routes: Routes = [
   },
   {
     path: 'driver-home',
-    loadComponent: () => import('./driver-home/driver-home').then(m => m.DriverHomeComponent)
+    loadComponent: () => import('./driver/driver-home/driver-home').then(m => m.DriverHomeComponent)
   },
   {
     path: 'user-info',
@@ -73,7 +73,7 @@ const routes: Routes = [
   },
   {
     path: 'driver-additional-info',
-    loadComponent: () => import('./driver-additional-info/driver-additional-info').then(m => m.DriverAdditionalInfo)
+    loadComponent: () => import('./driver/driver-additional-info/driver-additional-info').then(m => m.DriverAdditionalInfo)
   },
   {
     path: 'register-driver',

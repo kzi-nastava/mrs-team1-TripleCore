@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from '../shared/navbar/navbar';
+import { NavbarComponent } from '../../shared/navbar/navbar';
 import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { UserInfoComponent } from '../user-info/user-info';
+import { UserInfoComponent } from '../../user-info/user-info';
 
 @Component({
   selector: 'app-driver-additional-info',
