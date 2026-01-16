@@ -10,14 +10,17 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.LoginResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RegisterResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.LoginService;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RegisterService;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
     private final LoginService loginService;
+    private final RegisterService registerService;
 
-    public AuthController(LoginService loginService) {
+    public AuthController(LoginService loginService, RegisterService registerService) {
         this.loginService = loginService;
+        this.registerService = registerService;
     }
 
     @PostMapping("/login")
@@ -72,17 +75,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            return ResponseEntity.badRequest().body("Passwords do not match");
+        try {
+            RegisterResponse response = registerService.register(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        if (emailExists(request.getEmail())) {
-            return ResponseEntity.badRequest().body("Email already registered");
-        }
-
-        RegisterResponse response = getRegisterResponse(request);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     private static RegisterResponse getRegisterResponse(RegisterRequest request) {
