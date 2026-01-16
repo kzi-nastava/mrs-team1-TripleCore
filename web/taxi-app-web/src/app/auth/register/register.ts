@@ -1,11 +1,14 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { RegisterService } from '../../services/register-service';
+import { RegisterRequest } from '../../models/register-request';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './register.html',
   styleUrls: ['./register.css']
 })
@@ -18,8 +21,14 @@ export class RegisterComponent {
   password = '';
   confirmPassword = '';
   profilePic: string = 'icons/profile.png';
+  loading = false;
+  errorMessage = '';
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private registerService: RegisterService,
+    private router: Router
+  ) {}
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -35,37 +44,91 @@ export class RegisterComponent {
   }
 
   register() {
+    this.errorMessage = '';
+    
     if (this.password !== this.confirmPassword) {
-      alert('Passwords do not match!');
+      this.errorMessage = 'Passwords do not match!';
       return;
     }
 
-    if (!this.firstName || !this.lastName || !this.address || !this.phone || !this.email || !this.password) {
-      alert('Please fill in all required fields.');
+    if (!this.firstName || !this.lastName || !this.address || 
+        !this.phone || !this.email || !this.password) {
+      this.errorMessage = 'Please fill in all required fields.';
       return;
     }
 
-    const user = {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email)) {
+      this.errorMessage = 'Please enter a valid email address.';
+      return;
+    }
+
+    const phoneRegex = /^\+?[0-9]{9,15}$/;
+    if (!phoneRegex.test(this.phone)) {
+      this.errorMessage = 'Please enter a valid phone number (9-15 digits, optional + at start).';
+      return;
+    }
+
+    if (this.password.length < 6) {
+      this.errorMessage = 'Password must be at least 6 characters long.';
+      return;
+    }
+
+    this.loading = true;
+
+    const registerData: RegisterRequest = {
       firstName: this.firstName,
       lastName: this.lastName,
-      address: this.address,
-      phone: this.phone,
       email: this.email,
       password: this.password,
-      profilePic: this.profilePic,
-      activated: false 
+      confirmPassword: this.confirmPassword,
+      address: this.address,
+      phoneNumber: this.phone
     };
 
-    let users = JSON.parse(localStorage.getItem('users') || '[]');
-    users.push(user);
-    localStorage.setItem('users', JSON.stringify(users));
-
-    alert(`Registration successful! Activation email sent to ${this.email}.`);
-    this.resetForm();
+    this.registerService.register(registerData).subscribe({
+      next: (response) => {
+        console.log('Registration successful:', response);
+        
+        localStorage.setItem('pendingUserEmail', this.email);
+        localStorage.setItem('registrationSuccess', 'true');
+        
+        this.router.navigate(['/login'], {
+          queryParams: { registered: 'true', email: this.email }
+        });
+        this.resetForm();
+      },
+      error: (error) => {
+        console.error('Registration error:', error);
+        this.loading = false;
+        
+        if (error.status === 400) {
+          if (typeof error.error === 'string') {
+            this.errorMessage = error.error;
+          } else if (error.error?.message) {
+            this.errorMessage = error.error.message;
+          } else {
+            this.errorMessage = 'Invalid registration data. Please check your inputs.';
+          }
+        } else if (error.status === 409 || error.error?.includes('already exists')) {
+          this.errorMessage = 'Email already registered. Please use a different email or login.';
+        } else if (error.status === 0) {
+          this.errorMessage = 'Cannot connect to server. Please check your connection.';
+        } else {
+          this.errorMessage = 'Registration failed. Please try again later.';
+        }
+      },
+      complete: () => {
+        this.loading = false;
+      }
+    });
   }
 
   cancel() {
-    this.resetForm();
+    if (!this.loading && confirm('Are you sure you want to cancel registration? Any unsaved data will be lost.')) {
+      this.resetForm();
+      this.router.navigate(['/login']);
+    }
   }
 
   resetForm() {
@@ -77,5 +140,21 @@ export class RegisterComponent {
     this.password = '';
     this.confirmPassword = '';
     this.profilePic = 'icons/profile.png';
+    this.loading = false;
+    this.errorMessage = '';
+  }
+
+  isFormValid(): boolean {
+    return !!(
+      this.firstName &&
+      this.lastName &&
+      this.address &&
+      this.phone &&
+      this.email &&
+      this.password &&
+      this.confirmPassword &&
+      this.password === this.confirmPassword &&
+      this.password.length >= 6
+    );
   }
 }
