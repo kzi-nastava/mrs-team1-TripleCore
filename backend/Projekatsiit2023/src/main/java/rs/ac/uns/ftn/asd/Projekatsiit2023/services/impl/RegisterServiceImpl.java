@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.services.impl;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RegisterRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RegisterResponse;
@@ -15,9 +16,12 @@ import java.time.LocalDateTime;
 @Service
 public class RegisterServiceImpl implements RegisterService {
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
-    public RegisterServiceImpl(UserRepository userRepository) {
+    public RegisterServiceImpl(UserRepository userRepository,
+                               EmailService emailService) {
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -45,10 +49,26 @@ public class RegisterServiceImpl implements RegisterService {
         user.setAccountActivated(false);
         user.setCreatedAt(LocalDateTime.now());
 
+        if (request.getProfilePicture() != null && !request.getProfilePicture().isEmpty()) {
+            user.setProfileImage(request.getProfilePicture());
+        } else {
+            user.setProfileImage("/icons/profile.png"); // Default URL
+        }
+
         // save user to database
         User savedUser = userRepository.save(user);
 
+        // Generate activation link
+        String activationLink = generateActivationLink(savedUser.getId());
+
+        // Send activation email
+        emailService.sendActivationEmail(savedUser.getEmail(), activationLink);
+
         return createRegisterResponse(savedUser);
+    }
+
+    public String generateActivationLink(Long userId) {
+        return "http://localhost:8080/api/auth/activate?userId=" + userId;
     }
 
     private User createUserByRole(RegisterRequest request) {
@@ -71,7 +91,7 @@ public class RegisterServiceImpl implements RegisterService {
                 user.getProfileImage(),
                 user.getRole(),
                 user.isAccountActivated(),
-                "Registration successful! Check your email for activation link."
+                "Registration successful! Please check your email for the activation link."
         );
     }
 }

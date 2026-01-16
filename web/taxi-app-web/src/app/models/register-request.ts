@@ -6,5 +6,6 @@ export interface RegisterRequest {
   confirmPassword: string;
   address: string;
   phoneNumber: string;
+  profileImage?: string; 
   role?: string;  // default is passenger
 }

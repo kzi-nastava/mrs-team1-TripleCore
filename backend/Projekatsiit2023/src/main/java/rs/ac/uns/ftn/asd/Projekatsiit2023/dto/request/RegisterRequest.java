@@ -32,6 +32,8 @@ public class RegisterRequest {
     @Pattern(regexp = "\\+?[0-9]{10,15}", message = "Invalid phone number")
     private String phoneNumber;
 
+    private String profilePicture;
+
     private UserRole role = UserRole.PASSENGER;
 
 }

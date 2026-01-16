@@ -20,7 +20,8 @@ export class RegisterComponent {
   email = '';
   password = '';
   confirmPassword = '';
-  profilePic: string = 'icons/profile.png';
+  profilePic: string | ArrayBuffer = 'icons/profile.png'; 
+  selectedFile: File | null = null;
   loading = false;
   errorMessage = '';
 
@@ -32,15 +33,33 @@ export class RegisterComponent {
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
-    console.log('Selected file:', file);
+    this.selectedFile = file;
+    
     if (file) {
+      if (!file.type.match('image.*')) {
+        this.errorMessage = 'Please select an image file (JPG, PNG, etc.)';
+        return;
+      }
+      
+      if (file.size > 2 * 1024 * 1024) {
+        this.errorMessage = 'Image size should be less than 2MB';
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onload = () => {
         this.profilePic = reader.result as string;
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
+        this.errorMessage = ''; 
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  removeProfilePicture() {
+    this.profilePic = 'icons/profile.png';
+    this.selectedFile = null;
+    this.cdr.detectChanges();
   }
 
   register() {
@@ -83,23 +102,36 @@ export class RegisterComponent {
       password: this.password,
       confirmPassword: this.confirmPassword,
       address: this.address,
-      phoneNumber: this.phone
+      phoneNumber: this.phone,
+      profileImage: this.getProfileImageForBackend() 
     };
 
     this.registerService.register(registerData).subscribe({
       next: (response) => {
-        console.log('Registration successful:', response);
+        const alertMessage = `
+          ✅ Registration Successful!
+          
+          Please check your email (${this.email}) for the activation link.
+          
+          Email sent to: ${this.email}
+          Link expires in 24 hours
+          After clicking the link, you can login
+          
+          For testing: Check Mailpit at http://localhost:8025
+        `;
         
-        localStorage.setItem('pendingUserEmail', this.email);
-        localStorage.setItem('registrationSuccess', 'true');
+        alert(alertMessage);
         
         this.router.navigate(['/login'], {
-          queryParams: { registered: 'true', email: this.email }
+          queryParams: { 
+            registered: 'true', 
+            email: this.email 
+          }
         });
+        
         this.resetForm();
       },
       error: (error) => {
-        console.error('Registration error:', error);
         this.loading = false;
         
         if (error.status === 400) {
@@ -124,6 +156,20 @@ export class RegisterComponent {
     });
   }
 
+  private getProfileImageForBackend(): string {
+    if (this.profilePic === 'icons/profile.png' || 
+        (typeof this.profilePic === 'string' && 
+         this.profilePic.includes('icons/profile.png'))) {
+      return ''; 
+    }
+    
+    if (typeof this.profilePic === 'string' && this.profilePic.startsWith('data:image')) {
+      return this.profilePic;
+    }
+    
+    return '';
+  }
+
   cancel() {
     if (!this.loading && confirm('Are you sure you want to cancel registration? Any unsaved data will be lost.')) {
       this.resetForm();
@@ -140,6 +186,7 @@ export class RegisterComponent {
     this.password = '';
     this.confirmPassword = '';
     this.profilePic = 'icons/profile.png';
+    this.selectedFile = null;
     this.loading = false;
     this.errorMessage = '';
   }
