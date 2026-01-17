@@ -7,6 +7,7 @@ import { VehicleLocation } from '../models/vehicle-location';
 import { VehicleService } from '../services/vehicle-service';
 import { Subscription, interval } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
+import { RouteSharingService } from '../services/estimate-route-service/route-sharing-service';
 
 @Component({
   selector: 'app-home',
@@ -17,32 +18,51 @@ import { startWith, switchMap } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   vehicleLocations: VehicleLocation[] = [];
+  routeData: any = null;  
 
   private pollingSubscription!: Subscription;
+  private routeSubscription!: Subscription; 
 
-  constructor(private vehicleService: VehicleService) {}
+  constructor(
+    private vehicleService: VehicleService,
+    private routeSharingService: RouteSharingService
+  ) {}
 
   ngOnInit(): void {
     // this.startPolling();
-    console.log('HomeComponent initialized (polling is disabled).');
+    
+    this.subscribeToRouteChanges();
   }
 
   ngOnDestroy(): void {
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
     }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe(); 
+    }
   }
 
   private startPolling(): void {
-  this.pollingSubscription = interval(5000).pipe(
-    startWith(0),
-    switchMap(() => this.vehicleService.getVehicleLocations())
-  ).subscribe({
-    next: locations => {
-      console.log('Locations from backend arrived:', locations);
-      this.vehicleLocations = [...locations];
-    },
-    error: err => console.error(err)
-  });
-}
+    this.pollingSubscription = interval(5000).pipe(
+      startWith(0),
+      switchMap(() => this.vehicleService.getVehicleLocations())
+    ).subscribe({
+      next: locations => {
+        this.vehicleLocations = [...locations];
+      },
+      error: err => console.error(err)
+    });
+  }
+
+  private subscribeToRouteChanges(): void {
+    this.routeSubscription = this.routeSharingService.route$.subscribe(route => {
+      this.routeData = route;
+    });
+  }
+
+  clearRoute(): void {
+    this.routeData = null;
+    this.routeSharingService.clearRoute();
+  }
 }

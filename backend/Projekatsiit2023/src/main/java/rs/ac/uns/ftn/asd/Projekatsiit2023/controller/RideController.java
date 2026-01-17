@@ -17,6 +17,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RouteService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,69 +28,21 @@ import java.util.concurrent.ThreadLocalRandom;
 public class  RideController {
 
     private final RideService rideService;
+    private final RouteService routeService;
 
-    public RideController(RideService rideService){
+    public RideController(RideService rideService,
+                          RouteService routeService){
         this.rideService = rideService;
+        this.routeService = routeService;
     }
 
     @PostMapping("/estimate")
-    public ResponseEntity<RideEstimateResponse> estimateRide(
+    public ResponseEntity<RideEstimateResponse> estimateRoute(
             @Valid @RequestBody RideEstimateRequest request) {
 
-        Double distance = calculateDistance(request.getStartAddress(), request.getEndAddress());
-
-        Integer time = calculateEstimatedTime(distance);
-
-        Double price = calculatePriceBySpecification(distance, request.getVehicleType().name());
-
-        String route = generateRouteCoordinates();
-
-        RideEstimateResponse response = new RideEstimateResponse(
-                price,
-                time,
-                distance,
-                route,
-                String.format("Ride estimate: %.0f RSD for %.1f km, estimated time: %d min",
-                        price, distance, time)
-        );
-
+        RideEstimateResponse response = routeService.calculateRoute(request);
         return ResponseEntity.ok(response);
     }
-
-    private Double calculateDistance(String start, String end) {
-        return 7.5;
-    }
-
-    private Integer calculateEstimatedTime(Double distance) {
-        return 5 + (int)(distance * 2);
-    }
-
-    /**
-     * cena_po_tipu_vozila + broj_kilometara * 120
-     */
-    private Double calculatePriceBySpecification(Double distance, String vehicleType) {
-        double basePricePerVehicleType = getBasePriceForVehicleType(vehicleType);
-
-        return basePricePerVehicleType + (distance * 120.0);
-    }
-
-    private double getBasePriceForVehicleType(String vehicleType) {
-        if (vehicleType == null) {
-            return 300.0; // default STANDARD
-        }
-
-        return switch (vehicleType.toUpperCase()) {
-            case "STANDARD" -> 300.0;
-            case "LUXURY" -> 800.0;
-            case "VAN" -> 600.0;
-            default -> 300.0;
-        };
-    }
-
-    private String generateRouteCoordinates() {
-        return "44.7866,20.4489;44.8125,20.4612;44.8150,20.4630";
-    }
-
     @PostMapping("/{id}/cancel")
     public ResponseEntity<?> cancelRide(
             @PathVariable("id") Long id,
@@ -230,14 +183,6 @@ public class  RideController {
         return ThreadLocalRandom.current().nextBoolean();
     }
 
-//    @PatchMapping("/{id}/start")
-//    public ResponseEntity<?> finishRide(
-//            @PathVariable("id") Long id,
-//            @Valid @RequestBody RideStartRequest request){
-//
-//    }
-
-
     @PostMapping
     public ResponseEntity<RideResponse> orderRide(@Valid @RequestBody RideRequest request) {
 
@@ -273,7 +218,6 @@ public class  RideController {
                     "notification: scheduled rides can only be booked up to 5 hours in advance"));
         }
 
-        // calucating price = basePrice + distance * 120
         double basePrice = request.getVehicleType() != null ? switch (request.getVehicleType()) {
             case STANDARD -> 300;
             case VAN -> 500;
