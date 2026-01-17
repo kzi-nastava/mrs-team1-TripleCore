@@ -37,6 +37,12 @@ export class LoginComponent {
           localStorage.setItem('token', res.token);
           localStorage.setItem('role', res.role);
           localStorage.setItem('userId', res.id.toString());
+          localStorage.setItem('userEmail', res.email);
+          localStorage.setItem('userFirstName', res.firstName);
+          localStorage.setItem('userLastName', res.lastName);
+          if (res.driverAvailable !== undefined) {
+            localStorage.setItem('driverAvailable', res.driverAvailable.toString());
+          }
 
           switch (res.role) {
             case 'DRIVER':

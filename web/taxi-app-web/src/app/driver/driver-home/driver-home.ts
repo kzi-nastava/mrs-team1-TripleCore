@@ -5,7 +5,7 @@ import { NavbarComponent } from '../../shared/navbar/navbar';
 import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth-service/logout-service';
+import { LogoutService } from '../../services/auth-service/logout-service';
 
 @Component({
   selector: 'app-driver-home',
@@ -17,10 +17,10 @@ import { AuthService } from '../../services/auth-service/logout-service';
 export class DriverHomeComponent {
   isActive: boolean = true;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private logoutService: LogoutService) {}
   
   onLogoutClick() {
-    this.authService.logout();
+    this.logoutService.logoutWithBackend();
   }
 
   toggleActive() {

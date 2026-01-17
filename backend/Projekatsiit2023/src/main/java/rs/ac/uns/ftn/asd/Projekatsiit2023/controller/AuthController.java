@@ -66,20 +66,12 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestParam("userId") Long userId) {
-        boolean isDriver = userId == 1L;
-
-        if (isDriver) {
-            boolean hasActiveRide = Math.random() > 0.5;
-
-            if (hasActiveRide) {
-                return ResponseEntity.badRequest()
-                        .body("Cannot logout while having an active ride.");
-            }
-
-            System.out.println("Driver ID " + userId + " logged out and set to unavailable.");
+        try {
+            String message = loginService.logout(userId);
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        return ResponseEntity.ok("User ID " + userId + " logged out successfully.");
     }
 
     @PostMapping("/register")

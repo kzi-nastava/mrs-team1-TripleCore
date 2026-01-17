@@ -7,7 +7,7 @@ import { NavbarComponent } from '../../shared/navbar/navbar';
 import { RouterModule } from '@angular/router';
 import { PanicAlert, PanicNotificationsComponent } from '../../panic/panic-notifications/panic-notifications';
 import { NotificationSoundService } from '../../services/notification-sound-service';
-import { AuthService } from '../../services/auth-service/logout-service';
+import { LogoutService } from '../../services/auth-service/logout-service';
 
 @Component({
   selector: 'app-admin-home',
@@ -31,7 +31,7 @@ export class AdminHomeComponent implements OnInit {
   constructor(
     private router: Router,
     private soundService: NotificationSoundService,
-    private authService: AuthService
+    private logoutService: LogoutService
   ) {}
 
   ngOnInit() {
@@ -138,7 +138,7 @@ export class AdminHomeComponent implements OnInit {
   }
 
   onLogoutClick() {
-    this.authService.logout();
+    this.logoutService.logoutWithBackend();
   }
 
   private showBrowserNotification(alert: PanicAlert) {
