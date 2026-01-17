@@ -14,6 +14,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DriverCancelRideDialogComponent } from '../driver-cancel-ride-dialog/driver-cancel-ride-dialog';
 import { NavbarComponent } from '../../shared/navbar/navbar';
+import { AuthService } from '../../services/auth-service/logout-service';
 
 interface Ride {
   id: number;
@@ -156,7 +157,8 @@ export class DriverMyRidesComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private router: Router,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -290,9 +292,8 @@ export class DriverMyRidesComponent implements OnInit {
     }
   }
 
-  logout(): void {
-    if (confirm('Are you sure you want to log out?')) {
-      this.router.navigate(['/login']);
-    }
+  onLogoutClick() {
+    this.authService.logout();
   }
+    
 }

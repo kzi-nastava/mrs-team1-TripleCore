@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
-import { LoginService} from '../../services/login-service';
+import { LoginService} from '../../services/auth-service/login-service';
 import { LoginResponse } from '../../models/login-response';
 
 @Component({

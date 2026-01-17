@@ -16,7 +16,7 @@
   <li class="nav-item">
     <span [matTooltip]="isActive ? 'Must go Inactive first' : ''">
       <button class="nav-link nav-btn" 
-              (click)="logout()" 
+              (click)="onLogoutClick()" 
               [disabled]="isActive">
         Log out
       </button>
