@@ -88,9 +88,11 @@
   <ng-container matColumnDef="details">
     <th mat-header-cell *matHeaderCellDef> Details </th>
     <td mat-cell *matCellDef="let ride">
-      <a [routerLink]="['/ride-details']" class="details-link">
+      <button
+        class="details-link"
+        (click)="viewDetails(ride)">
         View
-      </a>
+      </button>
     </td>
   </ng-container>
 

@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { MatTableModule } from "@angular/material/table";
 import { CommonModule } from '@angular/common';
@@ -18,10 +18,12 @@ import { RideDetailsResponse } from '../../models/ride-details-response';
   templateUrl: './ride-history-table.html',
   styleUrls: ['./ride-history-table.css'],
 })
-export class RideHistoryTableComponent {
+export class RideHistoryTableComponent implements OnChanges {
 
   @Input() rides: RideDetailsResponse[] = [];
   filteredRides: RideDetailsResponse[] = [];
+
+  constructor(private router: Router) {}
 
   displayedColumns: string[] = [
     'pickup',
@@ -35,10 +37,16 @@ export class RideHistoryTableComponent {
   ];
 
   ngOnChanges(changes: SimpleChanges) {
-  if (changes['rides'] && this.rides) {
-    this.filteredRides = [...this.rides];
+    if (changes['rides'] && this.rides) {
+      this.filteredRides = [...this.rides];
+    }
   }
-}
+
+  viewDetails(ride: RideDetailsResponse): void {
+    this.router.navigate(['/ride-details'], {
+      state: { ride }
+    });
+  }
 
   getPickup(ride: RideDetailsResponse): string {
     return ride.startLocation.address;

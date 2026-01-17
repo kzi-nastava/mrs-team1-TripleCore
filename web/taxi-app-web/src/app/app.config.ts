@@ -40,7 +40,7 @@ const routes: Routes = [
     loadComponent: () => import('./driver/driver-ride-history/driver-ride-history').then(m => m.DriverRideHistoryComponent)
   },
   {
-    path: 'driver/:driver-id/ride-details/:ride-id',
+    path: 'ride-details',
     loadComponent: () => import('./shared/ride-details/ride-details').then(m => m.RideDetailsComponent)
   },
   {

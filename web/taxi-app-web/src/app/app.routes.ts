@@ -27,7 +27,7 @@ export const appRoutes: Routes = [
   { path: 'user-info', component: UserInfoComponent },
   { path: 'driver-home', component: DriverHomeComponent },
   { path: 'driver/:driver-id/ride-history', component: DriverRideHistoryComponent },
-  { path: 'driver/:driver-id/ride-details/:ride-id', component: RideDetailsComponent },
+  { path: 'ride-details', component: RideDetailsComponent },
   { path: 'estimate-route', component: EstimateRouteComponent },
   { path: 'admin-home', component: AdminHomeComponent },
   { path: 'admin-ride-history', component: AdminRideHistoryComponent },
