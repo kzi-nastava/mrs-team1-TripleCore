@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { RideHistoryTableComponent } from '../../shared/ride-history-table/ride-history-table';
+import { RideDetailsResponse } from '../../models/ride-details-response';
+import { DriverService } from '../../services/driver-service';
 
 @Component({
   selector: 'app-driver-ride-history',
@@ -11,5 +13,24 @@ import { RideHistoryTableComponent } from '../../shared/ride-history-table/ride-
   styleUrls: ['./driver-ride-history.css'],
 })
 export class DriverRideHistoryComponent {
+  driverId: number = 1; 
+  driverRideHistory: RideDetailsResponse[] = [];
 
+  constructor(private driverService: DriverService) {}
+
+  ngOnInit(): void {
+    this.loadRideHistory();
+  }
+
+  private loadRideHistory(): void {
+    this.driverService.getRideHistory(this.driverId).subscribe({
+      next: (rides) => {
+        this.driverRideHistory = rides;
+        console.log('Driver ride history loaded:', rides);
+      },
+      error: (err) => {
+        console.error('Failed to load driver ride history', err);
+      }
+    });
+  }
 }
