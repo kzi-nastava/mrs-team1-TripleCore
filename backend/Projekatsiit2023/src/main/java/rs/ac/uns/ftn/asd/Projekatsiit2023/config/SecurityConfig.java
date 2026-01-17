@@ -35,8 +35,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Dozvoli pristup auth endpoint-ima
-                        .requestMatchers("/api/drivers/**").permitAll() // Dozvoli pristup driver endpoint-ima
+                        .requestMatchers("/api/**").permitAll() // Dozvoli pristup API endpoint-ima
                         .requestMatchers("/error").permitAll() // Dozvoli pristup error endpoint-ima
                         .anyRequest().authenticated() // Sve ostalo zahteva autentikaciju
                 );
