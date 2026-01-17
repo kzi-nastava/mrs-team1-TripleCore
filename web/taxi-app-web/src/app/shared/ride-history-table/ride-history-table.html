@@ -26,51 +26,76 @@
         </button>
     </div>
         
-    <table mat-table [dataSource]="rides">
-        <ng-container matColumnDef="Pickup">
-            <th mat-header-cell *matHeaderCellDef> Pickup </th>
-            <td mat-cell *matCellDef="let ride"> {{ride.pickup}} </td>
-        </ng-container>
+    <table mat-table [dataSource]="rides" class="mat-elevation-z2">
 
-        <ng-container matColumnDef="Destination">
-            <th mat-header-cell *matHeaderCellDef> Destination </th>
-            <td mat-cell *matCellDef="let ride"> {{ride.destination}} </td>
-        </ng-container>
+  <!-- Pickup -->
+  <ng-container matColumnDef="pickup">
+    <th mat-header-cell *matHeaderCellDef> Pickup </th>
+    <td mat-cell *matCellDef="let ride">
+      {{ getPickup(ride) }}
+    </td>
+  </ng-container>
 
-        <ng-container matColumnDef="Date">
-            <th mat-header-cell *matHeaderCellDef> Date </th>
-            <td mat-cell *matCellDef="let ride"> {{ride.date}} </td>
-        </ng-container>
+  <!-- Destination -->
+  <ng-container matColumnDef="destination">
+    <th mat-header-cell *matHeaderCellDef> Destination </th>
+    <td mat-cell *matCellDef="let ride">
+      {{ getDestination(ride) }}
+    </td>
+  </ng-container>
 
-        <ng-container matColumnDef="Start Time">
-            <th mat-header-cell *matHeaderCellDef> Start Time </th>
-            <td mat-cell *matCellDef="let ride"> {{ride.start}} </td>
-        </ng-container>
+  <!-- Date -->
+  <ng-container matColumnDef="date">
+    <th mat-header-cell *matHeaderCellDef> Date </th>
+    <td mat-cell *matCellDef="let ride">
+      {{ getDate(ride) }}
+    </td>
+  </ng-container>
 
-        <ng-container matColumnDef="End Time">
-            <th mat-header-cell *matHeaderCellDef> End Time </th>
-            <td mat-cell *matCellDef="let ride"> {{ride.end}} </td>
-        </ng-container>
+  <!-- Start Time -->
+  <ng-container matColumnDef="startTime">
+    <th mat-header-cell *matHeaderCellDef> Start Time </th>
+    <td mat-cell *matCellDef="let ride">
+      {{ getStartTime(ride) }}
+    </td>
+  </ng-container>
 
-        <ng-container matColumnDef="Price">
-            <th mat-header-cell *matHeaderCellDef> Price </th>
-            <td mat-cell *matCellDef="let ride"> {{ride.price}} </td>
-        </ng-container>
+  <!-- End Time -->
+  <ng-container matColumnDef="endTime">
+    <th mat-header-cell *matHeaderCellDef> End Time </th>
+    <td mat-cell *matCellDef="let ride">
+      {{ getEndTime(ride) }}
+    </td>
+  </ng-container>
 
-        <ng-container matColumnDef="Panic">
-            <th mat-header-cell *matHeaderCellDef> Panic </th>
-            <td mat-cell *matCellDef="let ride"> {{ride.Panic}} </td>
-        </ng-container>
+  <!-- Price -->
+  <ng-container matColumnDef="price">
+    <th mat-header-cell *matHeaderCellDef> Price </th>
+    <td mat-cell *matCellDef="let ride">
+      {{ ride.price }} RSD
+    </td>
+  </ng-container>
 
-        <ng-container matColumnDef="Details">
-            <th mat-header-cell *matHeaderCellDef> Details </th>
-            <td mat-cell *matCellDef="let ride">
-                <!-- <a [routerLink]="['/ride-details', ride.id]" class="details-link">View</a> -->
-                <a [routerLink]="['/ride-details']" class="details-link">View</a>
-            </td>
-        </ng-container>
+  <!-- Panic -->
+  <ng-container matColumnDef="panic">
+    <th mat-header-cell *matHeaderCellDef> Panic </th>
+    <td mat-cell *matCellDef="let ride">
+      {{ ride.panic ? 'YES' : 'NO' }}
+    </td>
+  </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+  <!-- Details -->
+  <ng-container matColumnDef="details">
+    <th mat-header-cell *matHeaderCellDef> Details </th>
+    <td mat-cell *matCellDef="let ride">
+      <a [routerLink]="['/ride-details', ride.startTime]" class="details-link">
+        View
+      </a>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
 </div>

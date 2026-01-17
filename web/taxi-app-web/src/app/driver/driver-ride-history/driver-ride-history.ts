@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { RideHistoryTableComponent } from '../../shared/ride-history-table/ride-history-table';
@@ -16,7 +16,10 @@ export class DriverRideHistoryComponent {
   driverId: number = 1; 
   driverRideHistory: RideDetailsResponse[] = [];
 
-  constructor(private driverService: DriverService) {}
+  constructor(
+    private driverService: DriverService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadRideHistory();
@@ -25,11 +28,14 @@ export class DriverRideHistoryComponent {
   private loadRideHistory(): void {
     this.driverService.getRideHistory(this.driverId).subscribe({
       next: (rides) => {
-        this.driverRideHistory = rides;
-        console.log('Driver ride history loaded:', rides);
+        this.driverRideHistory = rides ?? [];
+        // forsira Angular da odmah detektuje promene
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to load driver ride history', err);
+        this.driverRideHistory = [];
+        this.cdr.detectChanges();
       }
     });
   }
