@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Dozvoli pristup auth endpoint-ima
+                        .requestMatchers("/api/drivers/**").permitAll() // Dozvoli pristup driver endpoint-ima
                         .requestMatchers("/error").permitAll() // Dozvoli pristup error endpoint-ima
                         .anyRequest().authenticated() // Sve ostalo zahteva autentikaciju
                 );

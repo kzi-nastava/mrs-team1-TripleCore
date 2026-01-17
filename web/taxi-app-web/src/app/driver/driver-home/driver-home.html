@@ -1,30 +1,29 @@
 <app-navbar>
+  <li class="nav-item">
+    <a class="img-and-link" routerLink="/driver-my-rides">
+      <span class="nav-link">My Rides</span>
+    </a>
+  </li>
 
   <li class="nav-item">
-        <a class="img-and-link" routerLink="/driver-my-rides">
-            <span class="nav-link">My Rides</span>
-        </a>
-    </li>
-
-  <li class="nav-item">
-        <a class="img-and-link" routerLink="/driver-ride-history">
-            <img src="icons\icons8-history-48.png" alt="" class="nav-item-icon">
-            <span class="nav-link">Ride History</span>
-        </a>
-    </li>
+    <a class="img-and-link" routerLink="/driver-ride-history">
+      <img src="icons\icons8-history-48.png" alt="" class="nav-item-icon">
+      <span class="nav-link">Ride History</span>
+    </a>
+  </li>
 
   <li class="nav-item">
     <span [matTooltip]="isActive ? 'Must go Inactive first' : ''">
       <button class="nav-link nav-btn" 
               (click)="onLogoutClick()" 
-              [disabled]="isActive">
-        Log out
+              [disabled]="isActive || isLoading">
+        {{ isLoading ? '...' : 'Log out' }}
       </button>
     </span>
   </li>
 
   <a class="nav-link img-and-link" routerLink="/driver-additional-info" matTooltip="My Profile">
-  <img src="icons/icons8-test-account-48.png" alt="My Profile" class="nav-item-icon">
+    <img src="icons/icons8-test-account-48.png" alt="My Profile" class="nav-item-icon">
   </a>
 
   <a class="nav-link img-and-link" routerLink="/home" matTooltip="Live Chat">
@@ -34,8 +33,41 @@
 
 <app-map></app-map>
 
+<!-- Loading overlay -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loading-spinner"></div>
+  <p>Changing status...</p>
+</div>
+
+<!-- Status dugme -->
 <button class="status-btn" 
         [ngClass]="isActive ? 'active-btn' : 'inactive-btn'" 
-        (click)="toggleActive()">
-  {{ isActive ? 'Go Inactive' : 'Go Active' }}
+        (click)="toggleActive()"
+        [disabled]="isLoading">
+  
+  <!-- Ikonica i tekst -->
+  <span class="btn-content">
+    <span class="status-text">
+      {{ isLoading ? 'Changing...' : (isActive ? 'Go Inactive' : 'Go Active') }}
+    </span>
+  </span>
+  
 </button>
+
+<!-- Status info box -->
+<div *ngIf="!isLoading" class="status-info">
+  <div class="status-indicator" [class.active]="isActive" [class.inactive]="!isActive">
+    <div class="status-dot"></div>
+    <span class="status-label">
+      {{ isActive ? 'ACTIVE - Available for rides' : 'INACTIVE - Not available' }}
+    </span>
+  </div>
+  
+  <p class="status-description" *ngIf="isActive">
+    ✓ You are currently available for new ride requests
+  </p>
+  
+  <p class="status-description" *ngIf="!isActive">
+    ⏸️ You will not receive new ride requests
+  </p>
+</div>

@@ -14,7 +14,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PassengerCancelRideDialogComponent } from '../passenger-cancel-ride-dialog/passenger-cancel-ride-dialog';
 import { NavbarComponent } from '../../shared/navbar/navbar';
-import { AuthService } from '../../services/auth-service/logout-service';
+import { LogoutService } from '../../services/auth-service/logout-service';
 
 export interface PassengerRide {
   id: number;
@@ -193,7 +193,7 @@ export class PassengerMyRidesComponent implements OnInit {
     private dialog: MatDialog,
     private router: Router,
     private datePipe: DatePipe,
-    private authService: AuthService
+    private logoutService: LogoutService
   ) {}
 
   ngOnInit(): void {
@@ -361,6 +361,7 @@ export class PassengerMyRidesComponent implements OnInit {
   }
 
   onLogoutClick() {
-    this.authService.logout();
+    this.logoutService.logoutWithBackend();
   }
+
 }

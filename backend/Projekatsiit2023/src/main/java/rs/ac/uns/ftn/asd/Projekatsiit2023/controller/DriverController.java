@@ -10,6 +10,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.DriverUpdateRequestStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.RideDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.AssignedRideResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Driver;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.DriverAvailabilityService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.DriverService;
 
 import java.util.ArrayList;
@@ -21,9 +22,12 @@ import java.util.Objects;
 public class DriverController {
 
     private final DriverService driverService;
+    private final DriverAvailabilityService driverAvailabilityService;
 
-    public DriverController(DriverService driverService) {
+    public DriverController(DriverService driverService,
+                            DriverAvailabilityService driverAvailabilityService) {
         this.driverService = driverService;
+        this.driverAvailabilityService = driverAvailabilityService;
     }
 
     @PatchMapping("/{id}/availability")
@@ -31,20 +35,16 @@ public class DriverController {
             @PathVariable("id") Long id,
             @RequestParam("available") boolean available) {
 
-        if (id != 1L) {
-            return ResponseEntity.badRequest().body("Only drivers can change availability");
+        try {
+            String result = driverAvailabilityService.changeAvailability(id, available);
+            return ResponseEntity.ok(result);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error changing availability: " + e.getMessage());
         }
-
-        boolean hasActiveRide = Math.random() > 0.5;
-
-        if (!available && hasActiveRide) {
-            return ResponseEntity.ok(
-                    "You have an active ride. You will become unavailable AFTER the ride finishes.\n" +
-                            "System will not offer you to new passengers until you become available again."
-            );
-        }
-
-        return ResponseEntity.ok("Driver availability updated to: " + available);
     }
 
     @PutMapping("/profile")

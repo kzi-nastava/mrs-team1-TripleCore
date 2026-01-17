@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth-service/logout-service';
+import { LogoutService } from '../../services/auth-service/logout-service';
 
 @Component({
   selector: 'app-passenger-home',
@@ -15,9 +15,9 @@ import { AuthService } from '../../services/auth-service/logout-service';
   styleUrls: ['./passenger-home.css'],
 })
 export class PassengerHomeComponent {
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private logoutService: LogoutService) {}
   
   onLogoutClick() {
-    this.authService.logout();
+    this.logoutService.logoutWithBackend();
   }
 }

@@ -7,4 +7,5 @@ public interface LoginService {
     LoginResponse login(LoginRequest request);
     String initiatePasswordReset(String email);
     String resetPassword(Long userId, String newPassword);
+    String logout(Long userId);
 }
