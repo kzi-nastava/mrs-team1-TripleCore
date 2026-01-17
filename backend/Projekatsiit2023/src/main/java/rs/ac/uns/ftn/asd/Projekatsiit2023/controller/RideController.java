@@ -43,7 +43,6 @@ public class  RideController {
         RideEstimateResponse response = routeService.calculateRoute(request);
         return ResponseEntity.ok(response);
     }
-
     @PostMapping("/{id}/cancel")
     public ResponseEntity<?> cancelRide(
             @PathVariable("id") Long id,
@@ -184,14 +183,6 @@ public class  RideController {
         return ThreadLocalRandom.current().nextBoolean();
     }
 
-//    @PatchMapping("/{id}/start")
-//    public ResponseEntity<?> finishRide(
-//            @PathVariable("id") Long id,
-//            @Valid @RequestBody RideStartRequest request){
-//
-//    }
-
-
     @PostMapping
     public ResponseEntity<RideResponse> orderRide(@Valid @RequestBody RideRequest request) {
 
@@ -227,7 +218,6 @@ public class  RideController {
                     "notification: scheduled rides can only be booked up to 5 hours in advance"));
         }
 
-        // calucating price = basePrice + distance * 120
         double basePrice = request.getVehicleType() != null ? switch (request.getVehicleType()) {
             case STANDARD -> 300;
             case VAN -> 500;

@@ -9,32 +9,53 @@ import { VehicleLocation } from '../models/vehicle-location';
   styleUrls: ['./map.css'],
 })
 export class MapComponent implements AfterViewInit, OnChanges {
-  
-  private map!: L.Map;
+
+  private map!: L.Map; 
   private markersLayer?: L.LayerGroup;
+  private routeLine?: L.Polyline;
+  private startMarker?: L.Marker;
+  private endMarker?: L.Marker;
 
   @Input() vehicleLocations: VehicleLocation[] = [];
+  @Input() routeData: any = null;
 
-  private locationIcon = L.icon({
+  private vehicleIcon = L.icon({
     iconUrl: '/icons/location-purple.png',
     iconSize: [32, 32],
     iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
   });
 
-  
+  private startIcon = L.divIcon({
+    html: '<div style="background-color: green; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
+    className: '',
+    iconSize: [12, 12],
+    iconAnchor: [6, 6]
+  });
+
+  private endIcon = L.divIcon({
+    html: '<div style="background-color: red; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
+    className: '',
+    iconSize: [12, 12],
+    iconAnchor: [6, 6]
+  });
+
   ngAfterViewInit(): void {
     this.initMap();
-    this.renderMarkers();
+    this.renderVehicleMarkers();
+
+    if (this.routeData) {
+      this.drawRoute();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-  if (changes['vehicleLocations']) {
-    if (this.map) {
-      this.renderMarkers();
+    if (changes['vehicleLocations'] && this.map) {
+      this.renderVehicleMarkers();
+    }
+    if (changes['routeData'] && this.map && this.routeData) {
+      this.drawRoute();
     }
   }
-}
 
   private initMap(): void {
     this.map = L.map('map', {
@@ -44,29 +65,42 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
-      minZoom: 3,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      attribution: '© OpenStreetMap contributors',
     }).addTo(this.map);
   }
 
-  private renderMarkers(): void {
-    if (this.markersLayer) {
-      this.map.removeLayer(this.markersLayer);
-    }
+  private renderVehicleMarkers(): void {
+    if (this.markersLayer) this.map.removeLayer(this.markersLayer);
 
     this.markersLayer = L.layerGroup(
-      this.vehicleLocations.map(loc => {
-        const marker = L.marker([loc.latitude, loc.longitude], { icon: this.locationIcon });
-        marker.bindPopup(loc.available ? 'Available' : 'Not Available');
-        return marker;
-      })
+      this.vehicleLocations.map(loc => L.marker([loc.latitude, loc.longitude], { icon: this.vehicleIcon }))
     );
 
     this.markersLayer.addTo(this.map);
+  }
 
-    if (this.vehicleLocations.length > 0) {
-      const bounds = L.latLngBounds(this.vehicleLocations.map(l => [l.latitude, l.longitude] as [number, number]));
-      this.map.fitBounds(bounds, { padding: [30, 30] });
-    }
+  private drawRoute(): void {
+    if (this.routeLine) this.map.removeLayer(this.routeLine);
+    if (this.startMarker) this.map.removeLayer(this.startMarker);
+    if (this.endMarker) this.map.removeLayer(this.endMarker);
+
+    if (!this.routeData?.routeCoordinates) return;
+
+    const coordinates = this.routeData.routeCoordinates
+      .split(';')
+      .map((pair: { split: (arg0: string) =>
+         { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }) => {
+        const [lat, lon] = pair.split(',').map(Number);
+        return [lat, lon] as [number, number];
+      });
+
+    if (coordinates.length < 2) return;
+
+    this.routeLine = L.polyline(coordinates, { color: '#2563EB', weight: 4 }).addTo(this.map);
+
+    this.startMarker = L.marker(coordinates[0], { icon: this.startIcon }).addTo(this.map);
+    this.endMarker = L.marker(coordinates[coordinates.length - 1], { icon: this.endIcon }).addTo(this.map);
+
+    this.map.fitBounds(this.routeLine.getBounds().pad(0.1));
   }
 }

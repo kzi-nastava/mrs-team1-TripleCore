@@ -1,3 +1,4 @@
+<!-- home.html -->
 <app-navbar>
   <li class="nav-item">
     <a class="nav-link img-and-link" routerLink="/estimate-route"> Estimate route </a>
@@ -11,4 +12,8 @@
     <a class="nav-link nav-btn" routerLink="/login">Log in</a>
   </li>
 </app-navbar>
-<app-map [vehicleLocations]="vehicleLocations"></app-map>
+
+<app-map 
+  [vehicleLocations]="vehicleLocations"
+  [routeData]="routeData">
+</app-map>
