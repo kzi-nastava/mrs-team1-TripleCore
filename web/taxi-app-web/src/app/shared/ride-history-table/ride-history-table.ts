@@ -21,6 +21,7 @@ import { RideDetailsResponse } from '../../models/ride-details-response';
 export class RideHistoryTableComponent {
 
   @Input() rides: RideDetailsResponse[] = [];
+  filteredRides: RideDetailsResponse[] = [];
 
   displayedColumns: string[] = [
     'pickup',
@@ -32,6 +33,12 @@ export class RideHistoryTableComponent {
     'panic',
     'details'
   ];
+
+  ngOnChanges(changes: SimpleChanges) {
+  if (changes['rides'] && this.rides) {
+    this.filteredRides = [...this.rides];
+  }
+}
 
   getPickup(ride: RideDetailsResponse): string {
     return ride.startLocation.address;
@@ -52,4 +59,51 @@ export class RideHistoryTableComponent {
   getEndTime(ride: RideDetailsResponse): string {
     return ride.endTime.split('T')[1].substring(0, 5);
   }
+
+  textFilter: string = '';
+  fromDateFilter: Date | null = null;
+  toDateFilter: Date | null = null;
+
+  clearFilters(): void {
+    this.textFilter = '';
+    this.fromDateFilter = null;
+    this.toDateFilter = null;
+
+    this.filteredRides = [...this.rides];
+  }
+
+  applyFilters(): void {
+  this.filteredRides = this.rides.filter(ride => {
+    // Text filter
+    const combined = [
+      ride.ordererName ?? '',
+      ride.driverName ?? '',
+      ride.startLocation.address ?? '',
+      ride.endLocation.address ?? ''
+    ].join(' ').toLowerCase();
+
+    const textMatch = combined.includes(this.textFilter.toLowerCase());
+
+    // Date range filter
+    const start = new Date(ride.startTime);
+    const end = new Date(ride.endTime);
+
+    let fromMatch = true;
+    let toMatch = true;
+
+    if (this.fromDateFilter) {
+      const from = new Date(this.fromDateFilter);
+      from.setHours(0, 0, 0, 0); 
+      toMatch = end >= from;
+    }
+
+    if (this.toDateFilter) {
+      const to = new Date(this.toDateFilter);
+      to.setHours(23, 59, 59, 999); 
+      fromMatch = start <= to;
+    }
+
+    return textMatch && fromMatch && toMatch;
+  });
+}
 }

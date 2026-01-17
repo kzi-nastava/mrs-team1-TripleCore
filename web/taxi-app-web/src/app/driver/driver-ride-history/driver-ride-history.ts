@@ -13,11 +13,13 @@ import { DriverService } from '../../services/driver-service';
   styleUrls: ['./driver-ride-history.css'],
 })
 export class DriverRideHistoryComponent {
+  // this will be loaded dynamically, for now hardcoding
   driverId: number = 1; 
   driverRideHistory: RideDetailsResponse[] = [];
 
   constructor(
     private driverService: DriverService,
+    // to detect changes from outside Angular zone (like data from HTTP)
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -28,8 +30,8 @@ export class DriverRideHistoryComponent {
   private loadRideHistory(): void {
     this.driverService.getRideHistory(this.driverId).subscribe({
       next: (rides) => {
+        // if rides is null or undefined, default to empty array
         this.driverRideHistory = rides ?? [];
-        // forsira Angular da odmah detektuje promene
         this.cdr.detectChanges();
       },
       error: (err) => {

@@ -2,31 +2,31 @@
 
     <div class="filter-container">
         <mat-form-field appearance="fill" class="filter-input">
-            <input type="text" matInput placeholder="Search">
+            <input type="text" [(ngModel)]="textFilter" matInput placeholder="Search">
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="filter-input">
-            <input matInput [matDatepicker]="from" placeholder="From">
+            <input matInput [matDatepicker]="from" [(ngModel)]="fromDateFilter" placeholder="From">
             <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
             <mat-datepicker #from></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="filter-input">
-            <input matInput [matDatepicker]="to" placeholder="To">
+            <input matInput [matDatepicker]="to" [(ngModel)]="toDateFilter" placeholder="To">
             <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
             <mat-datepicker #to></mat-datepicker>
         </mat-form-field>
 
-        <button mat-raised-button id="apply-btn">
+        <button mat-raised-button id="apply-btn" (click)="applyFilters()">
             Apply
         </button>
 
-        <button mat-stroked-button id="clear-btn">
+        <button mat-stroked-button id="clear-btn" (click)="clearFilters()">
             Clear
         </button>
     </div>
         
-    <table mat-table [dataSource]="rides" class="mat-elevation-z2">
+    <table mat-table [dataSource]="filteredRides" class="mat-elevation-z2">
 
   <!-- Pickup -->
   <ng-container matColumnDef="pickup">
@@ -88,7 +88,7 @@
   <ng-container matColumnDef="details">
     <th mat-header-cell *matHeaderCellDef> Details </th>
     <td mat-cell *matCellDef="let ride">
-      <a [routerLink]="['/ride-details', ride.startTime]" class="details-link">
+      <a [routerLink]="['/ride-details']" class="details-link">
         View
       </a>
     </td>
