@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth-service/logout-service';
 
 @Component({
   selector: 'app-passenger-home',
@@ -14,11 +15,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./passenger-home.css'],
 })
 export class PassengerHomeComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
   
-  logout(): void {
-    if (confirm('Are you sure you want to log out?')) {
-      this.router.navigate(['/login']);
-    }
+  onLogoutClick() {
+    this.authService.logout();
   }
 }

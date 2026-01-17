@@ -2,7 +2,7 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { RegisterService } from '../../services/register-service';
+import { RegisterService } from '../../services/auth-service/register-service';
 import { RegisterRequest } from '../../models/register-request';
 
 @Component({

@@ -35,29 +35,33 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
-        if (email == null || email.isEmpty()) {
-            return ResponseEntity.badRequest().body("Email is required.");
+        try {
+            String message = loginService.initiatePasswordReset(email);
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        return ResponseEntity.ok(
-                "Password reset link has been sent to: " + email
-        );
     }
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(
-            @RequestParam("token") String token,
+            @RequestParam("userId") Long userId,
             @RequestParam("newPassword") String newPassword) {
 
-        if (token == null || token.isEmpty()) {
-            return ResponseEntity.badRequest().body("Token is required");
+        if (userId == null) {
+            return ResponseEntity.badRequest().body("User ID is required");
         }
 
         if (newPassword == null || newPassword.length() < 6) {
             return ResponseEntity.badRequest().body("Password must be at least 6 characters long");
         }
 
-        return ResponseEntity.ok("Password has been successfully reset.");
+        try {
+            String message = loginService.resetPassword(userId, newPassword);
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/logout")
