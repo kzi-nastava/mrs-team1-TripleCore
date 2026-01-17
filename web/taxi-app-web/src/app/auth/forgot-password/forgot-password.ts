@@ -50,6 +50,12 @@ export class ForgotPasswordComponent {
         }
         
         this.email = '';
+
+        alert(this.successMessage);
+        
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 1000);
       },
       error: (error) => {
         this.isLoading = false;
@@ -60,7 +66,10 @@ export class ForgotPasswordComponent {
           this.error = 'Failed to send reset link. Please try again.';
         }
         
-        console.error('Error sending reset link:', error);
+        alert(this.error);
+      },
+      complete: () => {
+        this.isLoading = false;
       }
     });
   }
