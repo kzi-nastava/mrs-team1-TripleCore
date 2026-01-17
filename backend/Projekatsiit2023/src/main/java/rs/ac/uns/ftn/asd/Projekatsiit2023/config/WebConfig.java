@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.config;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,7 @@ public class WebConfig {
             }
         };
     }
+
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) { // for calling other services

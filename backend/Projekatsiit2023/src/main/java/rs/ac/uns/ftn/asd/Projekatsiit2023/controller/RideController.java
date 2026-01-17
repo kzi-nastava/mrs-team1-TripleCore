@@ -28,6 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class  RideController {
 
     private final RideService rideService;
+
     private final RouteService routeService;
 
     public RideController(RideService rideService,
@@ -272,11 +273,11 @@ public class  RideController {
         return ResponseEntity.ok("Ride started");
     }
 
-    // Database test
+//     Database test
     @PostMapping("/create")
     public ResponseEntity<?> createTestRide(){
         try{
-            rideService.createTestRide();
+            testService.generateMockRides();
             return ResponseEntity.ok("Ride created");
         }
         catch (Exception e){

@@ -6,8 +6,12 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Driver;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 
+import java.util.List;
+
 @Repository
 public interface RideRepository extends JpaRepository<Ride, Long> {
+
+    List<Ride> findByDriverId(Long driverId);
     boolean existsByDriverAndStatus(Driver driver, RideStatus status);
     boolean existsByDriverIdAndStatus(Long driverId, RideStatus status);
 }
