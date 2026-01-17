@@ -22,7 +22,11 @@
 
     <div id="map-container">
       <h2 class="heading">Route</h2>
-      <app-map></app-map>
+      <app-map
+        [routeStart]="ride.startLocation"
+        [routeEnd]="ride.endLocation"
+        [routeStops]="ride.routeStops"
+      ></app-map>
     </div>
 
     <div class="info-container">

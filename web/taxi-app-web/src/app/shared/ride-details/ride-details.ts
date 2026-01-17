@@ -20,6 +20,7 @@ export class RideDetailsComponent implements OnInit {
   ngOnInit(): void {
     if (history.state?.ride) {
       this.ride = history.state.ride;
+      console.log('Ride details loaded:', this.ride);
     } else {
       // fallback if no ride data is present, navigate back to ride history
       this.router.navigate(['/driver-ride-history']);
