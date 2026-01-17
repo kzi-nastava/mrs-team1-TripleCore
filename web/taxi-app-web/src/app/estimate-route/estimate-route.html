@@ -3,7 +3,6 @@
     <h2>Estimate Route</h2>
 
     <form (ngSubmit)="estimateRoute()">
-
       <input
         type="text"
         placeholder="Start point"
@@ -12,6 +11,7 @@
         (input)="searchStart()"
         autocomplete="off"
         required
+        [disabled]="isLoading"
       >
 
       <ul class="results" *ngIf="startResults.length">
@@ -29,6 +29,7 @@
         (input)="searchDestination()"
         autocomplete="off"
         required
+        [disabled]="isLoading"
       >
 
       <ul class="results" *ngIf="destinationResults.length">
@@ -38,7 +39,16 @@
         </li>
       </ul>
 
-      <button type="submit">Estimate</button>
+      <button type="submit" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Estimate</span>
+        <span *ngIf="isLoading">Calculating...</span>
+      </button>
     </form>
+
+    <!-- Loading spinner -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Calculating route...</p>
+    </div>
   </div>
 </div>

@@ -88,3 +88,115 @@ input:focus {
 .buttons button[type="submit"]:hover {
   background-color: #4b0b87;
 }
+
+.loading-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #007bff;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  font-size: 14px;
+  text-align: center;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.login-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-link a.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.login-link a:hover:not(.disabled) {
+  text-decoration: underline;
+}
+
+/* Profile Picture Section Styles */
+.profile-pic-section {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.profile-pic-label {
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+}
+
+.profile-pic-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 5px;
+  cursor: pointer; 
+  transition: transform 0.2s, box-shadow 0.2s; 
+  object-fit: cover;
+}
+
+.profile-pic-preview:hover {
+  transform: scale(1.05); 
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+}
+
+.upload-text {
+  display: block;
+  margin-top: 5px;
+  color: #8e8e8e;
+  font-size: 0.9em;
+}
+
+.profile-pic-controls {
+  margin-top: 8px;
+}
+
+.remove-text {
+  color: #ff4444;
+  font-size: 0.85em;
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.remove-text:hover {
+  color: #cc0000;
+}

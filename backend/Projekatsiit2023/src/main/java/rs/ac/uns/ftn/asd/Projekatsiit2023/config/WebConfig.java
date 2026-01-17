@@ -1,15 +1,21 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.config;
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.time.Duration;
 
 @Configuration
 public class WebConfig {
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
+    public WebMvcConfigurer corsConfigurer() {  // for browser not blocking requests
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
@@ -20,5 +26,17 @@ public class WebConfig {
                         .allowCredentials(true);
             }
         };
+    }
+
+
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) { // for calling other services
+        return builder.connectTimeout(Duration.ofSeconds(10)).readTimeout(Duration.ofSeconds(30))
+                .build();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {    // for JSON serialization/deserialization
+        return new ObjectMapper();
     }
 }

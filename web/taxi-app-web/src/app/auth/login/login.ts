@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
+import { LoginService} from '../../services/auth-service/login-service';
+import { LoginResponse } from '../../models/login-response';
 
 @Component({
   selector: 'app-login',
@@ -12,40 +14,61 @@ import { Router, RouterLink } from '@angular/router';
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
-
 export class LoginComponent {
   username = '';
   password = '';
+  loading = false;
 
-  defaultDriver = {
-    email: 'driver@example.com',
-    password: 'driver123'
-  };
-
-  defaultAdmin = {
-    email: 'a',
-    password: 'a'
-  }
-
-  defaultPassenger = {
-    email: 'p',
-    password: 'p'
-  };
-
-  constructor(private router: Router) {}
+  constructor(private router: Router, private loginService: LoginService) {}
 
   login() {
-    if (this.username === this.defaultDriver.email && this.password === this.defaultDriver.password) {
-      this.router.navigate(['/driver-home']); 
-    } else if (this.username === this.defaultAdmin.email && this.password === this.defaultAdmin.password) {
-      this.router.navigate(['/admin-home']); 
-    } else if (this.username === this.defaultPassenger.email && this.password === this.defaultPassenger.password) {
-      this.router.navigate(['/passenger-home']); 
+    if (!this.username || !this.password) {
+      alert('Please enter email and password');
+      return;
     }
-    else {
-      alert('Invalid credentials');
-      this.reset();
-    }
+
+    this.loading = true;
+
+    this.loginService.login({ email: this.username, password: this.password })
+      .subscribe({
+        next: (res: LoginResponse) => {
+          console.log('Login success:', res);
+
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('role', res.role);
+          localStorage.setItem('userId', res.id.toString());
+          localStorage.setItem('userEmail', res.email);
+          localStorage.setItem('userFirstName', res.firstName);
+          localStorage.setItem('userLastName', res.lastName);
+          if (res.driverAvailable !== undefined) {
+            localStorage.setItem('driverAvailable', res.driverAvailable.toString());
+          }
+
+          switch (res.role) {
+            case 'DRIVER':
+              this.router.navigate(['/driver-home']);
+              break;
+            case 'ADMIN':
+              this.router.navigate(['/admin-home']);
+              break;
+            case 'PASSENGER':
+              this.router.navigate(['/passenger-home']);
+              break;
+            default:
+              alert('Unknown role');
+          }
+
+          this.reset();
+        },
+        error: (err) => {
+          console.error('Login error:', err);
+          alert(err.error?.message || 'Invalid credentials');
+          this.reset();
+        },
+        complete: () => {
+          this.loading = false;
+        }
+      });
   }
 
   reset() {

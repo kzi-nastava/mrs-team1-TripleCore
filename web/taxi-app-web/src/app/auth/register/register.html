@@ -1,25 +1,52 @@
 <div class="register-page">
   <div class="register-container">
 
-    <label class="profile-pic">
-      <img [src]="profilePic" alt="Profile Picture">
-      <input type="file" (change)="onFileSelected($event)" hidden accept="image/*">
-    </label>
-    <p class="profile-pic-instruction">Click the image to change profile picture</p>
+    <div class="profile-pic-section">
+      <label class="profile-pic-label">
+        <img [src]="profilePic" alt="Profile Picture" class="profile-pic-preview">
+        <input type="file" (change)="onFileSelected($event)" hidden accept="image/*">
+        <span class="upload-text">Click to upload photo</span>
+      </label>
+      
+      <div class="profile-pic-controls" *ngIf="profilePic !== 'icons/profile.png'">
+        <button type="button" (click)="removeProfilePicture()" class="remove-text">
+          Remove Photo
+        </button>
+      </div>
+    </div>
 
-    <form (ngSubmit)="register()">
-      <input type="text" placeholder="First Name" [(ngModel)]="firstName" name="firstName" required>
-      <input type="text" placeholder="Last Name" [(ngModel)]="lastName" name="lastName" required>
-      <input type="text" placeholder="Address" [(ngModel)]="address" name="address" required>
-      <input type="text" placeholder="Phone" [(ngModel)]="phone" name="phone" required>
-      <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required>
-      <input type="password" placeholder="Password" [(ngModel)]="password" name="password" required>
-      <input type="password" placeholder="Confirm Password" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+    <form (ngSubmit)="register()" #registerForm="ngForm">
+      <input type="text" placeholder="First Name *" [(ngModel)]="firstName" name="firstName" required>
+      <input type="text" placeholder="Last Name *" [(ngModel)]="lastName" name="lastName" required>
+      <input type="text" placeholder="Address *" [(ngModel)]="address" name="address" required>
+      <input type="text" placeholder="Phone *" [(ngModel)]="phone" name="phone" required>
+      <input type="email" placeholder="Email *" [(ngModel)]="email" name="email" required>
+      <input type="password" placeholder="Password * (min 6 characters)" [(ngModel)]="password" name="password" required minlength="6">
+      <input type="password" placeholder="Confirm Password *" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+
+      <!-- Loading indicator -->
+      <div *ngIf="loading" class="loading-message">
+        <div class="spinner"></div>
+        Registering your account...
+      </div>
+
+      <!-- Error message -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
 
       <div class="buttons">
-        <button type="button" (click)="cancel()">Reset</button>
-        <button type="submit">Register</button>
+        <button type="button" (click)="cancel()" [disabled]="loading">Cancel</button>
+        <button type="submit" [disabled]="loading || !registerForm.form.valid">
+          <span *ngIf="!loading">Register</span>
+          <span *ngIf="loading">Processing...</span>
+        </button>
       </div>
+
+      <!-- Login link -->
+      <p class="login-link">
+        Already have an account? <a routerLink="/login" [class.disabled]="loading">Sign In</a>
+      </p>
     </form>
   </div>
 </div>

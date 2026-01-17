@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AdminRideHistoryTableComponent } from '../admin-ride-history-table/admin-ride-history-table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
+import { LogoutService } from '../../services/auth-service/logout-service';
 
 @Component({
   selector: 'app-admin-ride-history',
@@ -14,11 +15,9 @@ import { CommonModule } from '@angular/common';
 })
 
 export class AdminRideHistoryComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private logoutService: LogoutService) {}
 
-  logout(): void {
-    if (confirm('Are you sure you want to log out?')) {
-      this.router.navigate(['/login']);
-    }
+  onLogoutClick() {
+    this.logoutService.logoutWithBackend();
   }
 }

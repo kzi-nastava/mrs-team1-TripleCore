@@ -35,6 +35,4 @@ public class DriverProfileChangeRequestResponse {
     public DriverUpdateRequestStatus getStatus() {
         return status;
     }
-
-
 }

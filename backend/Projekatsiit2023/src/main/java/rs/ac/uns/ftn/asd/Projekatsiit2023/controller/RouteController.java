@@ -20,7 +20,7 @@ public class RouteController {
 
     @PostMapping("/create")
     public ResponseEntity<?> CreateTestRoute(){
-        routeService.CreateTestRoute();
+        routeService.createTestRoute();
         return ResponseEntity.ok("Route created.");
     }
 

@@ -5,12 +5,13 @@ import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { UserInfoComponent } from '../../user-info/user-info';
+import { LogoutService } from '../../services/auth-service/logout-service';
 
 @Component({
   selector: 'app-driver-additional-info',
   imports: [CommonModule, NavbarComponent, MatTooltipModule, RouterModule, UserInfoComponent],
   templateUrl: './driver-additional-info.html',
-  styleUrl: './driver-additional-info.css',
+  styleUrls: ['./driver-additional-info.css'],
 })
 export class DriverAdditionalInfo {
   isActive: boolean = true;
@@ -25,12 +26,10 @@ export class DriverAdditionalInfo {
   petsTransportAvailable: boolean = true;
   
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private logoutService: LogoutService) {}
   
-  logout(): void {
-    if (confirm('Are you sure you want to log out?')) {
-      this.router.navigate(['/login']);
-    }
+  onLogoutClick() {
+    this.logoutService.logoutWithBackend();
   }
 
   toggleActive() {
