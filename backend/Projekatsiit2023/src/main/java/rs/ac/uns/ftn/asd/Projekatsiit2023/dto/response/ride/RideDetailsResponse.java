@@ -2,13 +2,11 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride;
 
 import lombok.Getter;
 import lombok.Setter;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.ReviewDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Location;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Review;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.models.User;
 
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,6 +39,6 @@ public class RideDetailsResponse {
     private double price;
     private RideStatus status;
     private UserRole cancelledBy;
-    private List<Review> reviews;
+    private List<ReviewDTO> reviews;
     private String inconsistencies;
 }
