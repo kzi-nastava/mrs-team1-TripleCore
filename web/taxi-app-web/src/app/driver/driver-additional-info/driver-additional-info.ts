@@ -9,11 +9,11 @@ import { LogoutService } from '../../services/auth-service/logout-service';
 
 @Component({
   selector: 'app-driver-additional-info',
-  imports: [CommonModule, NavbarComponent, MatTooltipModule, RouterModule, UserInfoComponent],
+  imports: [CommonModule, NavbarComponent, MatTooltipModule, RouterModule],
   templateUrl: './driver-additional-info.html',
   styleUrls: ['./driver-additional-info.css'],
 })
-export class DriverAdditionalInfo {
+export class DriverAdditionalInfoComponent {
   isActive: boolean = true;
 
   activeLast24Hours: number = 8;

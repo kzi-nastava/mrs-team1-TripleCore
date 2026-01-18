@@ -75,11 +75,15 @@ const routes: Routes = [
   },
   {
     path: 'driver-additional-info',
-    loadComponent: () => import('./driver/driver-additional-info/driver-additional-info').then(m => m.DriverAdditionalInfo)
+    loadComponent: () => import('./driver/driver-additional-info/driver-additional-info').then(m => m.DriverAdditionalInfoComponent)
   },
   {
     path: 'register-driver',
     loadComponent: () => import('./auth/register-driver/driver-registration-component/driver-registration-component').then(m => m.DriverRegistrationComponent)
+  },
+  {
+    path: 'order-ride-registered-user',
+    loadComponent: () => import('./passenger/order-ride-registered-user/order-ride-registered-user').then(m => m.OrderRideRegisteredUser)
   },
   {
     path: '**',
