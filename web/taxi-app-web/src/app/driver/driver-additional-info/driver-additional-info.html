@@ -17,8 +17,8 @@
     <span [matTooltip]="isActive ? 'Must go Inactive first' : ''">
       <button class="nav-link nav-btn" 
               (click)="onLogoutClick()" 
-              [disabled]="isActive">
-        Log out
+              [disabled]="isActive || isLoading">
+        {{ isLoading ? '...' : 'Log out' }}
       </button>
     </span>
   </li>

@@ -14,6 +14,7 @@ import java.util.List;
 @Setter
 public class RideDetailsResponse {
     // passengers
+    private Long id;
     private String ordererName;
     private List<String> linkedPassengers;
 

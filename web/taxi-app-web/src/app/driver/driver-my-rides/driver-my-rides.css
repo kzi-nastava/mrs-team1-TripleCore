@@ -18,7 +18,6 @@
   padding-bottom: 12px;
 }
 
-/* Filter section */
 .filter-container {
   display: flex;
   gap: 16px;
@@ -62,7 +61,6 @@
   background-color: #f2f0f7;
 }
 
-/* Table styles */
 .rides-table {
   width: 100%;
   border-collapse: collapse;
@@ -89,7 +87,6 @@
   background-color: #f9f9f9;
 }
 
-/* Passenger cell */
 .passenger-cell {
   display: flex;
   align-items: center;
@@ -188,7 +185,6 @@
   height: 14px;
 }
 
-/* Status badges */
 .status-badge {
   display: inline-block;
   padding: 6px 12px;
@@ -199,7 +195,7 @@
   min-width: 90px;
 }
 
-.status-badge.assigned {
+.status-badge.accepted {
   background-color: #e3f2fd;
   color: #1976d2;
   border: 1px solid #bbdefb;
@@ -223,7 +219,6 @@
   border: 1px solid #ffcdd2;
 }
 
-/* Price cell */
 .price-cell {
   font-weight: 600;
   color: #333;
@@ -235,7 +230,6 @@
   font-style: italic;
 }
 
-/* Actions cell */
 .actions-cell {
   display: flex;
   gap: 8px;
@@ -301,7 +295,6 @@
   background-color: #ffe0b2;
 }
 
-/* Empty state */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -337,7 +330,6 @@
   background-color: #f2f0f7;
 }
 
-/* Responsive design */
 @media (max-width: 1200px) {
   .displayedColumns {
     font-size: 12px;
@@ -369,4 +361,16 @@
     width: 32px;
     height: 32px;
   }
+}
+
+.status-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.nav-btn:disabled {
+  background-color: #cccccc !important; 
+  color: #666666 !important;          
+  cursor: not-allowed;
+  opacity: 0.5;       
 }

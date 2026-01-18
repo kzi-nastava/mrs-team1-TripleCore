@@ -1,4 +1,5 @@
 export interface RideDetailsResponse {
+  id: number;
   ordererName: string;
   linkedPassengers: string[];
   driverName: string;
@@ -38,8 +39,9 @@ export interface ReviewDTO {
 }
 
 export type RideStatus =
-  | 'CREATED'
+  | 'REQUESTED'
   | 'ACCEPTED'
-  | 'STARTED'
-  | 'FINISHED'
-  | 'CANCELLED';
+  | 'REJECTED'
+  | 'IN_PROGRESS'
+  | 'CANCELLED'
+  | 'FINISHED';

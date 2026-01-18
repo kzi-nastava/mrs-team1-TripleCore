@@ -29,7 +29,7 @@ const routes: Routes = [
     loadComponent: () => import('./home/home').then(m => m.HomeComponent)
   },
   {
-    path: 'driver-home/',
+    path: 'driver-home',
     loadComponent: () => import('./driver/driver-home/driver-home').then(m => m.DriverHomeComponent)
   },
   {

@@ -1,7 +1,9 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response;
 
+import lombok.Getter;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
 
+@Getter
 public class RideCancelResponse {
     private boolean success = true;
     private CancelerType cancelledBy;
@@ -13,7 +15,4 @@ public class RideCancelResponse {
         this.reason = reason;
     }
 
-    public boolean isSuccess() { return success; }
-    public CancelerType getCancelledBy() { return cancelledBy; }
-    public String getReason() { return reason; }
 }

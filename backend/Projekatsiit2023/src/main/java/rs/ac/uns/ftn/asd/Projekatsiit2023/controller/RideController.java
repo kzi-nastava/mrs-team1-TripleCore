@@ -16,6 +16,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideStopResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideCancelService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RouteService;
 
@@ -28,13 +29,15 @@ import java.util.concurrent.ThreadLocalRandom;
 public class  RideController {
 
     private final RideService rideService;
-
     private final RouteService routeService;
+    private final RideCancelService rideCancelService;
 
     public RideController(RideService rideService,
-                          RouteService routeService){
+                          RouteService routeService,
+                          RideCancelService rideCancelService){
         this.rideService = rideService;
         this.routeService = routeService;
+        this.rideCancelService = rideCancelService;
     }
 
     @PostMapping("/estimate")
@@ -44,36 +47,23 @@ public class  RideController {
         RideEstimateResponse response = routeService.calculateRoute(request);
         return ResponseEntity.ok(response);
     }
+
     @PostMapping("/{id}/cancel")
     public ResponseEntity<?> cancelRide(
             @PathVariable("id") Long id,
             @Valid @RequestBody RideCancelRequest request) {
 
-        if (!rideExists(id)) {
-            return ResponseEntity.status(404)
-                    .body("Ride with ID " + id + " not found");
+        try {
+            RideCancelResponse response = rideCancelService.cancelRide(id, request);
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error cancelling ride: " + e.getMessage());
         }
-
-        CancelerType cancelerType = request.getCancelerType();
-        String reason = request.getReason();
-
-        if (cancelerType == CancelerType.DRIVER && (reason == null || reason.trim().isEmpty())) {
-            return ResponseEntity.badRequest()
-                    .body("Driver must provide a cancellation reason");
-        }
-
-        if (cancelerType == CancelerType.PASSENGER) {
-            if (!canPassengerCancel(id)) {
-                return ResponseEntity.badRequest()
-                        .body("Passenger can only cancel 10 minutes before ride start");
-            }
-        }
-
-        boolean success = true;
-
-        RideCancelResponse response = new RideCancelResponse(success, cancelerType, reason);
-
-        return ResponseEntity.ok(response);
     }
 
     private boolean canPassengerCancel(Long id) {
