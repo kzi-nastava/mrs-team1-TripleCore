@@ -277,7 +277,7 @@ public class  RideController {
     @PostMapping("/create")
     public ResponseEntity<?> createTestRide(){
         try{
-            testService.generateMockRides();
+//            testService.generateMockRides();
             return ResponseEntity.ok("Ride created");
         }
         catch (Exception e){

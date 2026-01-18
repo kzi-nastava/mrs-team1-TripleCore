@@ -19,6 +19,8 @@ export class MapComponent implements AfterViewInit, OnChanges {
   private markersLayer?: L.LayerGroup;
   private routeLayer?: L.GeoJSON;
 
+  private mapCentered: boolean = false;
+
   @Input() vehicleLocations: VehicleLocation[] = [];
   @Input() routeStart!: LocationDTO;
   @Input() routeEnd!: LocationDTO;
@@ -66,7 +68,10 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
   ngAfterViewInit(): void {
     this.initMap();
-    this.renderMarkers();
+    if (this.vehicleLocations)
+      this.renderMarkers();
+
+    if (this.routeStart && this.routeEnd)
     this.loadRoute();
 
     if (this.routeData) {
@@ -105,7 +110,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
     this.markersLayer = L.layerGroup(
       this.vehicleLocations.map(loc => {
-        const marker = L.marker([loc.latitude, loc.longitude], { icon: this.redIcon });
+        const marker = L.marker([loc.latitude, loc.longitude], { icon: loc.available ? this.greenIcon : this.redIcon });
         marker.bindPopup(loc.available ? 'Available' : 'Not Available');
         return marker;
       })
@@ -113,11 +118,12 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
     this.markersLayer.addTo(this.map);
 
-    if (this.vehicleLocations.length > 0) {
+    if (this.vehicleLocations.length > 0 && !this.mapCentered) {
       const bounds = L.latLngBounds(
         this.vehicleLocations.map(l => [l.latitude, l.longitude] as [number, number])
       );
       this.map.fitBounds(bounds, { padding: [30, 30] });
+      this.mapCentered = true;
     }
   }
 

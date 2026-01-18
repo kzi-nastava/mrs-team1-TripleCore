@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { NavbarComponent } from '../shared/navbar/navbar';
 import { RouterModule } from '@angular/router';
 import { MapComponent } from '../map/map';
@@ -25,11 +25,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private vehicleService: VehicleService,
-    private routeSharingService: RouteSharingService
+    private routeSharingService: RouteSharingService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    // this.startPolling();
+    this.startPolling();
     
     this.subscribeToRouteChanges();
   }
@@ -50,6 +51,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: locations => {
         this.vehicleLocations = [...locations];
+        this.cdr.detectChanges();
       },
       error: err => console.error(err)
     });
