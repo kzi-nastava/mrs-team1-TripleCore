@@ -66,8 +66,8 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
   ngAfterViewInit(): void {
     this.initMap();
-    this.renderMarkers();
-    this.loadRoute();
+    // this.renderMarkers();
+    // this.loadRoute();
 
     if (this.routeData) {
       this.drawRoute();
