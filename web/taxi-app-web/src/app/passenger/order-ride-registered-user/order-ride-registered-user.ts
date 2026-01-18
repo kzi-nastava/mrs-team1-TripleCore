@@ -13,7 +13,6 @@ import { OsmService } from '../../services/osm';
 export class OrderRideRegisteredUser {
   @Output() rideOrderedEvent = new EventEmitter<void>();
 
-  // Kontrola vidljivosti rezultata
   isStartFocused = false;
   isDestFocused = false;
   activeStationIndex: number | null = null;
@@ -28,11 +27,11 @@ export class OrderRideRegisteredUser {
   stations: any[] = [{ query: "", results: [], location: null }];
   passengersEmails: string[] = [""];
   startTime: string = "";
+  selectedVehicle: string = 'STANDARD';
   babyTransport: boolean = false;
   petsTransport: boolean = false;
 
   constructor(private osmService: OsmService) {}
-
 
   searchStartPoint() {
     if (this.startPointQuery.length < 3) { this.startPointResults = []; return; }
@@ -43,7 +42,6 @@ export class OrderRideRegisteredUser {
     if (this.destinationPointQuery.length < 3) { this.destinationPointResults = []; return; }
     this.osmService.search(this.destinationPointQuery).subscribe(res => this.destinationPointResults = res);
   }
-
 
   hideStartResults() { setTimeout(() => this.isStartFocused = false, 200); }
   hideDestResults() { setTimeout(() => this.isDestFocused = false, 200); }
@@ -62,7 +60,6 @@ export class OrderRideRegisteredUser {
     this.destinationPointResults = [];
     this.isDestFocused = false;
   }
-
 
   searchStation(index: number) {
     const station = this.stations[index];
@@ -83,50 +80,25 @@ export class OrderRideRegisteredUser {
     else this.stations[0] = { query: "", results: [], location: null };
   }
 
-
   addPassengerEmail() { this.passengersEmails.push(""); }
   removePassengerEmail(index: number) { if (this.passengersEmails.length > 1) this.passengersEmails.splice(index, 1); }
-  trackByFn(index: any, item: any) { return index; }
-
-
-  private isValidEmail(email: string): boolean {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
-
-  private isValidTime(time: string): boolean {
-    return /^([01]\d|2[0-3]):([0-5]\d)$/.test(time);
-  }
+  trackByFn(index: any) { return index; }
 
   orderRide() {
     if (!this.startPointLocation || !this.destinationPointLocation) {
-      alert("Please select both start and destination points from the list.");
-      return;
+      alert("Please select points from the list."); return;
     }
-
-    if (this.startTime && !this.isValidTime(this.startTime)) {
-      alert("Invalid time! Use 24h format (e.g. 14:30).");
-      return;
-    }
-
-    const filledEmails = this.passengersEmails.filter(e => e.trim() !== "");
-    for (let email of filledEmails) {
-      if (!this.isValidEmail(email)) {
-        alert(`Email "${email}" is not valid.`);
-        return;
-      }
-    }
-
     const rideOrder = {
       startPoint: this.startPointLocation,
       destinationPoint: this.destinationPointLocation,
       stations: this.stations.map(s => s.location).filter(l => l !== null),
-      passengersEmails: filledEmails,
+      passengersEmails: this.passengersEmails.filter(e => e.trim() !== ""),
       scheduledTime: this.startTime,
+      vehicleType: this.selectedVehicle,
       options: { babyTransport: this.babyTransport, petsTransport: this.petsTransport }
     };
-
-    console.log("RIDE ORDER READY:", rideOrder);
-    alert("Ride ordered successfully!");
+    console.log("ORDERED:", rideOrder);
+    alert("Ride ordered!");
     this.clearForm();
     this.rideOrderedEvent.emit();
   }
@@ -136,8 +108,7 @@ export class OrderRideRegisteredUser {
     this.startPointLocation = null; this.destinationPointLocation = null;
     this.stations = [{ query: "", results: [], location: null }];
     this.passengersEmails = [""]; this.startTime = "";
+    this.selectedVehicle = 'STANDARD';
     this.babyTransport = false; this.petsTransport = false;
-    this.isStartFocused = false; this.isDestFocused = false;
-    this.activeStationIndex = null;
   }
 }

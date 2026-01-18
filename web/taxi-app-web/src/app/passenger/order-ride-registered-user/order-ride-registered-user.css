@@ -1,11 +1,10 @@
-
 .orderRide-backdrop {
   font-family: 'Istok Web', sans-serif;
   position: fixed; 
   top: 80px; 
-  left: 0;
   right: 0;
   bottom: 0;
+  width: 100%;
   display: flex;
   justify-content: flex-end; 
   align-items: flex-start;
@@ -15,181 +14,194 @@
   pointer-events: none; 
 }
 
-
 .orderRide-container {
   background: white;
   padding: 25px;
   border-radius: 20px;
   width: 100%;
-  max-width: 450px; 
-  box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+  max-width: 400px; 
+  box-shadow: -5px 5px 20px rgba(0,0,0,0.15);
   pointer-events: auto; 
   max-height: calc(100vh - 120px); 
   overflow-y: auto;
   border: 1px solid #eee;
 }
 
-.form-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.form-grid { 
+    display: flex; flex-direction: column; gap: 5px; 
 }
 
 section {
-  margin-bottom: 20px;
+     margin-bottom: 15px; 
 }
+
 
 h3 {
-  color: #600EA8;
-  font-size: 1.05rem;
-  margin-bottom: 12px;
-  font-weight: bold;
-  border-left: 4px solid #600EA8;
-  padding-left: 10px;
+    color: #600EA8;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+    border-left: 4px solid #600EA8;
+    padding-left: 10px; 
 }
 
-
 .field-group {
-  position: relative;
-  margin-bottom: 12px;
+     position: relative; 
+     margin-bottom: 10px; 
 }
 
 .input-wrapper {
-  display: flex;
-  align-items: center;
-  background-color: #f0f0f0;
-  border-radius: 30px;
-  padding: 6px 15px;
-  border: 1px solid transparent;
-  transition: all 0.3s ease;
+    display: flex;
+    align-items: center; 
+    background-color: #f5f5f5; 
+    border-radius: 25px; 
+    padding: 5px 15px; 
+    border: 1px solid transparent; 
 }
+
 
 .input-wrapper:focus-within {
-  border-color: #600EA8;
-  background-color: #fff;
-  box-shadow: 0 0 8px rgba(96, 14, 168, 0.1);
-}
-
-.input-wrapper input {
-  border: none;
-  background: transparent;
-  width: 100%;
-  padding: 8px;
-  outline: none;
-  font-size: 14px;
-}
-
-.results {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  max-height: 150px;
-  overflow-y: auto;
-  border-radius: 12px;
-  background-color: #ffffff;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  position: absolute; 
-  z-index: 1100; 
-  width: 100%; 
-  top: 45px;
-  border: 1px solid #eee;
-}
-
-.results li {
-  padding: 10px 15px;
-  cursor: pointer;
-  font-size: 13px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.results li:hover { background-color: #f3e5f5; color: #600EA8; }
-
-
-.options-section {
-  background: #f9f4ff;
-  padding: 15px;
-  border-radius: 15px;
-  margin-bottom: 15px;
-}
-
-.option-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.option-label { color: #600EA8; font-weight: bold; font-size: 13px; }
-
-.radio-container {
-  position: relative;
-  padding-left: 22px;
-  margin-left: 10px;
-  cursor: pointer;
-  font-size: 13px;
-  display: inline-block;
-}
-
-.radio-container input { position: absolute; opacity: 0; }
-
-.checkmark {
-  position: absolute;
-  left: 0; top: 0;
-  height: 16px; width: 16px;
-  background-color: #fff;
-  border: 2px solid #600EA8;
-  border-radius: 50%;
-}
-
-.radio-container input:checked ~ .checkmark::after {
-  content: "";
-  position: absolute;
-  top: 3px; left: 3px;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: #600EA8;
+     border-color: #600EA8; 
+     background-color: #fff; 
 }
 
 
-.btn-primary {
-  background-color: #600EA8;
-  color: white;
-  border: none;
-  padding: 12px 0;
-  width: 100%; 
-  border-radius: 30px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 15px;
+.input-wrapper input { 
+    border: none; 
+    background: transparent; 
+    width: 100%; 
+    padding: 8px; 
+    outline: none; 
+    font-size: 14px; 
 }
 
-.btn-secondary {
-  background-color: #600EA8;
-  color: white;
-  border: none;
-  padding: 6px 15px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 11px;
+.results { 
+    position: absolute; 
+    z-index: 1100; 
+    width: 100%; 
+    top: 45px; 
+    background: white; 
+    border-radius: 10px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+    max-height: 150px; 
+    overflow-y: auto; 
+    padding: 0; 
+    list-style: none; 
+    border: 1px solid #eee; 
 }
 
-.action-buttons {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+
+.results li { 
+    padding: 10px 15px; 
+    cursor: pointer; 
+    font-size: 13px;
+    border-bottom: 1px solid #f9f9f9; 
 }
 
-.icon img, .delete-icon img { width: 18px; height: 18px; vertical-align: middle; }
-.delete-icon { cursor: pointer; }
+.results li:hover { 
+    background-color: #f3e5f5; 
+}
 
-@media (max-width: 850px) {
-  .orderRide-backdrop {
-    justify-content: center;
-    padding: 10px;
-    top: 60px;
-  }
-  .orderRide-container {
-    max-width: 100%;
-  }
+
+.options-section { 
+    background: #fbf9ff;
+    padding: 15px;
+    border-radius: 15px; 
+}
+
+.option-row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 8px; 
+}
+
+.option-label { 
+    color: #600EA8; 
+    font-weight: bold; 
+    font-size: 13px; 
+}
+
+.radio-group-vertical {
+     display: flex; 
+     flex-direction: column; 
+     gap: 10px; 
+}
+
+.radio-container { 
+    position: relative; 
+    padding-left: 28px; 
+    cursor: pointer; 
+    font-size: 14px; 
+    display: block; 
+    color: #444; 
+}
+
+.radio-container input { 
+    position: absolute; 
+    opacity: 0; 
+    cursor: pointer; 
+}
+
+
+.checkmark { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    height: 18px; 
+    width: 18px; 
+    background-color: #fff; 
+    border: 2px solid #600EA8; 
+    border-radius: 50%; 
+}
+
+.radio-container input:checked ~ .checkmark::after { 
+    content: ""; 
+    position: absolute; 
+    top: 3px; 
+    left: 3px; 
+    width: 8px; 
+    height: 8px; 
+    border-radius: 50%; 
+    background: #600EA8; 
+}
+
+.btn-primary { 
+    background-color: #600EA8; 
+    color: white; 
+    border: none; 
+    padding: 12px; 
+    width: 100%; 
+    border-radius: 25px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    margin-top: 10px; 
+}
+
+.btn-secondary { 
+    background-color: #f0e6ff; 
+    color: #600EA8; 
+    border: none; 
+    padding: 6px 15px; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-size: 11px; 
+    font-weight: bold; 
+}
+
+.icon img, .delete-icon img { 
+    width: 18px; 
+    height: 18px; 
+}
+
+.margin-bottom-15 { 
+    margin-bottom: 15px; 
+}
+
+@media (max-width: 600px) {
+     .orderRide-backdrop { 
+        justify-content: center; 
+        top: 70px;
+     } .orderRide-container { 
+        max-width: 95%; }
 }
