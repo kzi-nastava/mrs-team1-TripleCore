@@ -195,7 +195,7 @@
   min-width: 90px;
 }
 
-.status-badge.assigned {
+.status-badge.accepted {
   background-color: #e3f2fd;
   color: #1976d2;
   border: 1px solid #bbdefb;
@@ -295,7 +295,6 @@
   background-color: #ffe0b2;
 }
 
-/* Empty state */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -331,7 +330,6 @@
   background-color: #f2f0f7;
 }
 
-/* Responsive design */
 @media (max-width: 1200px) {
   .displayedColumns {
     font-size: 12px;

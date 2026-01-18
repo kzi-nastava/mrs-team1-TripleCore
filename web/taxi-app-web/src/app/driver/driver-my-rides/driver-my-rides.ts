@@ -16,24 +16,10 @@ import { DriverCancelRideDialogComponent } from '../driver-cancel-ride-dialog/dr
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoutService } from '../../services/auth-service/logout-service';
 import { DriverStatusService } from '../../services/driver-service/driver-status-service';
-
-interface Ride {
-  id: number;
-  passengerName: string;
-  passengerImage: string;
-  passengerRating: number;
-  pickup: string;
-  destination: string;
-  date: Date;
-  scheduledTime: string;
-  estimatedEnd: string;
-  duration: number;
-  price: number;
-  status: 'ASSIGNED' | 'STARTED' | 'FINISHED' | 'CANCELED';
-  panic: boolean;
-  vehicleType: string;
-  notes: string;
-}
+import { FrontendRide, adaptToFrontendRide, } from '../../utils/ride-adapter';
+import { RideStatus } from '../../models/ride-details-response';
+import { DriverService } from '../../services/driver-service';
+import { RideService } from '../../services/ride-service/ride-service';
 
 @Component({
   selector: 'app-driver-my-rides',
@@ -58,99 +44,12 @@ interface Ride {
   styleUrls: ['./driver-my-rides.css']
 })
 export class DriverMyRidesComponent implements OnInit {
+  allRides: FrontendRide[] = [];
+  filteredRides: FrontendRide[] = [];
+  
+  displayedColumns: string[] = ['passenger', 'route', 'datetime', 'status', 'price', 'actions'];
 
-  allRides: Ride[] = [
-    {
-      id: 12345,
-      passengerName: 'Ana Anić',
-      passengerImage: 'assets/avatars/avatar1.jpg',
-      passengerRating: 4.8,
-      pickup: 'Bulevar kralja Aleksandra 123',
-      destination: 'Nikola Tesla Airport',
-      date: new Date(),
-      scheduledTime: '14:30',
-      estimatedEnd: '15:15',
-      duration: 45,
-      price: 1250,
-      status: 'ASSIGNED',
-      panic: false,
-      vehicleType: 'STANDARD',
-      notes: '2 suitcases'
-    },
-    {
-      id: 12346,
-      passengerName: 'Marko Marković',
-      passengerImage: 'assets/avatars/avatar2.jpg',
-      passengerRating: 4.5,
-      pickup: 'Kneza Mihaila 45',
-      destination: 'Ada Mall',
-      date: new Date(Date.now() - 86400000), // yesterday
-      scheduledTime: '10:00',
-      estimatedEnd: '10:25',
-      duration: 25,
-      price: 650,
-      status: 'STARTED',
-      panic: false,
-      vehicleType: 'LUXURY',
-      notes: ''
-    },
-    {
-      id: 12347,
-      passengerName: 'Ivana Ivić',
-      passengerImage: '',
-      passengerRating: 4.9,
-      pickup: 'Trg Republike',
-      destination: 'Novi Beograd, Blok 45',
-      date: new Date(Date.now() - 172800000), // 2 days ago
-      scheduledTime: '16:45',
-      estimatedEnd: '17:10',
-      duration: 25,
-      price: 580,
-      status: 'FINISHED',
-      panic: false,
-      vehicleType: 'STANDARD',
-      notes: 'Pet friendly needed'
-    },
-    {
-      id: 12348,
-      passengerName: 'Petar Petrović',
-      passengerImage: 'assets/avatars/avatar3.jpg',
-      passengerRating: 3.8,
-      pickup: 'Zemun, Kej oslobođenja',
-      destination: 'Voždovac, Kumodraška',
-      date: new Date(Date.now() - 259200000), // 3 days ago
-      scheduledTime: '08:30',
-      estimatedEnd: '09:00',
-      duration: 30,
-      price: 720,
-      status: 'CANCELED',
-      panic: true,
-      vehicleType: 'VAN',
-      notes: 'Cancelled by driver'
-    },
-    {
-      id: 12349,
-      passengerName: 'Jelena Jelenić',
-      passengerImage: 'assets/avatars/avatar4.jpg',
-      passengerRating: 4.7,
-      pickup: 'Banovo brdo',
-      destination: 'Slavija Square',
-      date: new Date(Date.now() + 86400000), // tomorrow
-      scheduledTime: '19:00',
-      estimatedEnd: '19:35',
-      duration: 35,
-      price: 890,
-      status: 'ASSIGNED',
-      panic: false,
-      vehicleType: 'STANDARD',
-      notes: 'Baby seat needed'
-    }
-  ];
-
-  filteredRides: Ride[] = [];
-  displayedColumns: string[] = ['id', 'passenger', 'route', 'datetime', 'status', 'price', 'actions'];
-
-  statusFilter: string = 'ALL';
+  statusFilter: RideStatus | 'ALL' = 'ALL';
   fromDate: Date | null = null;
   toDate: Date | null = null;
 
@@ -162,114 +61,241 @@ export class DriverMyRidesComponent implements OnInit {
     private router: Router,
     private datePipe: DatePipe,
     private logoutService: LogoutService,
-    private driverStatusService: DriverStatusService
+    private driverStatusService: DriverStatusService,
+    private driverService: DriverService,
+    private rideService: RideService
   ) {}
 
   ngOnInit(): void {
-    this.filteredRides = [...this.allRides];
-    this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
-
+    this.loadRides();
     this.isActive = this.driverStatusService.isActive();
   }
 
-  applyFilters(): void {
-    this.filteredRides = this.allRides.filter(ride => {
-      if (this.statusFilter !== 'ALL' && ride.status !== this.statusFilter) return false;
+  private getDriverId(): number {
+    try {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        if (user.id) {
+          return user.id;
+        }
+      }
+      
+      const driverId = localStorage.getItem('driverId');
+      if (driverId) {
+        return parseInt(driverId, 10);
+      }
+      
+      console.warn('No driver ID found in localStorage, using default ID 1');
+      return 1;
+    } catch (error) {
+      console.error('Error getting driver ID from localStorage:', error);
+      return 1;
+    }
+  }
 
-      if (this.fromDate) {
-        const from = new Date(this.fromDate);
-        from.setHours(0, 0, 0, 0);
+  loadRides(): void {
+    this.isLoading = true;
+    
+    const driverId = this.getDriverId();
+    console.log('Loading rides for driver ID:', driverId);
+    
+    this.driverService.getRideHistory(driverId).subscribe({
+      next: (backendRides) => {
+        console.log('Backend rides received:', backendRides);
+        
+        this.allRides = backendRides.map(ride => adaptToFrontendRide(ride));
+        console.log('Converted to frontend rides:', this.allRides);
+        
+        this.filteredRides = [...this.allRides];
+        
+        this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
+        
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading rides from backend:', error);
+        this.isLoading = false;
+        
+        this.allRides = [];
+        this.filteredRides = [];
+        alert('Could not load rides. Please try again later.');
+      }
+    });
+  }
+
+  applyFilters(): void {
+    let filtered = this.allRides;
+
+    if (this.statusFilter !== 'ALL') {
+      filtered = filtered.filter(ride => ride.status === this.statusFilter);
+    }
+
+    if (this.fromDate) {
+      const from = new Date(this.fromDate);
+      from.setHours(0, 0, 0, 0);
+      filtered = filtered.filter(ride => {
         const rideDate = new Date(ride.date);
         rideDate.setHours(0, 0, 0, 0);
-        if (rideDate < from) return false;
-      }
+        return rideDate >= from;
+      });
+    }
 
-      if (this.toDate) {
-        const to = new Date(this.toDate);
-        to.setHours(23, 59, 59, 999);
+    if (this.toDate) {
+      const to = new Date(this.toDate);
+      to.setHours(23, 59, 59, 999);
+      filtered = filtered.filter(ride => {
         const rideDate = new Date(ride.date);
         rideDate.setHours(23, 59, 59, 999);
-        if (rideDate > to) return false;
-      }
+        return rideDate <= to;
+      });
+    }
 
-      return true;
-    });
-
-    this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
+    this.filteredRides = filtered.sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 
   clearFilters(): void {
     this.statusFilter = 'ALL';
     this.fromDate = null;
     this.toDate = null;
+    
     this.filteredRides = [...this.allRides];
     this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 
   getStatusClass(status: string): string {
-    return status.toLowerCase();
+    const statusClassMap: {[key: string]: string} = {
+      'REQUESTED': 'requested',
+      'ACCEPTED': 'accepted',
+      'REJECTED': 'canceled',
+      'IN_PROGRESS': 'started',
+      'CANCELLED': 'canceled',
+      'FINISHED': 'finished'
+    };
+    return statusClassMap[status] || status.toLowerCase();
   }
 
   getStatusText(status: string): string {
     switch(status) {
-      case 'ASSIGNED': return 'Assigned';
-      case 'STARTED': return 'In Progress';
+      case 'REQUESTED': return 'Requested';
+      case 'ACCEPTED': return 'Accepted';
+      case 'REJECTED': return 'Rejected';
+      case 'IN_PROGRESS': return 'In Progress';
+      case 'CANCELLED': return 'Canceled';
       case 'FINISHED': return 'Finished';
-      case 'CANCELED': return 'Canceled';
       default: return status;
     }
   }
 
-  openCancelDialog(ride: Ride): void {
+  openCancelDialog(ride: FrontendRide): void {
+    if (ride.status !== 'ACCEPTED') {
+      alert('Only accepted rides can be canceled.');
+      return;
+    }
+    
     const dialogRef = this.dialog.open(DriverCancelRideDialogComponent, {
       width: '450px',
-      data: { ride: ride }
+      data: { ride }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) this.cancelRide(ride.id, result.reason, result.notes);
+      if (result) {
+        this.cancelRide(ride, result.reason, result.notes);
+      }
     });
   }
 
-  cancelRide(rideId: number, reason: string, notes: string): void {
-    const rideIndex = this.allRides.findIndex(r => r.id === rideId);
+  cancelRide(ride: FrontendRide, reason: string, notes: string): void {
+    const rideIndex = this.allRides.findIndex(r => 
+      r.passengerName === ride.passengerName && 
+      r.date.getTime() === ride.date.getTime() &&
+      r.pickup === ride.pickup
+    );
+    
     if (rideIndex !== -1) {
-      this.allRides[rideIndex].status = 'CANCELED';
-      this.allRides[rideIndex].notes = `Canceled: ${reason} - ${notes}`;
-      this.applyFilters();
-      alert(`Ride #${rideId} has been canceled. Passenger has been notified.`);
+      this.rideService.cancelRide(ride.id, {
+        cancelerType: 'DRIVER',
+        reason: reason
+      }).subscribe({
+        next: (res) => {
+          this.allRides[rideIndex].status = 'CANCELLED';
+          this.allRides[rideIndex].notes = `Canceled: ${reason} - ${notes}`;
+          this.applyFilters();
+          alert(`Ride canceled successfully by ${res.cancelledBy}.`);
+        },
+        error: (err) => {
+          console.error('Error canceling ride:', err);
+          alert('Failed to cancel ride. Please try again.');
+        }
+      });
     }
   }
 
-  startRide(ride: Ride): void {
-    if (confirm(`Start ride #${ride.id} with ${ride.passengerName}?`)) {
-      const rideIndex = this.allRides.findIndex(r => r.id === ride.id);
+  startRide(ride: FrontendRide): void {
+    if (ride.status !== 'ACCEPTED') {
+      alert('Only accepted rides can be started.');
+      return;
+    }
+    
+    if (confirm(`Start ride with ${ride.passengerName}?`)) {
+      const rideIndex = this.allRides.findIndex(r => 
+        r.passengerName === ride.passengerName && 
+        r.date.getTime() === ride.date.getTime() &&
+        r.pickup === ride.pickup
+      );
+      
       if (rideIndex !== -1) {
-        this.allRides[rideIndex].status = 'STARTED';
+        this.allRides[rideIndex].status = 'IN_PROGRESS';
         this.applyFilters();
-        alert(`Ride #${ride.id} has been started. Safe driving!`);
+        
+        // TODO: Pozvati backend API za start ride
+        alert(`Ride has been started. Safe driving!`);
       }
     }
   }
 
-  finishRide(ride: Ride): void {
-    if (confirm(`Finish ride #${ride.id}?`)) {
-      const rideIndex = this.allRides.findIndex(r => r.id === ride.id);
+  finishRide(ride: FrontendRide): void {
+    if (ride.status !== 'IN_PROGRESS') {
+      alert('Only rides in progress can be finished.');
+      return;
+    }
+    
+    if (confirm(`Finish ride with ${ride.passengerName}?`)) {
+      const rideIndex = this.allRides.findIndex(r => 
+        r.passengerName === ride.passengerName && 
+        r.date.getTime() === ride.date.getTime() &&
+        r.pickup === ride.pickup
+      );
+      
       if (rideIndex !== -1) {
         this.allRides[rideIndex].status = 'FINISHED';
         this.applyFilters();
-        alert(`Ride #${ride.id} has been finished. Thank you!`);
+        
+        // TODO: Pozvati backend API za finish ride
+        alert(`Ride has been finished. Thank you!`);
       }
     }
   }
 
-  panicAlert(ride: Ride): void {
-    if (confirm(`Send PANIC alert for ride #${ride.id}? This will notify administrators immediately.`)) {
-      const rideIndex = this.allRides.findIndex(r => r.id === ride.id);
+  panicAlert(ride: FrontendRide): void {
+    if (ride.status !== 'IN_PROGRESS') {
+      alert('Panic alert can only be sent for rides in progress.');
+      return;
+    }
+    
+    if (confirm(`Send PANIC alert for ride with ${ride.passengerName}? This will notify administrators immediately.`)) {
+      const rideIndex = this.allRides.findIndex(r => 
+        r.passengerName === ride.passengerName && 
+        r.date.getTime() === ride.date.getTime() &&
+        r.pickup === ride.pickup
+      );
+      
       if (rideIndex !== -1) {
         this.allRides[rideIndex].panic = true;
         this.applyFilters();
-        alert(`PANIC alert sent for ride #${ride.id}. Help is on the way.`);
+        
+        // TODO: Pozvati backend API za panic alert
+        alert(`PANIC alert sent. Help is on the way.`);
       }
     }
   }

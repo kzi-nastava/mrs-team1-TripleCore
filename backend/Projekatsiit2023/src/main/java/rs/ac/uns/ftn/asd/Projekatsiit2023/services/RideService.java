@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
@@ -49,59 +50,97 @@ public class RideService {
     }
 
     public static RideDetailsResponse createRideDetails(Ride ride) {
-        RideDetailsResponse rideDetails = new RideDetailsResponse();
+        try {
+            RideDetailsResponse rideDetails = new RideDetailsResponse();
 
-        // Passengers
-        rideDetails.setOrdererName(
-                ride.getOrderer().getFirstName() + " " + ride.getOrderer().getLastName()
-        );
+            // ride id
+            rideDetails.setId(ride.getId());
 
-        rideDetails.setLinkedPassengers(
-                ride.getLinkedPassengers()
-                        .stream()
-                        .map(p -> p.getFirstName() + " " + p.getLastName())
-                        .toList()
-        );
+            // Passengers
+            if (ride.getOrderer() != null) {
+                rideDetails.setOrdererName(
+                        ride.getOrderer().getFirstName() + " " + ride.getOrderer().getLastName()
+                );
+            }
 
-        // Driver
-        rideDetails.setDriverName(
-                ride.getDriver().getFirstName() + " " + ride.getDriver().getLastName()
-        );
-        rideDetails.setVehicle(
-                ride.getDriver().getVehicle().getBrand() + " " + ride.getDriver().getVehicle().getModel()
-        );
+            if (ride.getLinkedPassengers() != null) {
+                rideDetails.setLinkedPassengers(
+                        ride.getLinkedPassengers()
+                                .stream()
+                                .filter(p -> p != null)
+                                .map(p -> p.getFirstName() + " " + p.getLastName())
+                                .toList()
+                );
+            } else {
+                rideDetails.setLinkedPassengers(new ArrayList<>());
+            }
 
-        // Route
-        rideDetails.setStartLocation(ride.getRoute().getStartLocation());
-        rideDetails.setEndLocation(ride.getRoute().getEndLocation());
-        rideDetails.setRouteStops(
-                ride.getRoute().getStops()
-                        .stream()
-                        .map(RouteStop::getLocation)
-                        .toList()
-        );
+            // Driver
+            if (ride.getDriver() != null) {
+                rideDetails.setDriverName(
+                        ride.getDriver().getFirstName() + " " + ride.getDriver().getLastName()
+                );
 
-        // Time
-        rideDetails.setStartTime(ride.getStartTime());
-        rideDetails.setEndTime(ride.getEndTime());
+                // Vehicle - sa null check
+                if (ride.getDriver().getVehicle() != null) {
+                    String brand = ride.getDriver().getVehicle().getBrand() != null ?
+                            ride.getDriver().getVehicle().getBrand() : "";
+                    String model = ride.getDriver().getVehicle().getModel() != null ?
+                            ride.getDriver().getVehicle().getModel() : "";
+                    rideDetails.setVehicle(brand + " " + model);
+                } else {
+                    rideDetails.setVehicle("No vehicle assigned");
+                }
+            }
 
-        // Panic
-        rideDetails.setPanic(ride.isPanic());
-        rideDetails.setPanicTriggeredBy(
-                ride.getPanicTriggeredBy() != null
-                        ? ride.getPanicTriggeredBy().getFirstName() + " " + ride.getPanicTriggeredBy().getLastName()
-                        : null
-        );
-        rideDetails.setPanicTriggeredAt(ride.getPanicTriggeredAt());
+            // Route
+            if (ride.getRoute() != null) {
+                rideDetails.setStartLocation(ride.getRoute().getStartLocation());
+                rideDetails.setEndLocation(ride.getRoute().getEndLocation());
 
-        // Other info
-        rideDetails.setPrice(ride.getPrice());
-        rideDetails.setStatus(ride.getStatus());
-        rideDetails.setCancelledBy(ride.getCancelledBy() != null ? ride.getCancelledBy().getRole() : null);
-        rideDetails.setReviews(new ArrayList<>());
-        rideDetails.setInconsistencies(ride.getInconsistencies());
+                if (ride.getRoute().getStops() != null) {
+                    rideDetails.setRouteStops(
+                            ride.getRoute().getStops()
+                                    .stream()
+                                    .filter(stop -> stop != null && stop.getLocation() != null)
+                                    .map(RouteStop::getLocation)
+                                    .toList()
+                    );
+                } else {
+                    rideDetails.setRouteStops(new ArrayList<>());
+                }
+            }
 
-        return rideDetails;
+            // Time
+            rideDetails.setStartTime(ride.getStartTime());
+            rideDetails.setEndTime(ride.getEndTime());
+
+            // Panic
+            rideDetails.setPanic(ride.isPanic());
+            if (ride.getPanicTriggeredBy() != null) {
+                rideDetails.setPanicTriggeredBy(
+                        ride.getPanicTriggeredBy().getFirstName() + " " + ride.getPanicTriggeredBy().getLastName()
+                );
+            }
+            rideDetails.setPanicTriggeredAt(ride.getPanicTriggeredAt());
+
+            // Other info
+            rideDetails.setPrice(ride.getPrice() != null ? ride.getPrice() : 0.0);
+            rideDetails.setStatus(ride.getStatus());
+            if (ride.getCancelledBy() != null) {
+                rideDetails.setCancelledBy(ride.getCancelledBy().getRole());
+            }
+            rideDetails.setReviews(new ArrayList<>());
+            rideDetails.setInconsistencies(ride.getInconsistencies());
+
+            return rideDetails;
+
+        } catch (Exception e) {
+            System.out.println("ERROR in createRideDetails for ride ID " +
+                    (ride != null ? ride.getId() : "null") + ": " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
