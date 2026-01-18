@@ -15,9 +15,15 @@
             <span class="nav-link">Ride History</span>
         </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-btn" (click)="onLogoutClick()">Log out</a>
-    </li>
+   <li class="nav-item">
+    <span [matTooltip]="isActive ? 'Must go Inactive first' : ''">
+      <button class="nav-link nav-btn" 
+              (click)="onLogoutClick()" 
+              [disabled]="isActive || isLoading">
+        {{ isLoading ? '...' : 'Log out' }}
+      </button>
+    </span>
+  </li>
 </app-navbar>
 
 <div class="ride-history-container">

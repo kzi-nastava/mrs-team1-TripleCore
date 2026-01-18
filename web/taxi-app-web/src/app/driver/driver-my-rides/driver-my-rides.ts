@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { DriverCancelRideDialogComponent } from '../driver-cancel-ride-dialog/driver-cancel-ride-dialog';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoutService } from '../../services/auth-service/logout-service';
+import { DriverStatusService } from '../../services/driver-service/driver-status-service';
 
 interface Ride {
   id: number;
@@ -49,7 +50,7 @@ interface Ride {
     MatNativeDateModule,
     CommonModule,
     FormsModule,
-    NavbarComponent, 
+    NavbarComponent,
     RouterLink
   ],
   providers: [DatePipe],
@@ -57,7 +58,7 @@ interface Ride {
   styleUrls: ['./driver-my-rides.css']
 })
 export class DriverMyRidesComponent implements OnInit {
-  
+
   allRides: Ride[] = [
     {
       id: 12345,
@@ -148,57 +149,52 @@ export class DriverMyRidesComponent implements OnInit {
 
   filteredRides: Ride[] = [];
   displayedColumns: string[] = ['id', 'passenger', 'route', 'datetime', 'status', 'price', 'actions'];
-  
-  // Filter variables
+
   statusFilter: string = 'ALL';
   fromDate: Date | null = null;
   toDate: Date | null = null;
-  
+
+  isActive: boolean = true; 
+  isLoading: boolean = false;
+
   constructor(
     private dialog: MatDialog,
     private router: Router,
     private datePipe: DatePipe,
-    private logoutService: LogoutService
+    private logoutService: LogoutService,
+    private driverStatusService: DriverStatusService
   ) {}
 
   ngOnInit(): void {
-    this.applyFilters();
+    this.filteredRides = [...this.allRides];
+    this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+    this.isActive = this.driverStatusService.isActive();
   }
 
   applyFilters(): void {
     this.filteredRides = this.allRides.filter(ride => {
-      // Filter by status
-      if (this.statusFilter !== 'ALL' && ride.status !== this.statusFilter) {
-        return false;
-      }
-      
-      // Filter by date range
+      if (this.statusFilter !== 'ALL' && ride.status !== this.statusFilter) return false;
+
       if (this.fromDate) {
-        const fromDate = new Date(this.fromDate);
-        fromDate.setHours(0, 0, 0, 0);
+        const from = new Date(this.fromDate);
+        from.setHours(0, 0, 0, 0);
         const rideDate = new Date(ride.date);
         rideDate.setHours(0, 0, 0, 0);
-        
-        if (rideDate < fromDate) {
-          return false;
-        }
+        if (rideDate < from) return false;
       }
-      
+
       if (this.toDate) {
-        const toDate = new Date(this.toDate);
-        toDate.setHours(23, 59, 59, 999);
+        const to = new Date(this.toDate);
+        to.setHours(23, 59, 59, 999);
         const rideDate = new Date(ride.date);
         rideDate.setHours(23, 59, 59, 999);
-        
-        if (rideDate > toDate) {
-          return false;
-        }
+        if (rideDate > to) return false;
       }
-      
+
       return true;
     });
-    
-    // Sort by date (newest first)
+
     this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 
@@ -230,37 +226,27 @@ export class DriverMyRidesComponent implements OnInit {
       data: { ride: ride }
     });
 
-    // subscribe function - after dialog is closed we get the result
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.cancelRide(ride.id, result.reason, result.notes);
-      }
+      if (result) this.cancelRide(ride.id, result.reason, result.notes);
     });
   }
 
   cancelRide(rideId: number, reason: string, notes: string): void {
-    console.log(`Canceling ride ${rideId} as driver: ${reason} - ${notes}`);
-    
-    // Update local data
     const rideIndex = this.allRides.findIndex(r => r.id === rideId);
     if (rideIndex !== -1) {
       this.allRides[rideIndex].status = 'CANCELED';
       this.allRides[rideIndex].notes = `Canceled: ${reason} - ${notes}`;
       this.applyFilters();
-      
-      // Show confirmation
       alert(`Ride #${rideId} has been canceled. Passenger has been notified.`);
     }
   }
 
   startRide(ride: Ride): void {
     if (confirm(`Start ride #${ride.id} with ${ride.passengerName}?`)) {
-      
       const rideIndex = this.allRides.findIndex(r => r.id === ride.id);
       if (rideIndex !== -1) {
         this.allRides[rideIndex].status = 'STARTED';
         this.applyFilters();
-        
         alert(`Ride #${ride.id} has been started. Safe driving!`);
       }
     }
@@ -268,32 +254,31 @@ export class DriverMyRidesComponent implements OnInit {
 
   finishRide(ride: Ride): void {
     if (confirm(`Finish ride #${ride.id}?`)) {
-      
       const rideIndex = this.allRides.findIndex(r => r.id === ride.id);
       if (rideIndex !== -1) {
         this.allRides[rideIndex].status = 'FINISHED';
         this.applyFilters();
-        
         alert(`Ride #${ride.id} has been finished. Thank you!`);
       }
     }
   }
 
   panicAlert(ride: Ride): void {
-    if (confirm(`Send PANIC alert for ride #${ride.id}?\n\nThis will notify administrators immediately.`)) {
-      
+    if (confirm(`Send PANIC alert for ride #${ride.id}? This will notify administrators immediately.`)) {
       const rideIndex = this.allRides.findIndex(r => r.id === ride.id);
       if (rideIndex !== -1) {
         this.allRides[rideIndex].panic = true;
         this.applyFilters();
-        
         alert(`PANIC alert sent for ride #${ride.id}. Help is on the way.`);
       }
     }
   }
 
-  onLogoutClick() {
+  onLogoutClick(): void {
+    if (this.isActive) {
+      alert('You must go Inactive before logging out.');
+      return;
+    }
     this.logoutService.logoutWithBackend();
   }
-    
 }

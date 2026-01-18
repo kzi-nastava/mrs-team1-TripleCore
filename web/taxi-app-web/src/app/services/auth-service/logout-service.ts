@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { DriverStatusService } from '../driver-service/driver-status-service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +11,20 @@ export class LogoutService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private driverStatusService: DriverStatusService
   ) {}
 
   logoutWithBackend(): void {
+
+    const role = this.getUserRole();
+
+    // block logout if driver is active
+    if (role === 'DRIVER' && this.driverStatusService.isActive()) {
+      alert('You must go inactive before logging out.');
+      return;
+    }
+
     const userId = this.getUserId();
     
     if (!userId) {
