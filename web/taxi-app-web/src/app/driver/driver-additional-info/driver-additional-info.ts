@@ -4,15 +4,15 @@ import { NavbarComponent } from '../../shared/navbar/navbar';
 import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { UserInfoComponent } from '../../user-info/user-info';
+
 
 @Component({
   selector: 'app-driver-additional-info',
-  imports: [CommonModule, NavbarComponent, MatTooltipModule, RouterModule, UserInfoComponent],
+  imports: [CommonModule, NavbarComponent, MatTooltipModule, RouterModule],
   templateUrl: './driver-additional-info.html',
   styleUrl: './driver-additional-info.css',
 })
-export class DriverAdditionalInfo {
+export class DriverAdditionalInfoComponent {
   isActive: boolean = true;
 
   activeLast24Hours: number = 8;

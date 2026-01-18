@@ -20,3 +20,5 @@
 </app-navbar>
 
 <app-map></app-map>
+
+<app-order-ride-registered-user *ngIf="canOrderRide" (rideOrderedEvente)="handleRideOrdered()" (rideOrderedEvent)="handleRideOrdered()"></app-order-ride-registered-user>

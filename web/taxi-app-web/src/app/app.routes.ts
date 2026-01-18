@@ -15,8 +15,9 @@ import { AdminRideDetailsComponent } from './admin/admin-ride-details/admin-ride
 import { DriverMyRidesComponent } from './driver/driver-my-rides/driver-my-rides';
 import { PassengerMyRidesComponent } from './passenger/passenger-my-rides/passenger-my-rides';
 import { PassengerHomeComponent } from './passenger/passenger-home/passenger-home';
-import { DriverAdditionalInfo } from './driver/driver-additional-info/driver-additional-info'; 
+import { DriverAdditionalInfoComponent } from './driver/driver-additional-info/driver-additional-info'; 
 import { DriverRegistrationComponent } from './auth/register-driver/driver-registration-component/driver-registration-component'; 
+import { OrderRideRegisteredUser } from './passenger/order-ride-registered-user/order-ride-registered-user';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -35,7 +36,8 @@ export const appRoutes: Routes = [
   { path: 'driver-my-rides', component: DriverMyRidesComponent },
   {path: 'passenger-home', component: PassengerHomeComponent},
   { path: 'passenger/passenger-my-rides', component: PassengerMyRidesComponent },
-  { path: 'driver-additional-info', component: DriverAdditionalInfo},
+  { path: 'driver-additional-info', component: DriverAdditionalInfoComponent},
   { path: 'register-driver', component: DriverRegistrationComponent },
+  { path: 'order-ride-registered-user', component: OrderRideRegisteredUser },
   { path: '**', redirectTo: '' },
 ];
