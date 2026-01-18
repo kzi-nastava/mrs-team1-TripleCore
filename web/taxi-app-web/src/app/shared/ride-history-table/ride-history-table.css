@@ -65,3 +65,17 @@ button{
 #clear-btn:hover {
   background-color: #f2f0f7; /* light grey hover */
 }
+
+.button-link {
+  background: none;        /* uklanja background */
+  border: none;            /* uklanja border */
+  box-shadow: none;
+  color: #007bff;          /* plava boja linka */
+  cursor: pointer;         /* pokazivač ruke na hover */
+  font: inherit;           /* koristi isti font kao tekst u parent-u */
+}
+
+.button-link:hover {
+  color: #0056b3;          /* tamnija plava na hover */
+  text-decoration: none;   /* možeš da ukloniš underline na hover ako želiš */
+}

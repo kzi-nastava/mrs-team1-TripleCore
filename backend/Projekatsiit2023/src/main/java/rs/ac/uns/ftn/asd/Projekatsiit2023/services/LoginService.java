@@ -5,4 +5,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.LoginResponse;
 
 public interface LoginService {
     LoginResponse login(LoginRequest request);
+    String initiatePasswordReset(String email);
+    String resetPassword(Long userId, String newPassword);
+    String logout(Long userId);
 }

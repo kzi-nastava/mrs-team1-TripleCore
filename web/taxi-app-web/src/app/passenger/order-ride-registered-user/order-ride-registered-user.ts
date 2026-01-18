@@ -33,7 +33,7 @@ export class OrderRideRegisteredUser {
 
   constructor(private osmService: OsmService) {}
 
-  // SEARCH LOGIKA
+
   searchStartPoint() {
     if (this.startPointQuery.length < 3) { this.startPointResults = []; return; }
     this.osmService.search(this.startPointQuery).subscribe(res => this.startPointResults = res);
@@ -44,7 +44,7 @@ export class OrderRideRegisteredUser {
     this.osmService.search(this.destinationPointQuery).subscribe(res => this.destinationPointResults = res);
   }
 
-  // FOKUS HANDLERI (sa setTimeout da bi klik na listu stigao da prođe)
+
   hideStartResults() { setTimeout(() => this.isStartFocused = false, 200); }
   hideDestResults() { setTimeout(() => this.isDestFocused = false, 200); }
   hideStationResults() { setTimeout(() => this.activeStationIndex = null, 200); }
@@ -63,7 +63,7 @@ export class OrderRideRegisteredUser {
     this.isDestFocused = false;
   }
 
-  // STATIONS LOGIKA
+
   searchStation(index: number) {
     const station = this.stations[index];
     if (station.query.length < 3) { station.results = []; return; }
@@ -83,12 +83,12 @@ export class OrderRideRegisteredUser {
     else this.stations[0] = { query: "", results: [], location: null };
   }
 
-  // PASSENGERS LOGIKA
+
   addPassengerEmail() { this.passengersEmails.push(""); }
   removePassengerEmail(index: number) { if (this.passengersEmails.length > 1) this.passengersEmails.splice(index, 1); }
   trackByFn(index: any, item: any) { return index; }
 
-  // VALIDACIJA
+
   private isValidEmail(email: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }

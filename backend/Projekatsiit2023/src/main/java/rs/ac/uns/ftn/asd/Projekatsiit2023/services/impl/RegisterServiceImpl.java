@@ -1,6 +1,5 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.services.impl;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RegisterRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RegisterResponse;
@@ -49,8 +48,8 @@ public class RegisterServiceImpl implements RegisterService {
         user.setAccountActivated(false);
         user.setCreatedAt(LocalDateTime.now());
 
-        if (request.getProfilePicture() != null && !request.getProfilePicture().isEmpty()) {
-            user.setProfileImage(request.getProfilePicture());
+        if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+            user.setProfileImage(request.getProfileImage());
         } else {
             user.setProfileImage("/icons/profile.png"); // Default URL
         }

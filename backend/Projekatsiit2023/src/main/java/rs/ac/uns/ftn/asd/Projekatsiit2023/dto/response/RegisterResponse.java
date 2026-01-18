@@ -9,7 +9,7 @@ public class RegisterResponse {
     private String lastName;
     private String address;
     private String phoneNumber;
-    private String profilePicture;
+    private String profileImage;
     private UserRole role;
     private boolean activated;     // false = waiting for activation
     private String message;
@@ -23,7 +23,7 @@ public class RegisterResponse {
         this.lastName = lastName;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.profilePicture = profilePicture;
+        this.profileImage = profilePicture;
         this.role = role;
         this.activated = activated;
         this.message = message;
@@ -35,7 +35,7 @@ public class RegisterResponse {
     public String getLastName() { return lastName; }
     public String getAddress() { return address; }
     public String getPhoneNumber() { return phoneNumber; }
-    public String getProfilePicture() { return profilePicture; }
+    public String getProfileImage() { return profileImage; }
     public UserRole getRole() { return role; }
     public boolean isActivated() { return activated; }
     public String getMessage() { return message; }

@@ -1,4 +1,4 @@
-.orderRide-backdrop {
+/* .orderRide-backdrop {
   font-family: 'Istok Web', sans-serif;
   min-height: 100vh;
   display: flex;
@@ -179,4 +179,209 @@ h3 {
 
 @media (max-width: 850px) {
   .form-grid { grid-template-columns: 1fr; gap: 20px; }
+} */
+
+/* --- GLAVNI KONTEJNER (BACKDROP) --- */
+.orderRide-backdrop {
+  font-family: 'Istok Web', sans-serif;
+  /* Fixed pozicija drži formu na mjestu dok se mapa pomjera */
+  position: fixed; 
+  top: 80px; /* Visina vašeg navbar-a */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  /* Pomjera formu na desnu stranu ekrana */
+  justify-content: flex-end; 
+  align-items: flex-start;
+  padding: 20px;
+  background-color: transparent; 
+  z-index: 1000;
+  /* Omogućava interakciju sa mapom "kroz" prazan prostor */
+  pointer-events: none; 
+}
+
+/* --- KONTEJNER FORME (DESNI PANEL) --- */
+.orderRide-container {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  width: 100%;
+  /* Smanjena maksimalna širina da bi izgledalo kao panel/sidebar */
+  max-width: 450px; 
+  box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+  pointer-events: auto; /* Vraća klikove na formu */
+  
+  /* Automatski skrol ako je forma duža od ekrana */
+  max-height: calc(100vh - 120px); 
+  overflow-y: auto;
+  border: 1px solid #eee;
+}
+
+/* --- GRID SISTEM (Jedna kolona za sidebar izgled) --- */
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+section {
+  margin-bottom: 20px;
+}
+
+h3 {
+  color: #600EA8;
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+  font-weight: bold;
+  border-left: 4px solid #600EA8;
+  padding-left: 10px;
+}
+
+/* --- POLJA ZA UNOS --- */
+.field-group {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  border-radius: 30px;
+  padding: 6px 15px;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+  border-color: #600EA8;
+  background-color: #fff;
+  box-shadow: 0 0 8px rgba(96, 14, 168, 0.1);
+}
+
+.input-wrapper input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  padding: 8px;
+  outline: none;
+  font-size: 14px;
+}
+
+/* --- REZULTATI PRETRAGE --- */
+.results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 150px;
+  overflow-y: auto;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  position: absolute; 
+  z-index: 1100; 
+  width: 100%; 
+  top: 45px;
+  border: 1px solid #eee;
+}
+
+.results li {
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 13px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.results li:hover { background-color: #f3e5f5; color: #600EA8; }
+
+/* --- OPCIJE I PUTNICI --- */
+.options-section {
+  background: #f9f4ff;
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+
+.option-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.option-label { color: #600EA8; font-weight: bold; font-size: 13px; }
+
+.radio-container {
+  position: relative;
+  padding-left: 22px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  display: inline-block;
+}
+
+.radio-container input { position: absolute; opacity: 0; }
+
+.checkmark {
+  position: absolute;
+  left: 0; top: 0;
+  height: 16px; width: 16px;
+  background-color: #fff;
+  border: 2px solid #600EA8;
+  border-radius: 50%;
+}
+
+.radio-container input:checked ~ .checkmark::after {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #600EA8;
+}
+
+/* --- DUGMAD --- */
+.btn-primary {
+  background-color: #600EA8;
+  color: white;
+  border: none;
+  padding: 12px 0;
+  width: 100%; /* Dugme zauzima cijelu širinu panela */
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.btn-secondary {
+  background-color: #600EA8;
+  color: white;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.action-buttons {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.icon img, .delete-icon img { width: 18px; height: 18px; vertical-align: middle; }
+.delete-icon { cursor: pointer; }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 850px) {
+  .orderRide-backdrop {
+    justify-content: center; /* Na mobilnom se vraća u centar */
+    padding: 10px;
+    top: 60px;
+  }
+  .orderRide-container {
+    max-width: 100%;
+  }
 }

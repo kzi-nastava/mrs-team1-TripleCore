@@ -55,8 +55,20 @@ public class Ride {
     private Double price;
     private boolean babyFriendly;
     private boolean petFriendly;
+    private String inconsistencies;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RideStatus status;
+
+    private boolean panic;
+    @ManyToOne
+    @JoinColumn(name = "panic_triggered_by")
+    private Passenger panicTriggeredBy;
+    private LocalDateTime panicTriggeredAt;
+
+    @ManyToOne
+    @JoinColumn(name = "cancelled_by_id")
+    private User cancelledBy;
+
 }

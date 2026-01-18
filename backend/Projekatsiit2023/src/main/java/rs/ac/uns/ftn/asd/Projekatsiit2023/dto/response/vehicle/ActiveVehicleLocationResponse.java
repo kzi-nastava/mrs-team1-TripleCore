@@ -1,15 +1,15 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response;
+package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.vehicle;
 
 import lombok.Getter;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.LocationDTO;
 
-public class BasicVehicleDetailsResponse {
+public class ActiveVehicleLocationResponse {
 
     private final LocationDTO location;
     @Getter
     private final boolean available;
 
-    public BasicVehicleDetailsResponse(double latitude, double longitude, boolean available) {
+    public ActiveVehicleLocationResponse(double latitude, double longitude, boolean available) {
         this.location = new LocationDTO(latitude, longitude);
         this.available = available;
     }

@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { OrderRideRegisteredUser } from '../order-ride-registered-user/order-ride-registered-user';
+import { LogoutService } from '../../services/auth-service/logout-service';
 
 @Component({
   selector: 'app-passenger-home',
@@ -15,7 +16,7 @@ import { OrderRideRegisteredUser } from '../order-ride-registered-user/order-rid
   styleUrls: ['./passenger-home.css'],
 })
 export class PassengerHomeComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private logoutService: LogoutService) {}
   
   canOrderRide: boolean = true;
 
@@ -23,9 +24,7 @@ export class PassengerHomeComponent {
     this.canOrderRide = false;
   }
 
-  logout(): void {
-    if (confirm('Are you sure you want to log out?')) {
-      this.router.navigate(['/login']);
-    }
+  onLogoutClick() {
+    this.logoutService.logoutWithBackend();
   }
 }
