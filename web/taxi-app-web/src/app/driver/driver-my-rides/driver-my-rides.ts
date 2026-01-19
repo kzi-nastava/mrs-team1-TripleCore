@@ -16,7 +16,7 @@ import { DriverCancelRideDialogComponent } from '../driver-cancel-ride-dialog/dr
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoutService } from '../../services/auth-service/logout-service';
 import { DriverStatusService } from '../../services/driver-service/driver-status-service';
-import { FrontendRide, adaptToFrontendRide, } from '../../utils/ride-adapter';
+import { FrontendRide, adaptToFrontendRide, } from '../../utils/driver-ride-adapter';
 import { RideStatus } from '../../models/ride-details-response';
 import { DriverService } from '../../services/driver-service';
 import { RideService } from '../../services/ride-service/ride-service';

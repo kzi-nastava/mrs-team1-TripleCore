@@ -28,7 +28,7 @@
       <mat-label>Status</mat-label>
       <mat-select [(value)]="statusFilter">
         <mat-option value="ALL">All</mat-option>
-        <mat-option value="ASSIGNED">Assigned</mat-option>
+        <mat-option value="ACCEPTED">Accepted</mat-option>
         <mat-option value="STARTED">In Progress</mat-option>
         <mat-option value="FINISHED">Finished</mat-option>
         <mat-option value="CANCELED">Canceled</mat-option>
@@ -62,19 +62,13 @@
 
   <!-- Rides Table -->
   <table mat-table [dataSource]="filteredRides" class="rides-table">
-    
-    <!-- ID Column -->
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef> ID </th>
-      <td mat-cell *matCellDef="let ride"> #{{ride.id}} </td>
-    </ng-container>
 
     <!-- Driver Column -->
     <ng-container matColumnDef="driver">
       <th mat-header-cell *matHeaderCellDef> Driver </th>
       <td mat-cell *matCellDef="let ride">
         <div class="driver-cell">
-          <img [src]="ride.driverImage || 'assets/default-driver.png'" 
+          <img [src]="ride.driverImage || 'icons/profile.png'" 
                class="driver-avatar"
                alt="{{ride.driverName}}">
           <div class="driver-info">
@@ -178,35 +172,35 @@
             <mat-icon>visibility</mat-icon>
           </button>
           
-          <!-- Cancel Ride Button (only for ASSIGNED, with 10-min check) -->
-          <button *ngIf="ride.status === 'ASSIGNED' && canCancelRide(ride)"
-                  mat-icon-button 
-                  color="warn"
-                  (click)="openPassengerCancelDialog(ride)"
-                  matTooltip="Cancel ride"
-                  class="action-btn cancel-btn">
-            <mat-icon>cancel</mat-icon>
-          </button>
-          
-          <!-- Panic Button (only for STARTED) -->
-          <button *ngIf="ride.status === 'STARTED'"
-                  mat-icon-button 
-                  color="accent"
-                  (click)="panicAlert(ride)"
-                  matTooltip="Panic alert"
-                  class="action-btn panic-btn">
-            <mat-icon>warning</mat-icon>
-          </button>
-          
-          <!-- Rate Ride Button (only for FINISHED, unrated) -->
-          <button *ngIf="ride.status === 'FINISHED' && !ride.isRated"
-                  mat-icon-button 
-                  color="primary"
-                  (click)="openRatingDialog(ride)"
-                  matTooltip="Rate ride"
-                  class="action-btn rate-btn">
-            <mat-icon>star_rate</mat-icon>
-          </button>
+         <!-- Cancel Ride Button (only for ACCEPTED, with 10-min check) -->
+        <button *ngIf="ride.status === 'ACCEPTED' && canCancelRide(ride)"
+                mat-icon-button 
+                color="warn"
+                (click)="openPassengerCancelDialog(ride)"
+                matTooltip="Cancel ride"
+                class="action-btn cancel-btn">
+          <mat-icon>cancel</mat-icon>
+        </button>
+
+        <!-- Panic Button (only for IN_PROGRESS) -->
+        <button *ngIf="ride.status === 'IN_PROGRESS'"
+                mat-icon-button 
+                color="accent"
+                (click)="panicAlert(ride)"
+                matTooltip="Panic alert"
+                class="action-btn panic-btn">
+          <mat-icon>warning</mat-icon>
+        </button>
+
+        <!-- Rate Ride Button (only for FINISHED, unrated) -->
+        <button *ngIf="ride.status === 'FINISHED' && !ride.isRated"
+                mat-icon-button 
+                color="primary"
+                (click)="openRatingDialog(ride)"
+                matTooltip="Rate ride"
+                class="action-btn rate-btn">
+          <mat-icon>star_rate</mat-icon>
+        </button>
         </div>
       </td>
     </ng-container>

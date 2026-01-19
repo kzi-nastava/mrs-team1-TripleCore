@@ -244,7 +244,7 @@
   min-width: 90px;
 }
 
-.status-badge.assigned {
+.status-badge.accepted {
   background-color: #e3f2fd;
   color: #1976d2;
   border: 1px solid #bbdefb;
