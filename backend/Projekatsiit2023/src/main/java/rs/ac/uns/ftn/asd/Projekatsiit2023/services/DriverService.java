@@ -41,11 +41,12 @@ public class DriverService {
     public List<RideDetailsResponse> getRideHistory(Long driverId){
         try{
             List<Ride> rides = rideService.getDriverRides(driverId);
-            return rides.stream()
+           return rides.stream()
                     .map(RideService::createRideDetails)
                     .toList();
         } catch (Exception e){
-            return new ArrayList<>();
+            e.printStackTrace();
+            throw e;
         }
     }
 }

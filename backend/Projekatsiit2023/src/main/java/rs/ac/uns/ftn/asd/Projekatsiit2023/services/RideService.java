@@ -43,7 +43,8 @@ public class RideService {
         try{
             return rideRepository.findByDriverId(driverId);
         } catch (Exception e){
-            return new ArrayList<>();
+            e.printStackTrace();
+            throw e;
         }
     }
 

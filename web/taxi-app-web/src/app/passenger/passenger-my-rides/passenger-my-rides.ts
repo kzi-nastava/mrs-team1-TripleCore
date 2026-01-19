@@ -312,18 +312,30 @@ export class PassengerMyRidesComponent implements OnInit {
       alert('Panic alert can only be sent for rides in progress.');
       return;
     }
-    
-    if (confirm(`Send PANIC alert for ride with ${ride.driverName}?\n\nThis will notify administrators immediately.`)) {
-      // TODO: Implement panic alert backend call
-      const rideIndex = this.allRides.findIndex(r => r.id === ride.id);
-      
-      if (rideIndex !== -1) {
-        //this.allRides[rideIndex].panicActivated = true;
-        this.applyFilters();
-        
-        alert(`PANIC alert sent. Help is on the way.`);
-      }
+
+    const passengerId = this.getPassengerId();
+
+    if (!passengerId) {
+      alert('User not found.');
+      return;
     }
+
+    if (!confirm(
+      `Send PANIC alert for ride with ${ride.driverName}?\n\n` +
+      `This will immediately notify administrators.`
+    )) {
+      return;
+    }
+
+    this.rideService.activatePanic(ride.id, passengerId).subscribe({
+      next: () => {
+        alert('🚨 PANIC alert sent. Help is on the way.');
+      },
+      error: (err) => {
+        console.error('Error sending panic alert:', err);
+        alert('Failed to send panic alert.');
+      }
+    });
   }
 
   onLogoutClick() {
