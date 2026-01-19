@@ -20,18 +20,22 @@ public class RideService {
     private final RouteRepository routeRepository;
     private final UserRepository userRepository;
 
+    private final PanicService panicService;
+
     public RideService(
             RideRepository rideRepository,
             DriverRepository driverRepository,
             PassengerRepository passengerRepository,
             RouteRepository routeRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            PanicService panicService
     ) {
         this.rideRepository = rideRepository;
         this.driverRepository = driverRepository;
         this.passengerRepository = passengerRepository;
         this.routeRepository = routeRepository;
         this.userRepository = userRepository;
+        this.panicService = panicService;
     }
 
     public Ride getRideById(Long id){
@@ -53,6 +57,11 @@ public class RideService {
         Ride ride = rideRepository.findById(rideId)
                 .orElseThrow(() -> new RuntimeException("Ride not found"));
 
+        // check if panic is already activated
+        if (ride.isPanic()) {
+            throw new RuntimeException("Panic is already activated for this ride");
+        }
+
         // check if user is part of the ride
         if (!isUserInRide(userId, ride)) {
             throw new RuntimeException("User is not part of this ride");
@@ -71,8 +80,20 @@ public class RideService {
         ride.setPanic(true);
         ride.setPanicTriggeredBy(user);
         ride.setPanicTriggeredAt(LocalDateTime.now());
-
         rideRepository.save(ride);
+
+        Panic panic = new Panic();
+        panic.setDriverName(ride.getDriver() != null ?
+                ride.getDriver().getFirstName() + " " + ride.getDriver().getLastName() : "Unknown");
+        panic.setPassengerName(ride.getOrderer().getFirstName() + " " + ride.getOrderer().getLastName());
+        panic.setTime(LocalDateTime.now());
+        panic.setVehicle(ride.getDriver() != null && ride.getDriver().getVehicle() != null ?
+                ride.getDriver().getVehicle().getBrand() + " " + ride.getDriver().getVehicle().getModel() : "Unknown");
+        panic.setLocation(ride.getRoute() != null ? String.valueOf(ride.getRoute().getStartLocation()) : "Unknown");
+        panic.setLicensePlate(ride.getDriver() != null && ride.getDriver().getVehicle() != null ?
+                ride.getDriver().getVehicle().getPlateNumber() : null);
+
+        panicService.createPanic(panic);
     }
 
     private boolean isUserInRide(Long userId, Ride ride) {
