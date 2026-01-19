@@ -16,4 +16,12 @@ export class RideService {
   cancelRide(rideId: number, request: RideCancelRequest): Observable<RideCancelResponse> {
     return this.http.post<RideCancelResponse>(`${this.apiUrl}/${rideId}/cancel`, request);
   }
+
+  activatePanic(rideId: number, userId: number): Observable<string> {
+    return this.http.post(
+      `${this.apiUrl}/${rideId}/panic?userId=${userId}`,
+      {},
+      { responseType: 'text' }
+    );
+  }
 }

@@ -86,6 +86,11 @@ const routes: Routes = [
     loadComponent: () => import('./passenger/order-ride-registered-user/order-ride-registered-user').then(m => m.OrderRideRegisteredUser)
   },
   {
+    path: 'admin/panic-notifications',
+    loadComponent: () =>
+      import('./admin/admin-panic-page/admin-panic-page').then(m => m.AdminPanicPageComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

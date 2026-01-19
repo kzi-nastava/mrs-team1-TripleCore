@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.*;
@@ -16,6 +17,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideStopResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.User;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideCancelService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RouteService;
@@ -66,8 +68,17 @@ public class  RideController {
         }
     }
 
-    private boolean canPassengerCancel(Long id) {
-        return id >= 3;
+    @PostMapping("/{rideId}/panic")
+    public ResponseEntity<?> activatePanic(
+            @PathVariable Long rideId,
+            @RequestParam Long userId) {
+
+        try {
+            rideService.activatePanic(rideId, userId);
+            return ResponseEntity.ok("Panic activated");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     private boolean rideExists(Long id) {

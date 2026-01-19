@@ -5,18 +5,20 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MapComponent } from '../../map/map';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { RouterModule } from '@angular/router';
-import { PanicAlert, PanicNotificationsComponent } from '../../panic/panic-notifications/panic-notifications';
+import { PanicNotificationsComponent } from '../../panic/panic-notifications/panic-notifications';
 import { NotificationSoundService } from '../../services/notification-sound-service';
 import { LogoutService } from '../../services/auth-service/logout-service';
+import { PanicAlert } from '../../models/panic-alert';
+import { AdminPanicService } from '../../services/admin-service/admin-panic-service';
 
 @Component({
   selector: 'app-admin-home',
   standalone: true,
   imports: [
-    MapComponent, 
+    MapComponent,
     NavbarComponent,
-    RouterModule, 
-    CommonModule, 
+    RouterModule,
+    CommonModule,
     MatTooltipModule,
     PanicNotificationsComponent
   ],
@@ -27,11 +29,12 @@ export class AdminHomeComponent implements OnInit {
   showNotifications = false;
   showResolvedAlerts = false;
   panicAlerts: PanicAlert[] = [];
-  
+
   constructor(
     private router: Router,
     private soundService: NotificationSoundService,
-    private logoutService: LogoutService
+    private logoutService: LogoutService,
+    private panicService: AdminPanicService
   ) {}
 
   ngOnInit() {
@@ -40,73 +43,35 @@ export class AdminHomeComponent implements OnInit {
   }
 
   loadPanicNotifications() {
-    this.panicAlerts = [
-      {
-        id: 1,
-        driverName: 'Marko Marković',
-        passengerName: 'Ana Anić',
-        time: new Date(Date.now() - 1000 * 60 * 30),
-        read: false,
-        resolved: false,
-        vehicle: 'Toyota Corolla',
-        location: 'Bulevar kralja Aleksandra',
-        licensePlate: 'BG123AB'
-      },
-      {
-        id: 2,
-        driverName: 'Petar Petrović',
-        passengerName: 'Jovan Jovanović',
-        time: new Date(Date.now() - 1000 * 60 * 15),
-        read: false,
-        resolved: true,
-        vehicle: 'Opel Astra',
-        location: 'Knez Mihailova',
-        licensePlate: 'BG456CD'
-      }
-    ];
-    
-    // If theres new unread alerts, play sound
-    const unreadCount = this.panicAlerts.filter(a => !a.read && !a.resolved).length;
-    if (unreadCount > 0) {
-      setTimeout(() => this.soundService.play(), 1000);
-    }
-  }
+    this.panicService.getAllPanics().subscribe({
+      next: (alerts) => {
+        this.panicAlerts = alerts;
 
-  simulateNewPanic() {
-    const drivers = ['Dragan Draganić', 'Petar Petrović', 'Ivan Ilić', 'Nikola Nikolić'];
-    const passengers = ['Sara Sarić', 'Jovan Jovanović', 'Maja Majić', 'Ana Anić'];
-    const vehicles = ['Toyota Corolla', 'Opel Astra', 'VW Golf', 'Renault Clio'];
-    const locations = ['Bulevar kralja Aleksandra', 'Knez Mihailova', 'Slavija', 'Zemun'];
-    
-    const newPanic: PanicAlert = {
-      id: Date.now(),
-      driverName: drivers[Math.floor(Math.random() * drivers.length)],
-      passengerName: passengers[Math.floor(Math.random() * passengers.length)],
-      time: new Date(),
-      read: false,
-      resolved: false,
-      vehicle: vehicles[Math.floor(Math.random() * vehicles.length)],
-      location: locations[Math.floor(Math.random() * locations.length)]
-    };
-    
-    this.panicAlerts.unshift(newPanic);
-    this.soundService.play();
-    this.showBrowserNotification(newPanic);
+        const activeAlerts = alerts.filter(a => !a.resolved);
+
+        const newActiveAlerts = activeAlerts.filter(
+          a => !this.panicAlerts.some(old => old.id === a.id)
+        );
+
+        if (newActiveAlerts.length > 0) {
+          this.soundService.play();
+          newActiveAlerts.forEach(alert => this.showBrowserNotification(alert));
+        }
+      },
+      error: (err) => console.error('Failed to load panic alerts', err)
+    });
   }
 
   onMarkAsResolved(alertId: number) {
-    const alert = this.panicAlerts.find(a => a.id === alertId);
-    if (alert) {
-      alert.resolved = true;
-      alert.read = true;
-    }
-  }
-
-  onMarkAsUnresolved(alertId: number) {
-    const alert = this.panicAlerts.find(a => a.id === alertId);
-    if (alert) {
-      alert.resolved = false;
-    }
+    this.panicService.resolvePanic(alertId).subscribe({
+      next: () => {
+        const alert = this.panicAlerts.find(a => a.id === alertId);
+        if (alert) {
+          alert.resolved = true;
+        }
+      },
+      error: (err) => console.error('Failed to resolve panic', err)
+    });
   }
 
   onViewDetails(alertId: number) {
@@ -116,17 +81,6 @@ export class AdminHomeComponent implements OnInit {
 
   onToggleResolvedView(showResolved: boolean) {
     this.showResolvedAlerts = showResolved;
-  }
-
-  onMarkAllAsRead() {
-    this.panicAlerts = this.panicAlerts.map(alert => ({
-      ...alert,
-      read: true
-    }));
-  }
-
-  simulatePanicAlert() {
-    this.simulateNewPanic();
   }
 
   toggleSound() {
@@ -143,7 +97,7 @@ export class AdminHomeComponent implements OnInit {
 
   private showBrowserNotification(alert: PanicAlert) {
     if (!('Notification' in window) || Notification.permission !== 'granted') return;
-    
+
     new Notification('🚨 PANIC ALERT', {
       body: `${alert.driverName} → ${alert.passengerName}\n📍 ${alert.location}`,
       icon: '/icons/panic-icon.png',
@@ -151,7 +105,7 @@ export class AdminHomeComponent implements OnInit {
     });
   }
 
-  requestNotificationPermission() {
+  private requestNotificationPermission() {
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }

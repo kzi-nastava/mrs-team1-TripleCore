@@ -67,8 +67,10 @@ export class DriverMyRidesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadRides();
-    this.isActive = this.driverStatusService.isActive();
+    setTimeout(() => {
+      this.loadRides();
+      this.isActive = this.driverStatusService.isActive();
+    });
   }
 
   private getDriverId(): number {
@@ -277,6 +279,24 @@ export class DriverMyRidesComponent implements OnInit {
     }
   }
 
+  private getCurrentUserId(): number {
+    try {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        if (user.id) {
+          return user.id;
+        }
+      }
+      
+      return this.getDriverId();
+      
+    } catch (error) {
+      console.error('Error getting user ID:', error);
+      return this.getDriverId(); 
+    }
+  }
+
   panicAlert(ride: FrontendRide): void {
     if (ride.status !== 'IN_PROGRESS') {
       alert('Panic alert can only be sent for rides in progress.');
@@ -284,6 +304,7 @@ export class DriverMyRidesComponent implements OnInit {
     }
     
     if (confirm(`Send PANIC alert for ride with ${ride.passengerName}? This will notify administrators immediately.`)) {
+      // find index of the ride in allRides
       const rideIndex = this.allRides.findIndex(r => 
         r.passengerName === ride.passengerName && 
         r.date.getTime() === ride.date.getTime() &&
@@ -291,11 +312,24 @@ export class DriverMyRidesComponent implements OnInit {
       );
       
       if (rideIndex !== -1) {
-        this.allRides[rideIndex].panic = true;
-        this.applyFilters();
+        const userId = this.getCurrentUserId(); 
         
-        // TODO: Pozvati backend API za panic alert
-        alert(`PANIC alert sent. Help is on the way.`);
+        // call backend API to activate panic
+        this.rideService.activatePanic(ride.id, userId).subscribe({
+          next: (response) => {
+            console.log('Panic activated:', response);
+            
+            // update local ride data
+            this.allRides[rideIndex].panic = true;
+            this.applyFilters();
+            
+            alert(`🚨 PANIC ALERT ACTIVATED! Help is on the way.`);
+          },
+          error: (error) => {
+            console.error('Error activating panic:', error);
+            alert(`Failed to activate panic: ${error.error || error.message}`);
+          }
+        });
       }
     }
   }
