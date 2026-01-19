@@ -180,13 +180,16 @@
                     </button>
                     
                     <!-- Panic Button (only for IN_PROGRESS) -->
+                    <span [matTooltip]="ride.panic ? 'Panic already activated' : 'Panic alert'">
                     <button *ngIf="ride.status === 'IN_PROGRESS'"
                             mat-icon-button 
                             (click)="panicAlert(ride)"
-                            matTooltip="Panic alert"
+                            [disabled]="ride.panic" 
                             class="action-btn panic-btn">
                         <mat-icon>warning</mat-icon>
                     </button>
+                    </span>
+
                 </div>
             </td>
         </ng-container>

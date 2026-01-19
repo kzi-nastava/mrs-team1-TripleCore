@@ -1,66 +1,34 @@
-<!-- Notifications Dropdown -->
 <li class="notifications-dropdown">
-  <a class="nav-link img-and-link" style="cursor: pointer;" 
-     (click)="onToggleDropdown()">
+  <a class="nav-link img-and-link" style="cursor:pointer;" (click)="onToggleDropdown()">
     Notifications
-    <span *ngIf="activeCount > 0" class="notification-badge">
-      {{activeCount}}
-    </span>
+    <span *ngIf="activeCount > 0" class="notification-badge">{{activeCount}}</span>
   </a>
-  
-  <!-- Dropdown Content -->
+
   <div class="dropdown-content" *ngIf="showDropdown">
-    <!-- Header -->
     <div class="dropdown-header">
-      <div>
-        <h6>🚨 PANIC Alerts</h6>
-        <div class="alert-stats">
-          <small *ngIf="unreadCount > 0" class="text-danger">
-            {{unreadCount}} unread
-          </small>
-        </div>
-      </div>
+      <h6>🚨 PANIC Alerts</h6>
       <div class="resolved-toggle">
-        <button class="btn-toggle" 
-                [class.active]="!showResolved"
-                (click)="onToggleResolvedView()">
-          Active ({{activeCount}})
-        </button>
-        <button class="btn-toggle" 
-                [class.active]="showResolved"
-                (click)="onToggleResolvedView()">
-          Resolved ({{resolvedCount}})
-        </button>
+        <button class="btn-toggle" [class.active]="!showResolved" (click)="onToggleResolvedView()">Active ({{activeCount}})</button>
+        <button class="btn-toggle" [class.active]="showResolved" (click)="onToggleResolvedView()">Resolved ({{resolvedCount}})</button>
       </div>
     </div>
-    
-    <!-- No Alerts -->
+
     <div *ngIf="getFilteredAlerts().length === 0" class="no-alerts">
       <p *ngIf="!showResolved">No active panic alerts</p>
       <p *ngIf="showResolved">No resolved panic alerts</p>
       <small>All clear! 🟢</small>
     </div>
-    
-    <!-- Alert Items -->
+
     <app-panic-notification-item
       *ngFor="let alert of getFilteredAlerts()"
       [alert]="alert"
       (markAsResolved)="onMarkAsResolved($event)"
-      (markAsUnresolved)="onMarkAsUnresolved($event)"
       (viewDetails)="onViewDetails($event)">
     </app-panic-notification-item>
-    
-    <!-- Dropdown Footer -->
+
     <div class="dropdown-footer">
-      <span class="stats">
-        Total: {{alerts.length}} | 
-        Active: {{activeCount}} | 
-        Resolved: {{resolvedCount}}
-      </span>
-      <a routerLink="/admin/panic-notifications" 
-         (click)="toggleDropdown.emit()">
-        See all →
-      </a>
+      <span class="stats">Total: {{alerts.length}} | Active: {{activeCount}} | Resolved: {{resolvedCount}}</span>
+      <a routerLink="/admin/panic-notifications" (click)="toggleDropdown.emit()">See all →</a>
     </div>
   </div>
 </li>

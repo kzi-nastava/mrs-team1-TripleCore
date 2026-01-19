@@ -64,11 +64,10 @@ public class Ride {
     private boolean panic;
     @ManyToOne
     @JoinColumn(name = "panic_triggered_by")
-    private Passenger panicTriggeredBy;
+    private User panicTriggeredBy;
     private LocalDateTime panicTriggeredAt;
 
     @ManyToOne
     @JoinColumn(name = "cancelled_by_id")
     private User cancelledBy;
-
 }

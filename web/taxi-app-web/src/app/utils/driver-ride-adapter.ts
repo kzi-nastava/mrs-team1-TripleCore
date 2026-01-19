@@ -40,7 +40,7 @@ export function adaptToFrontendRide(backendRide: RideDetailsResponse): FrontendR
     return Math.round(average * 10) / 10; 
   };
 
-  return {
+  const frontendRide: FrontendRide = {
     id: backendRide.id,
     passengerName: backendRide.ordererName || 'Unknown',
     passengerImage: 'icons/profile.png',
@@ -57,4 +57,6 @@ export function adaptToFrontendRide(backendRide: RideDetailsResponse): FrontendR
     vehicleType: backendRide.vehicle || 'STANDARD',
     notes: backendRide.inconsistencies || ''
   };
+
+  return frontendRide;
 }

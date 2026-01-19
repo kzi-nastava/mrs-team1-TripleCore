@@ -15,4 +15,10 @@ public class Location {
     private double latitude;
     private double longitude;
     private String address;
+
+    @Override
+    public String toString() {
+        return address + " (" + latitude + ", " + longitude + ")";
+    }
+
 }

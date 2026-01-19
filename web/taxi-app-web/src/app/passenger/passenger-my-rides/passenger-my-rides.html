@@ -182,15 +182,16 @@
           <mat-icon>cancel</mat-icon>
         </button>
 
-        <!-- Panic Button (only for IN_PROGRESS) -->
-        <button *ngIf="ride.status === 'IN_PROGRESS'"
-                mat-icon-button 
-                color="accent"
-                (click)="panicAlert(ride)"
-                matTooltip="Panic alert"
-                class="action-btn panic-btn">
-          <mat-icon>warning</mat-icon>
-        </button>
+        <!-- Panic Button (only for IN_PROGRESS rides) -->
+        <span *ngIf="ride.status === 'IN_PROGRESS'" 
+              [matTooltip]="ride.panic ? 'Panic already activated' : 'Panic alert'">
+          <button mat-icon-button
+                  (click)="panicAlert(ride)"
+                  [disabled]="ride.panic"
+                  class="action-btn panic-btn">
+            <mat-icon>warning</mat-icon>
+          </button>
+        </span>
 
         <!-- Rate Ride Button (only for FINISHED, unrated) -->
         <button *ngIf="ride.status === 'FINISHED' && !ride.isRated"

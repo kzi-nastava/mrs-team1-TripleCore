@@ -90,6 +90,11 @@ const routes: Routes = [
     loadComponent: () => import('./passenger/favorite-routes/favorite-routes').then(m => m.FavoriteRoutesComponent)
   },
   {
+    path: 'admin/panic-notifications',
+    loadComponent: () =>
+      import('./admin/admin-panic-page/admin-panic-page').then(m => m.AdminPanicPageComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
