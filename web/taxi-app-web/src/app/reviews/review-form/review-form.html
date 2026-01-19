@@ -1,0 +1,50 @@
+<div class="overlay">
+<mat-card class="review-card">
+  <h2>Leave a review</h2>
+
+  <mat-card-content>
+
+    <div class="rating-section">
+      <label>Rate driver</label>
+      <div class="stars">
+        <img src="icons/star-full.png" class="star">
+        <img src="icons/star-full.png" class="star">
+        <img src="icons/star-full.png" class="star">
+        <img src="icons/star-full.png" class="star">
+        <img src="icons/star-full.png" class="star">
+      </div>
+    </div>
+
+    <div class="rating-section">
+      <label>Rate vehicle</label>
+      <div class="stars">
+        <img src="icons/star-full.png" class="star">
+        <img src="icons/star-full.png" class="star">
+        <img src="icons/star-full.png" class="star">
+        <img src="icons/star-full.png" class="star">
+        <img src="icons/star-full.png" class="star">
+      </div>
+    </div>
+
+    <!-- Comment -->
+    <mat-form-field class="comment-field" appearance="outline">
+      <mat-label>Comment</mat-label>
+      <textarea
+        matInput
+        rows="4"
+        [(ngModel)]="comment">
+      </textarea>
+    </mat-form-field>
+
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button class="cancel-btn">
+      Cancel
+    </button>
+    <button class="submit-btn">
+      Submit
+    </button>
+  </mat-card-actions>
+</mat-card>
+</div>
