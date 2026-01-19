@@ -11,15 +11,6 @@
         Dashboard
       </a>
     </li>
-
-    <!-- Test Panic Button -->
-    <li class="nav-item">
-      <button class="nav-link img-and-link" (click)="simulatePanicAlert()" 
-              matTooltip="Test panic alert">
-         Test Panic
-      </button>
-    </li>
-
   
   <li class="nav-item">
     <a class="nav-link img-and-link" routerLink="/register-driver">
@@ -34,10 +25,8 @@
       [showResolved]="showResolvedAlerts"
       (toggleDropdown)="showNotifications = !showNotifications"
       (markAsResolved)="onMarkAsResolved($event)"
-      (markAsUnresolved)="onMarkAsUnresolved($event)"
       (viewDetails)="onViewDetails($event)"
-      (toggleResolvedView)="onToggleResolvedView($event)"
-      (markAllAsRead)="onMarkAllAsRead()">
+      (toggleResolvedView)="onToggleResolvedView($event)">
     </app-panic-notifications>
 
     <!-- Profile -->
