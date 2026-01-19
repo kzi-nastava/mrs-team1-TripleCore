@@ -45,13 +45,13 @@ export class AdminHomeComponent implements OnInit {
   loadPanicNotifications() {
     this.panicService.getAllPanics().subscribe({
       next: (alerts) => {
-        this.panicAlerts = alerts;
-
         const activeAlerts = alerts.filter(a => !a.resolved);
 
         const newActiveAlerts = activeAlerts.filter(
           a => !this.panicAlerts.some(old => old.id === a.id)
         );
+
+        this.panicAlerts = [...alerts]; 
 
         if (newActiveAlerts.length > 0) {
           this.soundService.play();
