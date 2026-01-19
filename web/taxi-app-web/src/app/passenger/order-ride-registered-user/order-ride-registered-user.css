@@ -192,10 +192,23 @@ h3 {
 .icon img, .delete-icon img { 
     width: 18px; 
     height: 18px; 
+    cursor: pointer;
 }
 
 .margin-bottom-15 { 
     margin-bottom: 15px; 
+}
+
+.favorite-btn {
+  margin-bottom: 20px; 
+}
+
+.btn-primary:hover {
+    background-color: #4a0a82;
+}
+
+.favorite-btn:hover {
+    background-color: #4a0a82;
 }
 
 @media (max-width: 600px) {

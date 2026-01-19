@@ -1,7 +1,8 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnChanges, SimpleChanges, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OsmService } from '../../services/osm';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-order-ride-registered-user',
@@ -10,7 +11,8 @@ import { OsmService } from '../../services/osm';
   templateUrl: './order-ride-registered-user.html',
   styleUrl: './order-ride-registered-user.css',
 })
-export class OrderRideRegisteredUser {
+export class OrderRideRegisteredUser implements OnChanges {
+  @Input() initialData: any = null;
   @Output() rideOrderedEvent = new EventEmitter<void>();
 
   isStartFocused = false;
@@ -31,7 +33,36 @@ export class OrderRideRegisteredUser {
   babyTransport: boolean = false;
   petsTransport: boolean = false;
 
-  constructor(private osmService: OsmService) {}
+  constructor(private osmService: OsmService, private router: Router) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['initialData'] && changes['initialData'].currentValue) {
+      this.fillFormFromFavorite(changes['initialData'].currentValue);
+    }
+  }
+
+  goToFavorites() {
+    this.router.navigate(['/favorite-routes']);
+  }
+
+  private fillFormFromFavorite(data: any) {
+
+    this.startPointQuery = data.startName;
+    this.destinationPointQuery = data.destName;
+
+  
+    this.startPointLocation = { address: data.startName, lat: 0, lon: 0 };
+    this.destinationPointLocation = { address: data.destName, lat: 0, lon: 0 };
+
+
+    if (data.stations && data.stations.length > 0) {
+      this.stations = data.stations.map((s: string) => ({
+        query: s,
+        results: [],
+        location: { address: s, lat: 0, lon: 0 }
+      }));
+    }
+  }
 
   searchStartPoint() {
     if (this.startPointQuery.length < 3) { this.startPointResults = []; return; }
@@ -63,7 +94,10 @@ export class OrderRideRegisteredUser {
 
   searchStation(index: number) {
     const station = this.stations[index];
-    if (station.query.length < 3) { station.results = []; return; }
+    if (station.query.length < 3) { 
+      station.results = []; 
+      return; 
+    }
     this.osmService.search(station.query).subscribe(res => station.results = res);
   }
 
@@ -74,15 +108,28 @@ export class OrderRideRegisteredUser {
     this.activeStationIndex = null;
   }
 
-  addStation() { this.stations.push({ query: "", results: [], location: null }); }
-  removeStation(index: number) {
-    if (this.stations.length > 1) this.stations.splice(index, 1);
-    else this.stations[0] = { query: "", results: [], location: null };
+  addStation() { 
+    this.stations.push({ query: "", results: [], location: null }); 
   }
 
-  addPassengerEmail() { this.passengersEmails.push(""); }
-  removePassengerEmail(index: number) { if (this.passengersEmails.length > 1) this.passengersEmails.splice(index, 1); }
-  trackByFn(index: any) { return index; }
+  removeStation(index: number) {
+    if (this.stations.length > 1) 
+      this.stations.splice(index, 1);
+    else 
+      this.stations[0] = { query: "", results: [], location: null };
+  }
+
+  addPassengerEmail() { 
+    this.passengersEmails.push(""); 
+  }
+
+  removePassengerEmail(index: number) { 
+    if (this.passengersEmails.length > 1) 
+      this.passengersEmails.splice(index, 1); 
+  }
+  trackByFn(index: any) {
+     return index; 
+    }
 
   orderRide() {
     if (!this.startPointLocation || !this.destinationPointLocation) {

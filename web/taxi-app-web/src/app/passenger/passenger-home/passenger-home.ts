@@ -16,9 +16,20 @@ import { LogoutService } from '../../services/auth-service/logout-service';
   styleUrls: ['./passenger-home.css'],
 })
 export class PassengerHomeComponent {
-  constructor(private router: Router, private logoutService: LogoutService) {}
-  
+
   canOrderRide: boolean = true;
+  favoriteRouteData: any = null;
+
+  constructor(private router: Router, private logoutService: LogoutService) {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state && navigation.extras.state['favoriteRoute']) {
+      this.favoriteRouteData = navigation.extras.state['favoriteRoute'];
+    }
+  }
+  
+
+
+
 
   handleRideOrdered(){
     this.canOrderRide = false;

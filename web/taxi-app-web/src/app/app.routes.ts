@@ -18,6 +18,7 @@ import { PassengerHomeComponent } from './passenger/passenger-home/passenger-hom
 import { DriverAdditionalInfoComponent } from './driver/driver-additional-info/driver-additional-info'; 
 import { DriverRegistrationComponent } from './auth/register-driver/driver-registration-component/driver-registration-component'; 
 import { OrderRideRegisteredUser } from './passenger/order-ride-registered-user/order-ride-registered-user';
+import { FavoriteRoutesComponent } from './passenger/favorite-routes/favorite-routes';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -39,5 +40,6 @@ export const appRoutes: Routes = [
   { path: 'driver-additional-info', component: DriverAdditionalInfoComponent},
   { path: 'register-driver', component: DriverRegistrationComponent },
   { path: 'order-ride-registered-user', component: OrderRideRegisteredUser },
+  { path: 'favorite-routes', component: FavoriteRoutesComponent },
   { path: '**', redirectTo: '' },
 ];
