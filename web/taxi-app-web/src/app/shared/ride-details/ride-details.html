@@ -37,15 +37,20 @@
     </div>
 
     <div class="info-container">
-      <h2 class="heading">Ride ratings</h2>
+      <h2 class="heading">Reviews</h2>
       <p class="info" *ngIf="ride.reviews?.length; else noReviews">
-        
-      </p>
-      <ng-template #noReviews>
-        <p class="info">No ratings</p>
-      </ng-template>
+      <ng-container *ngFor="let review of ride.reviews">
+        Passenger: {{ review.passenger }}<br>
+        Driver Rating: {{ review.driverRating }} / 5<br>
+        Vehicle Rating: {{ review.vehicleRating }} / 5<br>
+        Comment: {{ review.comment }}
+        <hr>
+      </ng-container>
+    </p>
+    <ng-template #noReviews>
+      <p class="info">No ratings</p>
+    </ng-template>
     </div>
-
   </div>
 
   <!-- RIGHT COLUMN -->

@@ -40,10 +40,11 @@ public class DriverService {
     // change here so the function throws exceptions
     public List<RideDetailsResponse> getRideHistory(Long driverId){
         try{
-            List<Ride> rides = rideService.getDriverRides(driverId);
-            return rides.stream()
-                    .map(RideService::createRideDetails)
-                    .toList();
+            List<RideDetailsResponse> details = new ArrayList<>();
+            for (Ride ride : rideService.getDriverRides(driverId)){
+                details.add(rideService.createRideDetails(ride));
+            }
+            return details;
         } catch (Exception e){
             return new ArrayList<>();
         }
