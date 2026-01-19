@@ -2,11 +2,12 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PanicNotificationItemComponent } from '../panic-notification-item/panic-notification-item';
 import { PanicAlert } from '../../models/panic-alert';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-panic-notifications',
   standalone: true,
-  imports: [CommonModule, PanicNotificationItemComponent],
+  imports: [CommonModule, PanicNotificationItemComponent, RouterLink],
   templateUrl: './panic-notifications.html',
   styleUrls: ['./panic-notifications.css']
 })

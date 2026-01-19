@@ -43,17 +43,19 @@ export class AdminHomeComponent implements OnInit {
   }
 
   loadPanicNotifications() {
-    this.panicService.getActivePanics().subscribe({
+    this.panicService.getAllPanics().subscribe({
       next: (alerts) => {
-        const newAlerts = alerts.filter(
+        this.panicAlerts = alerts;
+
+        const activeAlerts = alerts.filter(a => !a.resolved);
+
+        const newActiveAlerts = activeAlerts.filter(
           a => !this.panicAlerts.some(old => old.id === a.id)
         );
 
-        this.panicAlerts = alerts;
-
-        if (newAlerts.length > 0) {
+        if (newActiveAlerts.length > 0) {
           this.soundService.play();
-          newAlerts.forEach(alert => this.showBrowserNotification(alert));
+          newActiveAlerts.forEach(alert => this.showBrowserNotification(alert));
         }
       },
       error: (err) => console.error('Failed to load panic alerts', err)
