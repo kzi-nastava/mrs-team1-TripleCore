@@ -1,119 +1,3 @@
-<!-- <div class="orderRide-backdrop">
-  <div class="orderRide-container">
-    <form (ngSubmit)="orderRide()">
-      
-      <div class="form-grid">
-        <div class="column">
-          <section>
-            <h3>Order a ride</h3>
-            
-            <div class="field-group">
-              <div class="input-wrapper">
-                <span class="icon"><img src="icons/icons8-address-50.png" alt="Start"/></span>
-                <input type="text" placeholder="Start point" 
-                       [(ngModel)]="startPointQuery" name="startPointQuery" 
-                       (input)="searchStartPoint()" (focus)="isStartFocused = true" 
-                       (blur)="hideStartResults()" autocomplete="off" required>
-              </div>
-              <ul class="results" *ngIf="startPointResults.length && isStartFocused">
-                <li *ngFor="let place of startPointResults" (click)="selectStartPoint(place)">{{ place.display_name }}</li>
-              </ul>
-            </div>
-
-            <div class="field-group">
-              <div class="input-wrapper">
-                <span class="icon"><img src="icons/icons8-address-50.png" alt="Dest"/></span>
-                <input type="text" placeholder="Destination point" 
-                       [(ngModel)]="destinationPointQuery" name="destinationPointQuery" 
-                       (input)="searchDestinationPoint()" (focus)="isDestFocused = true" 
-                       (blur)="hideDestResults()" autocomplete="off" required>
-              </div>
-              <ul class="results" *ngIf="destinationPointResults.length && isDestFocused">
-                <li *ngFor="let place of destinationPointResults" (click)="selectDestinationPoint(place)">{{ place.display_name }}</li>
-              </ul>
-            </div>
-          </section>
-
-          <section>
-            <h3>Add stations</h3>
-            <div *ngFor="let station of stations; let i = index" class="field-group">
-              <div class="input-wrapper">
-                <span class="icon"><img src="icons/icons8-address-50.png" alt="Station"/></span>
-                <input type="text" placeholder="Station point" 
-                       [(ngModel)]="stations[i].query" [name]="'station' + i" 
-                       (input)="searchStation(i)" (focus)="activeStationIndex = i" 
-                       (blur)="hideStationResults()" autocomplete="off">
-                <span class="delete-icon" (click)="removeStation(i)">
-                  <img src="icons/icons8-trash-96.png" alt="Delete"/>
-                </span>
-              </div>
-              <ul class="results" *ngIf="stations[i].results.length && activeStationIndex === i">
-                <li *ngFor="let place of stations[i].results" (click)="selectStation(i, place)">{{ place.display_name }}</li>
-              </ul>
-            </div>
-            <button type="button" class="btn-secondary" (click)="addStation()">+ Add Station</button>
-          </section>
-
-          <section>
-            <h3>Schedule start time</h3>
-            <div class="input-wrapper">
-              <span class="icon"><img src="icons/icons8-time-100.png" alt="Time"/></span>
-              <input type="text" placeholder="Start time (e.g. 14:30)" name="startTime" [(ngModel)]="startTime">
-            </div>
-          </section>
-        </div>
-
-        <div class="column">
-          <section class="options-section">
-            <div class="option-row">
-              <span class="option-label">Baby transport:</span>
-              <div class="radio-group">
-                <label class="radio-container">
-                  <input type="radio" name="baby" [value]="true" [(ngModel)]="babyTransport"><span class="checkmark"></span> Yes
-                </label>
-                <label class="radio-container">
-                  <input type="radio" name="baby" [value]="false" [(ngModel)]="babyTransport"><span class="checkmark"></span> No
-                </label>
-              </div>
-            </div>
-            <div class="option-row">
-              <span class="option-label">Pets transport:</span>
-              <div class="radio-group">
-                <label class="radio-container">
-                  <input type="radio" name="pets" [value]="true" [(ngModel)]="petsTransport"><span class="checkmark"></span> Yes
-                </label>
-                <label class="radio-container">
-                  <input type="radio" name="pets" [value]="false" [(ngModel)]="petsTransport"><span class="checkmark"></span> No
-                </label>
-              </div>
-            </div>
-          </section>
-
-          <section>
-            <h3>Add other passengers</h3>
-            <div *ngFor="let email of passengersEmails; let i = index; trackBy: trackByFn" class="field-group">
-              <div class="input-wrapper">
-                <span class="icon"><img src="icons/icons8-email-48.png" alt="Email"/></span>
-                <input type="email" placeholder="Passenger email" [(ngModel)]="passengersEmails[i]" [name]="'passenger' + i">
-                <span class="delete-icon" (click)="removePassengerEmail(i)">
-                  <img src="icons/icons8-trash-96.png" alt="Delete"/>
-                </span>
-              </div>
-            </div>
-            <button type="button" class="btn-secondary" (click)="addPassengerEmail()">+ Add Passenger</button>
-          </section>
-
-          <div class="action-buttons">
-            <button type="button" class="btn-secondary">Add from my routes</button>
-            <button type="submit" class="btn-primary">Order ride</button>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
-</div> -->
-
-
 <div class="orderRide-backdrop">
   <div class="orderRide-container">
     <form (ngSubmit)="orderRide()">
@@ -211,6 +95,12 @@
             </div>
           </div>
           <button type="button" class="btn-secondary" (click)="addPassengerEmail()">+ Add Passenger</button>
+        </section>
+
+        <section>
+          <button type="button" class="btn-primary favorite-btn" (click)="goToFavorites()">
+            Order from Favorite Routes
+          </button>
         </section>
 
         <div class="action-buttons">
