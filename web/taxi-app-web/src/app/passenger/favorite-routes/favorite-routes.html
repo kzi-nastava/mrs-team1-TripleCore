@@ -34,17 +34,17 @@
       
       <div class="route-details">
         <div class="detail-item">
-          <img src="icons/icons8-address-50.png" class="route-icon" alt="Pickup">
-          <span>Start Point: {{ route.startName }}</span>
+          <img src="icons/icons8-address-80.png" class="route-icon" alt="Start Point">
+          <span><strong>Start Point:</strong> {{ route.startName }}</span>
         </div>
         
         <div class="detail-item">
-          <img src="icons/icons8-address-50.png" class="route-icon" alt="Destination">
-          <span>Destination Point: {{ route.destName }}</span>
+          <img src="icons/icons8-destination-40.png" class="route-icon" alt="Destination">
+          <span><strong>Destination Point:</strong> {{ route.destName }}</span>
         </div>
         
         <div class="stations-info">
-          <p>Stations: {{ route.stations[0] || 'None' }}</p>
+          <p><strong>Stations:</strong> {{ route.stations[0] || 'None' }}</p>
           <p class="indent" *ngFor="let station of route.stations.slice(1)">{{ station }}</p>
         </div>
       </div>
