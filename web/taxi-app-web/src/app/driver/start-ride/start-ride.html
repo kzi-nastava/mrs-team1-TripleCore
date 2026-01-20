@@ -1,0 +1,32 @@
+<div class="start-ride-container">
+  <div class="ride-card">
+    <h3 class="ride-header">{{ activeRide.startName }} - {{ activeRide.destName }}</h3>
+    
+    <div class="ride-details">
+      <div class="detail-item">
+        <img src="icons/icons8-address-80.png" class="route-icon" alt="Start Point">
+        <div class="text-group">
+          <span class="full-text"><strong>Start Point:</strong> {{ activeRide.startName }}</span>
+        </div>
+      </div>
+      
+      <div class="detail-item">
+        <img src="icons/icons8-destination-40.png" class="route-icon" alt="Destination">
+        <div class="text-group">
+          <span class="full-text"><strong>Destination Point:</strong> {{ activeRide.destName }}</span>
+        </div>
+      </div>
+      
+      <div class="stations-info" *ngIf="activeRide.stations && activeRide.stations.length > 0">
+        <p><strong>Stations:</strong> {{ activeRide.stations[0] }}</p>
+        <p class="indent" *ngFor="let station of activeRide.stations.slice(1)">
+          {{ station }}
+        </p>
+      </div>
+    </div>
+    
+    <div class="card-action">
+      <button class="btn-primary-start" (click)="onStartRideClick()">Start ride</button>
+    </div>
+  </div>
+</div>

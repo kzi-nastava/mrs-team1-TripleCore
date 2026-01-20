@@ -20,6 +20,7 @@ import { DriverRegistrationComponent } from './auth/register-driver/driver-regis
 import { OrderRideRegisteredUser } from './passenger/order-ride-registered-user/order-ride-registered-user';
 import { FavoriteRoutesComponent } from './passenger/favorite-routes/favorite-routes';
 import { AdminPanicPageComponent } from './admin/admin-panic-page/admin-panic-page';
+import { StartRideComponent } from './driver/start-ride/start-ride';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -43,5 +44,6 @@ export const appRoutes: Routes = [
   { path: 'order-ride-registered-user', component: OrderRideRegisteredUser },
   { path: 'favorite-routes', component: FavoriteRoutesComponent },
   { path: 'admin/panic-notifications', component: AdminPanicPageComponent},
+  { path: 'start-ride', component: StartRideComponent },
   { path: '**', redirectTo: '' },
 ];

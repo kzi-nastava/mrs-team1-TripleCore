@@ -95,6 +95,10 @@ const routes: Routes = [
       import('./admin/admin-panic-page/admin-panic-page').then(m => m.AdminPanicPageComponent)
   },
   {
+    path: 'start-ride',
+    loadComponent: () => import('./driver/start-ride/start-ride').then(m => m.StartRideComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
