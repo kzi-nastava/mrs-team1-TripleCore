@@ -1,0 +1,22 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { StartRideComponent } from './start-ride';
+
+describe('StartRideComponent', () => {
+  let component: StartRideComponent;
+  let fixture: ComponentFixture<StartRideComponent>;
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [StartRideComponent]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(StartRideComponent);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
