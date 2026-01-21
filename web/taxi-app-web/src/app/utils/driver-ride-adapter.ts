@@ -43,7 +43,7 @@ export function adaptToFrontendRide(backendRide: RideDetailsResponse): FrontendR
   const frontendRide: FrontendRide = {
     id: backendRide.id,
     passengerName: backendRide.ordererName || 'Unknown',
-    passengerImage: 'icons/profile.png',
+    passengerImage: backendRide.ordererProfileImage || 'icons/profile.png',
     passengerRating: calculatePassengerRating(backendRide.reviews || []),
     pickup: backendRide.startLocation?.address || 'Unknown location',
     destination: backendRide.endLocation?.address || 'Unknown location',
