@@ -72,7 +72,13 @@ public class RideStopServiceImpl implements RideStopService {
     @Override
     public double recalculatePrice(Ride ride, double originalDistance, double newDistance) {
         // FOR NOW
-        double pricePerKm = ride.getPrice() / originalDistance;
+        Double originalPrice = ride.getPrice();
+        if (originalPrice == null) {
+            originalPrice = 200.0;
+        }
+
+        double pricePerKm = originalPrice / originalDistance;
         return pricePerKm * newDistance;
     }
+
 }

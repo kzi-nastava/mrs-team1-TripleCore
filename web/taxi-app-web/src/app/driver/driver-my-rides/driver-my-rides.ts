@@ -256,26 +256,63 @@ export class DriverMyRidesComponent implements OnInit {
     }
   }
 
-  finishRide(ride: FrontendRide): void {
+  stopRide(ride: FrontendRide): void {
     if (ride.status !== 'IN_PROGRESS') {
-      alert('Only rides in progress can be finished.');
+      alert('Only rides in progress can be stopped.');
       return;
     }
-    
-    if (confirm(`Finish ride with ${ride.passengerName}?`)) {
-      const rideIndex = this.allRides.findIndex(r => 
-        r.passengerName === ride.passengerName && 
-        r.date.getTime() === ride.date.getTime() &&
-        r.pickup === ride.pickup
-      );
-      
-      if (rideIndex !== -1) {
-        this.allRides[rideIndex].status = 'FINISHED';
+
+    if (!confirm(`Stop ride with ${ride.passengerName}?`)) {
+      return;
+    }
+
+    const sendStopRequest = (latitude: number, longitude: number) => {
+      const stopRequest = {
+        latitude: latitude,
+        longitude: longitude,
+        address: ride.destination
+      };
+
+      this.rideService.stopRide(ride.id, stopRequest).subscribe({
+      next: (response) => {
+        const rideIndex = this.allRides.findIndex(r =>
+          r.passengerName === ride.passengerName &&
+          r.date.getTime() === ride.date.getTime() &&
+          r.pickup === ride.pickup
+        );
+
+        if (rideIndex !== -1) {
+          this.allRides[rideIndex].status = 'FINISHED';
+          this.allRides[rideIndex].price = response.newTotalPrice ?? 0;
+
+          const stoppedAtDate = response.stopTime ? new Date(response.stopTime) : new Date();
+          this.allRides[rideIndex].estimatedEnd = stoppedAtDate.toLocaleTimeString('sr-RS', {hour:'2-digit', minute:'2-digit'});
+
+          const address = response.finalAddress ?? ride.destination;
+          alert(`Ride stopped successfully at ${address}. New price: ${response.newTotalPrice ?? 0} RSD, distance: ${response.newDistance ?? 0} km.`);
+        }
+
         this.applyFilters();
-        
-        // TODO: Pozvati backend API za finish ride
-        alert(`Ride has been finished. Thank you!`);
-      }
+
+        alert(`Ride stopped successfully at ${response.finalAddress}. New price: ${response.newTotalPrice ?? 0} RSD, distance: ${response.newDistance ?? 0} km.`);
+      },
+      error: (err) => { console.error(err); alert('Failed to stop ride'); }
+    });
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          sendStopRequest(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          console.warn('Could not get GPS, using default coordinates:', error);
+          sendStopRequest(0, 0);
+        }
+      );
+    } else {
+      console.warn('Geolocation not supported, using default coordinates');
+      sendStopRequest(0, 0);
     }
   }
 
