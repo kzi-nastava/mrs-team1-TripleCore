@@ -1,5 +1,7 @@
 package com.example.taxiapp.ui;
 
+import static java.sql.DriverManager.println;
+
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         loadFragment(new AdminHomeFragment(), false);
     }
 
-    public void onLoginSuccess() {
+    public void onDriverLoginSuccess() {
         isLoggedIn = true;
         userType = "driver";
         setupMenu();
