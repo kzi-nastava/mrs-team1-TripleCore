@@ -62,7 +62,7 @@ export function adaptToPassengerRide(backendRide: RideDetailsResponse): Passenge
   return {
     id: backendRide.id || 0,
     driverName: backendRide.driverName || 'Unknown Driver',
-    driverImage: 'icons/profile.png',
+    driverImage: backendRide.driverProfileImage || 'icons/profile.png',
     driverRating: 4.5, // TODO: Calculate based on reviews
     vehicleModel: vehicleInfo.model,
     vehicleType: vehicleInfo.type,

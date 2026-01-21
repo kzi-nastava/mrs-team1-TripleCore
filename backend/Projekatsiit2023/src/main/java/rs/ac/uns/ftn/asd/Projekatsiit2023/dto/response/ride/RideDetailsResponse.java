@@ -17,10 +17,12 @@ public class RideDetailsResponse {
     private Long id;
     private String ordererName;
     private List<String> linkedPassengers;
+    private String ordererProfileImage;
 
     // driver
     private String driverName;
     private String vehicle;
+    private String driverProfileImage;
 
     // route
     private Location startLocation;

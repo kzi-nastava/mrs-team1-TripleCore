@@ -124,6 +124,8 @@ public class RideService {
                 rideDetails.setOrdererName(
                         ride.getOrderer().getFirstName() + " " + ride.getOrderer().getLastName()
                 );
+
+                rideDetails.setOrdererProfileImage(ride.getOrderer().getProfileImage());
             }
 
             if (ride.getLinkedPassengers() != null) {
@@ -154,6 +156,9 @@ public class RideService {
                 } else {
                     rideDetails.setVehicle("No vehicle assigned");
                 }
+
+                // Driver picture
+                rideDetails.setDriverProfileImage(ride.getDriver().getProfileImage());
             }
 
             // Route

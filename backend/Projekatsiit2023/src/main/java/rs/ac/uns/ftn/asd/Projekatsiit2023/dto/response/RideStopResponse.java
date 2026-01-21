@@ -1,7 +1,10 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class RideStopResponse {
     private boolean success;
     private String message;
@@ -21,10 +24,4 @@ public class RideStopResponse {
         this.finalAddress = finalAddress;
     }
 
-    public boolean isSuccess() { return success; }
-    public String getMessage() { return message; }
-    public Double getNewTotalPrice() { return newTotalPrice; }
-    public Double getNewDistance() { return newDistance; }
-    public LocalDateTime getStopTime() { return stopTime; }
-    public String getFinalAddress() { return finalAddress; }
 }
