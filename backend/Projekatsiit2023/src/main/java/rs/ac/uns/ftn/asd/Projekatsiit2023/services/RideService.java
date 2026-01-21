@@ -1,21 +1,17 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.ReviewPresentationDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.ReviewDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.DriverRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.PassengerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.RideRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.RouteRepository;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RideService {
@@ -137,9 +133,9 @@ public class RideService {
             rideDetails.setInconsistencies(ride.getInconsistencies());
 
             // Reviews
-            List<ReviewPresentationDTO> dtos = new ArrayList<>();
+            List<ReviewDTO> dtos = new ArrayList<>();
             for(Review review : reviewService.getRideReviews(ride.getId())){
-                dtos.add(reviewService.GenerateReviewPresentation(review));
+                dtos.add(reviewService.GenerateReviewDTO(review));
             }
             rideDetails.setReviews(dtos);
             return rideDetails;

@@ -1,7 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 
 import org.springframework.stereotype.Service;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.ReviewPresentationDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.ReviewDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.review.CreateReviewRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.exceptions.ReviewMappingException;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Driver;
@@ -13,7 +13,6 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.ReviewRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.RideRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ReviewService {
@@ -56,12 +55,17 @@ public class ReviewService {
         return reviewRepository.findByRideId(rideId);
     }
 
-    public ReviewPresentationDTO GenerateReviewPresentation(Review review){
-        ReviewPresentationDTO dto = new ReviewPresentationDTO();
+    public ReviewDTO GenerateReviewDTO(Review review){
+        ReviewDTO dto = new ReviewDTO();
         try{
             Passenger passenger = review.getPassenger();
-            Driver driver = review.getRide().getDriver();
-            dto.setPassenger(passenger.getFirstName() + " " + passenger.getLastName());
+            Ride ride = review.getRide();
+            Driver driver = ride.getDriver();
+
+            dto.setRideId(ride.getId());
+            dto.setPassengerId(passenger.getId());
+            dto.setPassengerName(passenger.getFirstName() + " " + passenger.getLastName());
+            dto.setDriverId(driver.getId());
             dto.setDriver(driver.getFirstName() + " " + driver.getLastName());
             dto.setDriverRating(review.getDriverRating());
             dto.setVehicleRating(review.getVehicleRating());
