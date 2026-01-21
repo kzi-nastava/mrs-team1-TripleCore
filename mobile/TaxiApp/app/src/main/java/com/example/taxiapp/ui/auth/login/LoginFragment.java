@@ -66,12 +66,11 @@ public class LoginFragment extends Fragment {
         AuthService.getInstance().login(email, password, new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if (!isAdded()) return; // fragment nije attach-ovan
+                if (!isAdded()) return;
 
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
 
-                    // Čuvanje podataka korisnika u SharedPreferences
                     SharedPreferences prefs = requireActivity()
                             .getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
                     prefs.edit()
@@ -82,7 +81,6 @@ public class LoginFragment extends Fragment {
                             .putString("userLastName", loginResponse.getLastName())
                             .apply();
 
-                    // Menjanje fragmenta na UI thread-u
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(),
                                 loginResponse.getRole() + " login successful!",
