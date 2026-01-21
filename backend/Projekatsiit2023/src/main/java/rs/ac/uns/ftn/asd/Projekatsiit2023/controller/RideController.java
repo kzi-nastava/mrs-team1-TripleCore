@@ -20,6 +20,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.User;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideCancelService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideStopService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RouteService;
 
 import java.time.LocalDateTime;
@@ -33,13 +34,16 @@ public class  RideController {
     private final RideService rideService;
     private final RouteService routeService;
     private final RideCancelService rideCancelService;
+    private final RideStopService rideStopService;
 
     public RideController(RideService rideService,
                           RouteService routeService,
-                          RideCancelService rideCancelService){
+                          RideCancelService rideCancelService,
+                          RideStopService rideStopService){
         this.rideService = rideService;
         this.routeService = routeService;
         this.rideCancelService = rideCancelService;
+        this.rideStopService = rideStopService;
     }
 
     @PostMapping("/estimate")
@@ -81,75 +85,27 @@ public class  RideController {
         }
     }
 
-    private boolean rideExists(Long id) {
-        return id >= 1 && id <= 5;
-    }
-
     @PostMapping("/{id}/stop")
     public ResponseEntity<?> stopRide(
-            @PathVariable("id") Long id,
+            @PathVariable("id") Long rideId,
             @Valid @RequestBody RideStopRequest request) {
 
-        if (!rideExists(id)) {
-            return ResponseEntity.status(404)
-                    .body("Ride with ID " + id + " not found");
+        try {
+            RideStopResponse response = rideStopService.stopRide(rideId, request);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error stopping ride: " + e.getMessage());
         }
-
-        if (!isRideInProgress(id)) {
-            return ResponseEntity.badRequest()
-                    .body("Ride is not in progress. Only rides in progress can be stopped.");
-        }
-
-        Double latitude = request.getLatitude();
-        Double longitude = request.getLongitude();
-        String address = request.getAddress();
-
-        Double originalPrice = getOriginalPrice(id);
-        Double originalDistance = getOriginalDistance(id);
-        Double newDistance = calculateNewDistance(id, latitude, longitude);
-        Double newPrice = recalculatePrice(originalPrice, originalDistance, newDistance);
-
-        updateRideWithNewDestination(id, address, latitude, longitude, newPrice, newDistance);
-
-        RideStopResponse response = new RideStopResponse(
-                true,
-                String.format("Ride #%d stopped successfully at %s", id, address),
-                newPrice,
-                newDistance,
-                LocalDateTime.now(),
-                address
-        );
-
-        return ResponseEntity.ok(response);
     }
 
     private boolean isRideInProgress(Long id) {
         return id == 2 || id == 4;
     }
 
-    private Double getOriginalPrice(Long id) {
-        return 1500.0;
-    }
-
-    private Double getOriginalDistance(Long id) {
-        return 7.5;
-    }
-
-    private Double calculateNewDistance(Long id, Double lat, Double lng) {
-        return 5.2;
-    }
-
-    private Double recalculatePrice(Double originalPrice, Double originalDistance, Double newDistance) {
-        double pricePerKm = originalPrice / originalDistance;
-        return pricePerKm * newDistance;
-    }
-
-    private void updateRideWithNewDestination(Long id, String address,
-                                              Double lat, Double lng,
-                                              Double newPrice, Double newDistance) {
-        System.out.printf("Ride #%d updated - New destination: %s (%.6f, %.6f), " +
-                        "New price: %.2f, New distance: %.2f km%n",
-                id, address, lat, lng, newPrice, newDistance);
+    private boolean rideExists(Long id) {
+        return id >= 1 && id <= 5;
     }
 
     @PostMapping ("/{id}/finish")
