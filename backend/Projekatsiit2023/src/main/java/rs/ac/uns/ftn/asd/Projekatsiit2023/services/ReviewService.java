@@ -12,6 +12,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.PassengerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.ReviewRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.RideRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,7 +67,7 @@ public class ReviewService {
             dto.setPassengerId(passenger.getId());
             dto.setPassengerName(passenger.getFirstName() + " " + passenger.getLastName());
             dto.setDriverId(driver.getId());
-            dto.setDriver(driver.getFirstName() + " " + driver.getLastName());
+            dto.setDriverName(driver.getFirstName() + " " + driver.getLastName());
             dto.setDriverRating(review.getDriverRating());
             dto.setVehicleRating(review.getVehicleRating());
             dto.setComment(review.getComment());
@@ -75,4 +76,29 @@ public class ReviewService {
             throw new ReviewMappingException("Failed mapping review to ReviewPresentationDTO");
         }
     }
+
+    public List<ReviewDTO> getPassengerReviewDTOs(Long passengerId){
+        List<Review> reviews = reviewRepository.findByPassengerId(passengerId);
+
+        List<ReviewDTO> dtoList = new ArrayList<>();
+        for (Review review : reviews){
+            dtoList.add(GenerateReviewDTO(review));
+        }
+
+        return dtoList;
+    }
+
+    public List<ReviewDTO> getDriverReviewDTOs(Long driverId){
+        List<Review> reviews = reviewRepository.findAll();
+
+        List<ReviewDTO> dtoList = new ArrayList<>();
+        for (Review review : reviews){
+            if (review.getRide().getDriver().getId().equals(driverId)){
+                dtoList.add(GenerateReviewDTO(review));
+            }
+        }
+
+        return dtoList;
+    }
+
 }

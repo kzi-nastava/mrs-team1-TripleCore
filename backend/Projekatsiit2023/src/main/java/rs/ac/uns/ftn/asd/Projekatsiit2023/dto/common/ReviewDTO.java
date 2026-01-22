@@ -12,7 +12,7 @@ public class ReviewDTO {
     private Long passengerId;
     private String passengerName;
     private Long driverId;
-    private String driver;
+    private String driverName;
     private int driverRating;
     private int vehicleRating;
     private String comment;
