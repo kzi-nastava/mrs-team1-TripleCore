@@ -1,0 +1,27 @@
+<div class="admin-panic-page">
+
+  <h3>🚨 All Panic Notifications</h3>
+
+  <div class="counts">
+    Total: {{panicAlerts.length}} | Active: {{activeCount}} | Resolved: {{resolvedCount}}
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+    <p>Loading panic alerts...</p>
+  </div>
+
+  <div *ngIf="!loading && panicAlerts.length === 0" class="no-alerts">
+    <p>No panic alerts found ✅</p>
+  </div>
+
+  <div *ngIf="!loading && panicAlerts.length > 0" class="alerts-grid">
+    <app-panic-notification-item
+      *ngFor="let alert of panicAlerts"
+      [alert]="alert"
+      (markAsResolved)="onMarkAsResolved($event)"
+      (viewDetails)="onViewDetails($event)">
+    </app-panic-notification-item>
+  </div>
+
+</div>

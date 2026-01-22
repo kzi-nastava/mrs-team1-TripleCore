@@ -1,6 +1,10 @@
 export interface RideDetailsResponse {
   id: number;
   ordererName: string;
+
+  ordererProfileImage: string | null;
+  driverProfileImage: string | null;
+
   linkedPassengers: string[];
   driverName: string;
   vehicle: string;

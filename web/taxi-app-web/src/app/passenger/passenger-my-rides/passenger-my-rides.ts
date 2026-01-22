@@ -15,29 +15,11 @@ import { FormsModule } from '@angular/forms';
 import { PassengerCancelRideDialogComponent } from '../passenger-cancel-ride-dialog/passenger-cancel-ride-dialog';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoutService } from '../../services/auth-service/logout-service';
-
-export interface PassengerRide {
-  id: number;
-  driverName: string;
-  driverImage: string;
-  driverRating: number;
-  vehicleModel: string;
-  vehicleType: string;
-  licensePlate: string;
-  babyFriendly: boolean;
-  petFriendly: boolean;
-  pickup: string;
-  destination: string;
-  date: Date;
-  scheduledTime: string;
-  estimatedEnd: string;
-  duration: number;
-  price: number;
-  status: 'ASSIGNED' | 'STARTED' | 'FINISHED' | 'CANCELED';
-  isRated: boolean;
-  panicActivated: boolean;
-  cancellationFee?: number;
-}
+import { PassengerService } from '../../services/passenger-service/passenger-service';
+import { RideService } from '../../services/ride-service/ride-service';
+import { PassengerRide, adaptToPassengerRide } from '../../utils/passenger-ride-adapter';
+import { RideDetailsResponse } from '../../models/ride-details-response';
+import { RideCancelRequest } from '../../models/ride-cancel-request';
 
 @Component({
   selector: 'app-passenger-my-rides',
@@ -63,119 +45,10 @@ export interface PassengerRide {
 })
 export class PassengerMyRidesComponent implements OnInit {
   
-  allRides: PassengerRide[] = [
-    {
-      id: 1001,
-      driverName: 'Marko Marković',
-      driverImage: 'assets/avatars/driver1.jpg',
-      driverRating: 4.8,
-      vehicleModel: 'Audi A4',
-      vehicleType: 'LUXURY',
-      licensePlate: 'BG-123-AB',
-      babyFriendly: true,
-      petFriendly: false,
-      pickup: 'Trg Republike',
-      destination: 'Nikola Tesla Airport',
-      date: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
-      scheduledTime: '14:30',
-      estimatedEnd: '15:15',
-      duration: 45,
-      price: 1250,
-      status: 'ASSIGNED',
-      isRated: false,
-      panicActivated: false
-    },
-     {
-      id: 1002,
-      driverName: 'Ivan Ivanović',
-      driverImage: 'assets/avatars/driver2.jpg',
-      driverRating: 4.5,
-      vehicleModel: 'Toyota Corolla',
-      vehicleType: 'STANDARD',
-      licensePlate: 'NS-456-CD',
-      babyFriendly: false,
-      petFriendly: true,
-      pickup: 'Kneza Mihaila',
-      destination: 'Ada Mall',
-      date: new Date(Date.now() - 300000), // 5 minutes ago
-      scheduledTime: '10:00',
-      estimatedEnd: '10:25',
-      duration: 25,
-      price: 650,
-      status: 'STARTED',
-      isRated: false,
-      panicActivated: false
-    },
-    {
-      id: 1010,
-      driverName: 'Bojana Bojanić',
-      driverImage: '',
-      driverRating: 4.9,
-      vehicleModel: 'BMW X5',
-      vehicleType: 'LUXURY',
-      licensePlate: 'BG-789-EF',
-      babyFriendly: false,
-      petFriendly: false,
-      pickup: 'Kalemegdan',
-      destination: 'Sava Center',
-      date: new Date(Date.now() + 2 * 60 * 1000), // 2 minutes from now
-      scheduledTime: '16:45',
-      estimatedEnd: '17:15',
-      duration: 30,
-      price: 980,
-      status: 'ASSIGNED',
-      isRated: false,
-      panicActivated: false
-    },
-    {
-      id: 1004,
-      driverName: 'Nikola Nikolić',
-      driverImage: 'assets/avatars/driver3.jpg',
-      driverRating: 4.2,
-      vehicleModel: 'Mercedes Vito',
-      vehicleType: 'VAN',
-      licensePlate: 'NS-321-GH',
-      babyFriendly: true,
-      petFriendly: false,
-      pickup: 'Voždovac',
-      destination: 'Banovo Brdo',
-      date: new Date(Date.now() - 259200000), // 3 days ago
-      scheduledTime: '08:30',
-      estimatedEnd: '09:00',
-      duration: 30,
-      price: 720,
-      status: 'FINISHED',
-      isRated: true,
-      panicActivated: false
-    },
-    {
-      id: 1005,
-      driverName: 'Dragan Dragić',
-      driverImage: '',
-      driverRating: 3.8,
-      vehicleModel: 'Ford Focus',
-      vehicleType: 'STANDARD',
-      licensePlate: 'BG-654-IJ',
-      babyFriendly: false,
-      petFriendly: false,
-      pickup: 'Slavija',
-      destination: 'Avala Tower',
-      date: new Date(Date.now() - 345600000), // 4 days ago
-      scheduledTime: '13:00',
-      estimatedEnd: '13:45',
-      duration: 45,
-      price: 890,
-      status: 'CANCELED',
-      isRated: false,
-      panicActivated: false,
-      cancellationFee: 200
-    }
-  ];
-
+  allRides: PassengerRide[] = [];
   filteredRides: PassengerRide[] = [];
   
   displayedColumns: string[] = [
-    'id',           
     'driver',       
     'vehicle',      
     'route',        
@@ -189,69 +62,122 @@ export class PassengerMyRidesComponent implements OnInit {
   fromDate: Date | null = null;
   toDate: Date | null = null;
   
+  isLoading: boolean = false;
+
   constructor(
     private dialog: MatDialog,
     private router: Router,
     private datePipe: DatePipe,
-    private logoutService: LogoutService
+    private logoutService: LogoutService,
+    private passengerService: PassengerService,
+    private rideService: RideService
   ) {}
 
   ngOnInit(): void {
-    this.applyFilters();
+    this.loadRides();
+  }
+
+  private getPassengerId(): number {
+    try {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        if (user.id) {
+          return user.id;
+        }
+      }
+      
+      const passengerId = localStorage.getItem('userId');
+      if (passengerId) {
+        return parseInt(passengerId, 10);
+      }
+      
+      console.warn('No passenger ID found in localStorage, using default ID 1');
+      return 1;
+    } catch (error) {
+      console.error('Error getting passenger ID from localStorage:', error);
+      return 1;
+    }
+  }
+
+  loadRides(): void {
+    this.isLoading = true;
+    
+    const passengerId = this.getPassengerId();
+    console.log('Loading rides for passenger ID:', passengerId);
+    
+    this.passengerService.getRideHistory(passengerId).subscribe({
+      next: (backendRides: RideDetailsResponse[]) => {
+        console.log('Backend rides received:', backendRides);
+        
+        this.allRides = backendRides.map(ride => adaptToPassengerRide(ride));
+        console.log('Converted to passenger rides:', this.allRides);
+        
+        this.filteredRides = [...this.allRides];
+        this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
+        
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading rides from backend:', error);
+        this.isLoading = false;
+        
+        this.allRides = [];
+        this.filteredRides = [];
+        alert('Could not load rides. Please try again later.');
+      }
+    });
   }
 
   applyFilters(): void {
-    this.filteredRides = this.allRides.filter(ride => {
-      // Filter by status
-      if (this.statusFilter !== 'ALL') {
-        switch (this.statusFilter) {
-          case 'ASSIGNED':
-          case 'STARTED':
-          case 'FINISHED':
-          case 'CANCELED':
-            if (ride.status !== this.statusFilter) {
-              return false;
-            }
-            break;
-          case 'UNRATED':
-            if (!(ride.status === 'FINISHED' && !ride.isRated)) {
-              return false;
-            }
-            break;
-          case 'RATED':
-            if (!(ride.status === 'FINISHED' && ride.isRated)) {
-              return false;
-            }
-            break;
-        }
-      }
+    let filtered = this.allRides;
+
+    if (this.statusFilter !== 'ALL') {
+      const statusMap: {[key: string]: string[]} = {
+        'ACCEPTED': ['ACCEPTED'],
+        'STARTED': ['IN_PROGRESS'],
+        'FINISHED': ['FINISHED'],
+        'CANCELED': ['CANCELLED', 'REJECTED'],
+        'UNRATED': ['FINISHED'], 
+        'RATED': ['FINISHED']    
+      };
       
-      if (this.fromDate) {
-        const fromDate = new Date(this.fromDate);
-        fromDate.setHours(0, 0, 0, 0);
+      const targetStatuses = statusMap[this.statusFilter] || [this.statusFilter];
+      
+      if (this.statusFilter === 'UNRATED') {
+        filtered = filtered.filter(ride => 
+          targetStatuses.includes(ride.status) && !ride.isRated
+        );
+      } else if (this.statusFilter === 'RATED') {
+        filtered = filtered.filter(ride => 
+          targetStatuses.includes(ride.status) && ride.isRated
+        );
+      } else {
+        filtered = filtered.filter(ride => targetStatuses.includes(ride.status));
+      }
+    }
+
+    if (this.fromDate) {
+      const from = new Date(this.fromDate);
+      from.setHours(0, 0, 0, 0);
+      filtered = filtered.filter(ride => {
         const rideDate = new Date(ride.date);
         rideDate.setHours(0, 0, 0, 0);
-        
-        if (rideDate < fromDate) {
-          return false;
-        }
-      }
-      
-      if (this.toDate) {
-        const toDate = new Date(this.toDate);
-        toDate.setHours(23, 59, 59, 999);
+        return rideDate >= from;
+      });
+    }
+
+    if (this.toDate) {
+      const to = new Date(this.toDate);
+      to.setHours(23, 59, 59, 999);
+      filtered = filtered.filter(ride => {
         const rideDate = new Date(ride.date);
         rideDate.setHours(23, 59, 59, 999);
-        
-        if (rideDate > toDate) {
-          return false;
-        }
-      }
-      
-      return true;
-    });
-    
-    this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
+        return rideDate <= to;
+      });
+    }
+
+    this.filteredRides = filtered.sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 
   clearFilters(): void {
@@ -262,65 +188,89 @@ export class PassengerMyRidesComponent implements OnInit {
     this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 
-  // Get CSS class for status badge
   getStatusClass(status: string): string {
-    return status.toLowerCase();
+    const statusClassMap: {[key: string]: string} = {
+      'REQUESTED': 'requested',
+      'ACCEPTED': 'accepted',
+      'REJECTED': 'canceled',
+      'IN_PROGRESS': 'started',
+      'CANCELLED': 'canceled',
+      'FINISHED': 'finished'
+    };
+    return statusClassMap[status] || status.toLowerCase();
   }
 
   getStatusText(status: string): string {
     switch(status) {
-      case 'ASSIGNED': return 'Assigned';
-      case 'STARTED': return 'In Progress';
+      case 'REQUESTED': return 'Requested';
+      case 'ACCEPTED': return 'Accepted';
+      case 'REJECTED': return 'Rejected';
+      case 'IN_PROGRESS': return 'In Progress';
+      case 'CANCELLED': return 'Canceled';
       case 'FINISHED': return 'Finished';
-      case 'CANCELED': return 'Canceled';
       default: return status;
     }
   }
 
   openPassengerCancelDialog(ride: PassengerRide): void {
+    if (!this.canCancelRide(ride)) {
+      alert('You can only cancel assigned rides more than 10 minutes before scheduled time.');
+      return;
+    }
+    
     const minutesUntil = this.getMinutesUntilRide(ride);
-    console.log(`Opening cancel dialog for ride ${ride.id}`);
-    console.log(`Minutes until: ${minutesUntil}`);
+    const isLateCancellation = minutesUntil <= 10;
     
     const dialogRef = this.dialog.open(PassengerCancelRideDialogComponent, {
       width: '450px',
       data: { 
         ride: ride,
-        minutesUntilRide: minutesUntil
+        minutesUntilRide: minutesUntil,
+        isLateCancellation: isLateCancellation
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('Dialog result:', result);
       if (result) {
-        this.cancelRide(ride.id, result.notes, result.isLateCancellation);
+        this.cancelRide(ride, result.notes, result.isLateCancellation);
       }
     });
   }
 
-  cancelRide(rideId: number, notes: string, isLate: boolean): void {
-    console.log(`Canceling ride ${rideId}, late: ${isLate}, notes: ${notes}`);
+  cancelRide(ride: PassengerRide, notes: string, isLate: boolean): void {
+    const cancelRequest: RideCancelRequest = {
+      cancelerType: 'PASSENGER',
+      reason: notes || 'Canceled by passenger'
+    };
     
-    const rideIndex = this.allRides.findIndex(r => r.id === rideId);
-    if (rideIndex !== -1) {
-      this.allRides[rideIndex].status = 'CANCELED';
-      
-      if (isLate) {
-        this.allRides[rideIndex].cancellationFee = 200; 
-        alert(`Ride #${rideId} canceled. Late cancellation fee: 200 RSD`);
-      } else {
-        alert(`Ride #${rideId} canceled successfully.`);
+    this.rideService.cancelRide(ride.id, cancelRequest).subscribe({
+      next: (response) => {
+        console.log('Ride canceled successfully:', response);
+        
+        const rideIndex = this.allRides.findIndex(r => r.id === ride.id);
+        if (rideIndex !== -1) {
+          this.allRides[rideIndex].status = 'CANCELLED';
+          this.applyFilters();
+        }
+        
+        let message = `Ride #${ride.id} has been canceled.`;
+        if (isLate) {
+          message += ` Late cancellation fee: 200 RSD`;
+        }
+        alert(message);
+      },
+      error: (error) => {
+        console.error('Error canceling ride:', error);
+        alert('Failed to cancel ride. Please try again.');
       }
-      
-      this.applyFilters();
-    }
+    });
   }
 
   canCancelRide(ride: PassengerRide): boolean {
-    if (ride.status !== 'ASSIGNED') return false;
+    if (ride.status !== 'ACCEPTED') return false;
     
     const minutesUntil = this.getMinutesUntilRide(ride);
-    return minutesUntil > 10; 
+    return minutesUntil > 10;
   }
 
   private getMinutesUntilRide(ride: PassengerRide): number {
@@ -331,8 +281,18 @@ export class PassengerMyRidesComponent implements OnInit {
   }
 
   openRatingDialog(ride: PassengerRide): void {
-
-    alert('Rating dialog would open here');
+    if (ride.status !== 'FINISHED') {
+      alert('You can only rate finished rides.');
+      return;
+    }
+    
+    if (ride.isRated) {
+      alert('You have already rated this ride.');
+      return;
+    }
+    
+    // TODO: Implement rating dialog
+    alert(`Rating dialog for ride with ${ride.driverName} would open here.`);
   }
 
   rateRide(rideId: number, driverRating: number, vehicleRating: number, comment: string): void {
@@ -348,20 +308,37 @@ export class PassengerMyRidesComponent implements OnInit {
   }
 
   panicAlert(ride: PassengerRide): void {
-    if (confirm(`Send PANIC alert for ride #${ride.id}?\n\nThis will notify administrators immediately.`)) {
-      
-      const rideIndex = this.allRides.findIndex(r => r.id === ride.id);
-      if (rideIndex !== -1) {
-        this.allRides[rideIndex].panicActivated = true;
-        this.applyFilters();
-        
-        alert(`PANIC alert sent for ride #${rideIndex}. Help is on the way. Stay calm.`);
-      }
+    if (ride.status !== 'IN_PROGRESS') {
+      alert('Panic alert can only be sent for rides in progress.');
+      return;
     }
+
+    const passengerId = this.getPassengerId();
+
+    if (!passengerId) {
+      alert('User not found.');
+      return;
+    }
+
+    if (!confirm(
+      `Send PANIC alert for ride with ${ride.driverName}?\n\n` +
+      `This will immediately notify administrators.`
+    )) {
+      return;
+    }
+
+    this.rideService.activatePanic(ride.id, passengerId).subscribe({
+      next: () => {
+        alert('🚨 PANIC alert sent. Help is on the way.');
+      },
+      error: (err) => {
+        console.error('Error sending panic alert:', err);
+        alert('Failed to send panic alert.');
+      }
+    });
   }
 
   onLogoutClick() {
     this.logoutService.logoutWithBackend();
   }
-
 }

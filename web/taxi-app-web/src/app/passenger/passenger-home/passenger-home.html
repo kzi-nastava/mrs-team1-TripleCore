@@ -6,6 +6,12 @@
         </a>
     </li>
 
+  <li class="nav-item">
+        <a class="img-and-link" routerLink="/favorite-routes">
+            <span class="nav-link">Favorite Routes</span>
+        </a>
+    </li>
+  
   <a class="nav-link img-and-link" routerLink="/user-info" matTooltip="My Profile">
     <img src="icons/icons8-test-account-48.png" class="nav-item-icon">
   </a>
@@ -21,4 +27,4 @@
 
 <app-map></app-map>
 
-<app-order-ride-registered-user *ngIf="canOrderRide" (rideOrderedEvente)="handleRideOrdered()" (rideOrderedEvent)="handleRideOrdered()"></app-order-ride-registered-user>
+<app-order-ride-registered-user *ngIf="canOrderRide" [initialData]="favoriteRouteData"  (rideOrderedEvent)="handleRideOrdered()"></app-order-ride-registered-user>

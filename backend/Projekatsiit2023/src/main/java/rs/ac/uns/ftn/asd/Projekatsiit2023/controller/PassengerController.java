@@ -4,6 +4,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.ReviewDTO;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.MakeReviewRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Passenger;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.PassengerService;
 
@@ -27,5 +30,11 @@ public class PassengerController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
         }
 
+    }
+
+    @GetMapping("/{id}/ride-history")
+    public ResponseEntity<?> getPassengerRideHistory(@PathVariable Long id) {
+        List<RideDetailsResponse> response = passengerService.getRideHistory(id);
+        return ResponseEntity.ok(response);
     }
 }

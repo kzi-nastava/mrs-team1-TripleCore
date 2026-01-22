@@ -88,6 +88,17 @@ const routes: Routes = [
   {
     path: 'review-form',
     loadComponent: () => import('./reviews/review-form/review-form').then(m => m.ReviewFormComponent)
+    path : 'favorite-routes',
+    loadComponent: () => import('./passenger/favorite-routes/favorite-routes').then(m => m.FavoriteRoutesComponent)
+  },
+  {
+    path: 'admin/panic-notifications',
+    loadComponent: () =>
+      import('./admin/admin-panic-page/admin-panic-page').then(m => m.AdminPanicPageComponent)
+  },
+  {
+    path: 'start-ride',
+    loadComponent: () => import('./driver/start-ride/start-ride').then(m => m.StartRideComponent)
   },
   {
     path: '**',

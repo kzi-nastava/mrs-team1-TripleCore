@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RegisterDriverRequest;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RegisterRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.UpdateUserProfileRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.*;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.controller.AuthController.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Panic;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.PanicService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,11 +18,35 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-
-
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
+
+    private final PanicService panicService;
+
+    public AdminController(PanicService panicService) {
+        this.panicService = panicService;
+    }
+
+    @GetMapping("/panics")
+    public List<Panic> getAllPanics() {
+        return panicService.getAllPanics();
+    }
+
+    @GetMapping("/panics/active")
+    public List<Panic> getActivePanics() {
+        return panicService.getActivePanics();
+    }
+
+    @GetMapping("/panics/resolved")
+    public List<Panic> getResolvedPanics() {
+        return panicService.getResolvedPanics();
+    }
+
+    @PutMapping("/panics/{id}/resolve")
+    public void resolvePanic(@PathVariable Long id) {
+        panicService.markAsResolved(id);
+    }
 
     @GetMapping("/rides")
     public ResponseEntity<RideHistoryResponse> getRides(
@@ -301,5 +325,4 @@ public class AdminController {
 
         return ResponseEntity.ok().build();
     }
-
 }

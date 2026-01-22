@@ -50,7 +50,8 @@ public class DriverService {
             }
             return details;
         } catch (Exception e){
-            return new ArrayList<>();
+            e.printStackTrace();
+            throw e;
         }
     }
 }

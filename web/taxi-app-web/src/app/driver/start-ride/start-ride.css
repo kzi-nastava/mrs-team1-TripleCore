@@ -1,0 +1,83 @@
+.start-ride-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  font-family: 'Istok Web', sans-serif;
+}
+
+.ride-card {
+  background: white;
+  border: 1px solid #999; 
+  width: 320px;
+  padding: 30px 20px;
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1); 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ride-header {
+  color: #600EA8;
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.ride-details {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.route-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 12px;
+  color: #555;
+}
+
+.value {
+  font-size: 14px;
+  color: #000;
+}
+
+.stations-info {
+  font-size: 13px;
+  margin-top: 15px;
+  padding-left: 2px;
+}
+
+.indent {
+  padding-left: 60px; 
+  margin-top: 5px;
+}
+
+.btn-primary-start {
+  background-color: #600EA8;
+  color: white;
+  border: none;
+  padding: 10px 40px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-primary-start:hover {
+  background-color: #4a0a82;
+}

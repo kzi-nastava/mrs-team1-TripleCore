@@ -1,5 +1,7 @@
 package com.example.taxiapp.ui.auth.login;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,43 +14,41 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.example.taxiapp.ui.MainActivity;
+import com.example.taxiapp.ui.auth.forgot_password.ForgotPasswordFragment;
+
+import enums.UserRole;
+import model.LoginResponse;
+import service.AuthService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginFragment extends Fragment {
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
 
-    public LoginFragment() {
-        // Required empty public constructor
-    }
+    public LoginFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        // Initialize views
         etEmail = view.findViewById(R.id.etEmail);
         etPassword = view.findViewById(R.id.etPassword);
         btnLogin = view.findViewById(R.id.btnLogin);
 
-        // Set click listener for login button
-        btnLogin.setOnClickListener(v -> {
-            attemptLogin();
-        });
+        btnLogin.setOnClickListener(v -> attemptLogin());
 
         TextView tvForgotPassword = view.findViewById(R.id.tvForgotPassword);
         tvForgotPassword.setOnClickListener(v -> {
-            // navigate to ForgotPasswordFragment
-            tvForgotPassword.setOnClickListener(view1 -> {
-                requireActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_container, new com.example.taxiapp.ui.auth.forgot_password.ForgotPasswordFragment())
-                        .addToBackStack(null)
-                        .commit();
-            });
-
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_container, new ForgotPasswordFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return view;
@@ -58,26 +58,64 @@ public class LoginFragment extends Fragment {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        if (email.equals("driver@example.com") && password.equals("driver123")) {
-            Toast.makeText(getActivity(), "Driver login successful!", Toast.LENGTH_SHORT).show();
-
-            if (getActivity() instanceof com.example.taxiapp.ui.MainActivity) {
-                ((com.example.taxiapp.ui.MainActivity) getActivity()).onLoginSuccess();
-            }
-
-            clearFields();
-        } else if (email.equals("a") && password.equals("a")) {
-            Toast.makeText(getActivity(), "Admin login successful!", Toast.LENGTH_SHORT).show();
-
-            if (getActivity() instanceof com.example.taxiapp.ui.MainActivity) {
-                ((com.example.taxiapp.ui.MainActivity) getActivity()).onAdminLoginSuccess();
-            }
-
-            clearFields();
-        } else {
-            Toast.makeText(getActivity(), "Invalid credentials", Toast.LENGTH_SHORT).show();
-            clearFields();
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(getActivity(), "Please enter email and password", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        AuthService.getInstance().login(email, password, new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (!isAdded()) return;
+
+                if (response.isSuccessful() && response.body() != null) {
+                    LoginResponse loginResponse = response.body();
+
+                    SharedPreferences prefs = requireActivity()
+                            .getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+                    prefs.edit()
+                            .putBoolean("isLoggedIn", true)
+                            .putString("userType", loginResponse.getRole().name())
+                            .putString("userEmail", loginResponse.getEmail())
+                            .putString("userFirstName", loginResponse.getFirstName())
+                            .putString("userLastName", loginResponse.getLastName())
+                            .apply();
+
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(),
+                                loginResponse.getRole() + " login successful!",
+                                Toast.LENGTH_SHORT).show();
+
+                        if (getActivity() instanceof MainActivity) {
+                            MainActivity main = (MainActivity) getActivity();
+                            if (UserRole.ADMIN.equals(loginResponse.getRole())) {
+                                main.onAdminLoginSuccess();
+                            } else if (UserRole.DRIVER.equals(loginResponse.getRole())) {
+                                main.onDriverLoginSuccess();
+                            }
+                            // here is going to be PASSENGER
+                        }
+                    });
+
+                    clearFields();
+
+                } else {
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), "Invalid credentials", Toast.LENGTH_SHORT).show();
+                        clearFields();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                if (!isAdded()) return;
+                getActivity().runOnUiThread(() ->
+                        Toast.makeText(getActivity(), "Login failed: " + t.getMessage(),
+                                Toast.LENGTH_SHORT).show()
+                );
+            }
+        });
     }
 
     private void clearFields() {

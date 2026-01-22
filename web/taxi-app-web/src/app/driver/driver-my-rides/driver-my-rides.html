@@ -170,23 +170,26 @@
                         <mat-icon>play_arrow</mat-icon>
                     </button>
                     
-                    <!-- Finish Ride Button (only for IN_PROGRESS) -->
+                    <!-- Stop Ride Button (only for IN_PROGRESS) -->
                     <button *ngIf="ride.status === 'IN_PROGRESS'"
                             mat-icon-button 
-                            (click)="finishRide(ride)"
-                            matTooltip="Finish ride"
+                            (click)="stopRide(ride)"
+                            matTooltip="Stop ride"
                             class="action-btn finish-btn">
                         <mat-icon>flag</mat-icon>
                     </button>
                     
                     <!-- Panic Button (only for IN_PROGRESS) -->
+                    <span [matTooltip]="ride.panic ? 'Panic already activated' : 'Panic alert'">
                     <button *ngIf="ride.status === 'IN_PROGRESS'"
                             mat-icon-button 
                             (click)="panicAlert(ride)"
-                            matTooltip="Panic alert"
+                            [disabled]="ride.panic" 
                             class="action-btn panic-btn">
                         <mat-icon>warning</mat-icon>
                     </button>
+                    </span>
+
                 </div>
             </td>
         </ng-container>

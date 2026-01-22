@@ -1,0 +1,57 @@
+<app-navbar>
+
+  <li class="nav-item">
+        <a class="img-and-link" routerLink="/passenger-my-rides">
+            <span class="nav-link">My Rides</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="img-and-link" routerLink="/favorite-routes">
+            <span class="nav-link">Favorite Routes</span>
+        </a>
+    </li>
+
+  <a class="nav-link img-and-link" routerLink="/user-info" matTooltip="My Profile">
+    <img src="icons/icons8-test-account-48.png" class="nav-item-icon">
+  </a>
+
+  <li class="nav-item">
+    <button class="nav-link nav-btn" (click)="onLogoutClick()">Log out</button>
+  </li>
+
+  <a class="nav-link img-and-link" routerLink="/home" matTooltip="Live Chat">
+    <img src="icons/icons8-chat-48.png" class="nav-item-icon">
+  </a>
+</app-navbar>
+
+<div class="favorite-routes-container">
+  <h2 class="section-title">Favorite routes</h2>
+  
+  <div class="routes-grid">
+    <div class="route-card" *ngFor="let route of favoriteRoutes">
+      <h3 class="route-header">{{ route.startName }} - {{ route.destName }}</h3>
+      
+      <div class="route-details">
+        <div class="detail-item">
+          <img src="icons/icons8-address-80.png" class="route-icon" alt="Start Point">
+          <span><strong>Start Point:</strong> {{ route.startName }}</span>
+        </div>
+        
+        <div class="detail-item">
+          <img src="icons/icons8-destination-40.png" class="route-icon" alt="Destination">
+          <span><strong>Destination Point:</strong> {{ route.destName }}</span>
+        </div>
+        
+        <div class="stations-info">
+          <p><strong>Stations:</strong> {{ route.stations[0] || 'None' }}</p>
+          <p class="indent" *ngFor="let station of route.stations.slice(1)">{{ station }}</p>
+        </div>
+      </div>
+      
+      <div class="card-action">
+        <button class="btn-select-route" (click)="orderRideFromFavorite(route)">Select Route</button>
+      </div>
+    </div>
+  </div>
+</div>
