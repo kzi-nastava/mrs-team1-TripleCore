@@ -1,3 +1,5 @@
+import { ReviewDTO } from './review-dto';
+
 export interface RideDetailsResponse {
   id: number;
   ordererName: string;
@@ -32,14 +34,6 @@ export interface LocationDTO {
   latitude: number;
   longitude: number;
   address: string;
-}
-
-export interface ReviewDTO {
-    passenger: string;
-    driver: string;
-    driverRating: number;
-    vehicleRating: number;
-    comment: string;
 }
 
 export type RideStatus =
