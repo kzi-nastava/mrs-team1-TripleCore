@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.ReviewDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Service
 public class RideService {
@@ -27,7 +29,7 @@ public class RideService {
             DriverRepository driverRepository,
             PassengerRepository passengerRepository,
             RouteRepository routeRepository,
-            ReviewService reviewService
+            ReviewService reviewService,
             UserRepository userRepository,
             PanicService panicService
     ) {
