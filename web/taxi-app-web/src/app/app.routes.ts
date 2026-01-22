@@ -22,6 +22,7 @@ import { ReviewFormComponent } from './reviews/review-form/review-form';
 import { FavoriteRoutesComponent } from './passenger/favorite-routes/favorite-routes';
 import { AdminPanicPageComponent } from './admin/admin-panic-page/admin-panic-page';
 import { StartRideComponent } from './driver/start-ride/start-ride';
+import { DriverReviewsComponent } from './driver/driver-reviews/driver-reviews';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -47,5 +48,6 @@ export const appRoutes: Routes = [
   { path: 'favorite-routes', component: FavoriteRoutesComponent },
   { path: 'admin/panic-notifications', component: AdminPanicPageComponent},
   { path: 'start-ride', component: StartRideComponent },
+  { path: 'driver/:driverId/reviews', component: DriverReviewsComponent },
   { path: '**', redirectTo: '' },
 ];
