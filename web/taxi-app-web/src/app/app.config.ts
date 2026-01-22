@@ -86,6 +86,8 @@ const routes: Routes = [
     loadComponent: () => import('./passenger/order-ride-registered-user/order-ride-registered-user').then(m => m.OrderRideRegisteredUser)
   },
   {
+    path: 'review-form',
+    loadComponent: () => import('./reviews/review-form/review-form').then(m => m.ReviewFormComponent)
     path : 'favorite-routes',
     loadComponent: () => import('./passenger/favorite-routes/favorite-routes').then(m => m.FavoriteRoutesComponent)
   },

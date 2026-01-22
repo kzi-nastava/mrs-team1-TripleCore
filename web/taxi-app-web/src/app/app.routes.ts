@@ -18,6 +18,7 @@ import { PassengerHomeComponent } from './passenger/passenger-home/passenger-hom
 import { DriverAdditionalInfoComponent } from './driver/driver-additional-info/driver-additional-info'; 
 import { DriverRegistrationComponent } from './auth/register-driver/driver-registration-component/driver-registration-component'; 
 import { OrderRideRegisteredUser } from './passenger/order-ride-registered-user/order-ride-registered-user';
+import { ReviewFormComponent } from './reviews/review-form/review-form';
 import { FavoriteRoutesComponent } from './passenger/favorite-routes/favorite-routes';
 import { AdminPanicPageComponent } from './admin/admin-panic-page/admin-panic-page';
 import { StartRideComponent } from './driver/start-ride/start-ride';
@@ -42,6 +43,7 @@ export const appRoutes: Routes = [
   { path: 'driver-additional-info', component: DriverAdditionalInfoComponent},
   { path: 'register-driver', component: DriverRegistrationComponent },
   { path: 'order-ride-registered-user', component: OrderRideRegisteredUser },
+  { path: 'review-form', component: ReviewFormComponent }, // this needs to be removed later
   { path: 'favorite-routes', component: FavoriteRoutesComponent },
   { path: 'admin/panic-notifications', component: AdminPanicPageComponent},
   { path: 'start-ride', component: StartRideComponent },

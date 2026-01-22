@@ -2,12 +2,11 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.common.ReviewDTO;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +17,7 @@ public class RideService {
     private final DriverRepository driverRepository;
     private final PassengerRepository passengerRepository;
     private final RouteRepository routeRepository;
+    private final ReviewService reviewService;
     private final UserRepository userRepository;
 
     private final PanicService panicService;
@@ -27,6 +27,7 @@ public class RideService {
             DriverRepository driverRepository,
             PassengerRepository passengerRepository,
             RouteRepository routeRepository,
+            ReviewService reviewService
             UserRepository userRepository,
             PanicService panicService
     ) {
@@ -34,6 +35,7 @@ public class RideService {
         this.driverRepository = driverRepository;
         this.passengerRepository = passengerRepository;
         this.routeRepository = routeRepository;
+        this.reviewService = reviewService;
         this.userRepository = userRepository;
         this.panicService = panicService;
     }
@@ -112,7 +114,7 @@ public class RideService {
                 .anyMatch(passenger -> passenger.getId().equals(userId));
     }
 
-    public static RideDetailsResponse createRideDetails(Ride ride) {
+    public RideDetailsResponse createRideDetails(Ride ride) {
         try {
             RideDetailsResponse rideDetails = new RideDetailsResponse();
 
@@ -199,9 +201,14 @@ public class RideService {
             if (ride.getCancelledBy() != null) {
                 rideDetails.setCancelledBy(ride.getCancelledBy().getRole());
             }
-            rideDetails.setReviews(new ArrayList<>());
             rideDetails.setInconsistencies(ride.getInconsistencies());
 
+            // Reviews
+            List<ReviewDTO> dtos = new ArrayList<>();
+            for(Review review : reviewService.getRideReviews(ride.getId())){
+                dtos.add(reviewService.GenerateReviewDTO(review));
+            }
+            rideDetails.setReviews(dtos);
             return rideDetails;
 
         } catch (Exception e) {

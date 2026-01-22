@@ -1,0 +1,61 @@
+<div class="overlay">
+  <mat-card class="review-card">
+    <h2>Leave a review</h2>
+
+    <mat-card-content>
+
+      <!-- DRIVER RATING -->
+      <div class="rating-section">
+        <label>Rate driver</label>
+        <div class="stars">
+          <img
+            *ngFor="let star of stars; let i = index"
+            class="star"
+            (click)="setDriverRating(i + 1)"
+            [src]="i < driverRating
+              ? 'icons/star-full.png'
+              : 'icons/star-empty.png'"
+          />
+        </div>
+      </div>
+
+      <!-- VEHICLE RATING -->
+      <div class="rating-section">
+        <label>Rate vehicle</label>
+        <div class="stars">
+          <img
+            *ngFor="let star of stars; let i = index"
+            class="star"
+            (click)="setVehicleRating(i + 1)"
+            [src]="i < vehicleRating
+              ? 'icons/star-full.png'
+              : 'icons/star-empty.png'"
+          />
+        </div>
+      </div>
+
+      <!-- COMMENT -->
+      <mat-form-field class="comment-field" appearance="outline">
+        <mat-label>Comment</mat-label>
+        <textarea
+          matInput
+          rows="4"
+          [(ngModel)]="comment">
+        </textarea>
+      </mat-form-field>
+
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button class="cancel-btn" (click)="cancel()">
+        Cancel
+      </button>
+      <button
+        class="submit-btn"
+        [disabled]="!isFormValid()"
+        (click)="submit()">
+        Submit
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
