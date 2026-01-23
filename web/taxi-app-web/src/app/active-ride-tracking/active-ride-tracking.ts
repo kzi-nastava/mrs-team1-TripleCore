@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MapComponent } from '../map/map';
-import { RideDetailsResponse } from '../models/ride-details-response';
+import { RideDetailsResponse, LocationDTO } from '../models/ride-details-response';
 import { MOCK_RIDE_DETAILS } from './mock-ride';
 
 @Component({
@@ -26,5 +26,9 @@ export class ActiveRideTrackingComponent {
 
   @Input() ride: RideDetailsResponse = MOCK_RIDE_DETAILS;
   
-
+  vehicleLocation: LocationDTO = {
+  latitude: 45.2619,
+  longitude: 19.8392,
+  address: 'Futoška ulica 25, Novi Sad'
+  };
 }
