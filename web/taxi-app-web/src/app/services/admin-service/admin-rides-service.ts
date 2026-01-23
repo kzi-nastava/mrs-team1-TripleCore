@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { RideDetailsResponse } from '../../models/ride-details-response';
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +12,11 @@ export class AdminRidesService {
 
   constructor(private http: HttpClient) {}
 
-  getAllRides(): Observable<any[]> {
-    return this.http.get<any[]>(this.baseUrl);
+  getAllRides(): Observable<RideDetailsResponse[]> {
+    return this.http.get<RideDetailsResponse[]>(this.baseUrl);
   }
 
-  getRideById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/${id}`);
+  getRideById(id: number): Observable<RideDetailsResponse> {
+    return this.http.get<RideDetailsResponse>(`${this.baseUrl}/${id}`);
   }
 }
