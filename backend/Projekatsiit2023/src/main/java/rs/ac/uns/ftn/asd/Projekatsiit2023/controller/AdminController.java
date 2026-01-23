@@ -51,6 +51,13 @@ public class AdminController {
         return ResponseEntity.ok(rideDetailsList);
     }
 
+    @GetMapping("/rides/{id}")
+    public ResponseEntity<RideDetailsResponse> getRideById(@PathVariable Long id) {
+        Ride ride = rideService.getRideById(id);
+        RideDetailsResponse rideDetails = rideService.createRideDetails(ride);
+        return ResponseEntity.ok(rideDetails);
+    }
+
     @GetMapping("/panics")
     public List<Panic> getAllPanics() {
         return panicService.getAllPanics();
