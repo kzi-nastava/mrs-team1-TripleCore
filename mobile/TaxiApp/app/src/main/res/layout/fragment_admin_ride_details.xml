@@ -18,9 +18,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Route Details"
-            style="@style/HeadingText"/>
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/purple"
+            android:layout_marginBottom="8dp"/>
 
-        <!-- Fragment container za mapu  -->
+        <!-- Map -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="300dp"
@@ -35,92 +38,126 @@
 
         <!-- Ride Info -->
         <TextView
-            style="@style/HeadingText"
-            android:text="Ride Info"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ride Info"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/purple"/>
         <TextView
             android:id="@+id/tvAdminRideInfo"
-            style="@style/DetailsParagraph"
-            android:text="Route: Novi Sad → Beograd\nStart: 01.12.2025 10:00\nEnd: 01.12.2025 11:15\nPrice: 2500 €\nStatus: Completed"/>
-        <View style="@style/HorizontalSeparator"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="4dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_purple"
+            android:layout_marginVertical="8dp"/>
 
         <!-- Driver -->
         <TextView
-            style="@style/HeadingText"
-            android:text="Driver"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Driver"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/purple"/>
         <TextView
             android:id="@+id/tvAdminDriver"
-            style="@style/DetailsParagraph"
-            android:text="Name: Marko Marković\nVehicle: Audi A3\nRating: 4.5"/>
-        <View style="@style/HorizontalSeparator"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="4dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_purple"
+            android:layout_marginVertical="8dp"/>
 
         <!-- Passengers -->
         <TextView
-            style="@style/HeadingText"
-            android:text="Passengers"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Passengers"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/purple"/>
         <TextView
             android:id="@+id/tvAdminPassengers"
-            style="@style/DetailsParagraph"
-            android:text="Ana Anić, Ivana Ilić"/>
-        <View style="@style/HorizontalSeparator"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="4dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_purple"
+            android:layout_marginVertical="8dp"/>
 
         <!-- Inconsistencies -->
         <TextView
-            style="@style/HeadingText"
-            android:text="Inconsistencies"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Inconsistencies"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/purple"/>
         <TextView
             android:id="@+id/tvAdminInconsistencies"
-            style="@style/DetailsParagraph"
-            android:text="No inconsistencies"/>
-        <View style="@style/HorizontalSeparator"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="4dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_purple"
+            android:layout_marginVertical="8dp"/>
 
         <!-- Ratings -->
         <TextView
-            style="@style/HeadingText"
-            android:text="Ride Ratings"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ride Ratings"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/purple"/>
         <TextView
             android:id="@+id/tvAdminRating"
-            style="@style/DetailsParagraph"
-            android:text="Passenger rating: 4.5"/>
-        <View style="@style/HorizontalSeparator"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="4dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_purple"
+            android:layout_marginVertical="8dp"/>
 
-        <!-- PANIC Info (samo ako je aktivirano) -->
+        <!-- PANIC Info -->
         <TextView
             android:id="@+id/tvAdminPanicTitle"
-            style="@style/HeadingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="PANIC Info"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/red"
             android:visibility="gone"/>
         <TextView
             android:id="@+id/tvAdminPanic"
-            style="@style/DetailsParagraph"
-            android:visibility="gone"/>
-
-        <!-- Buttons (kao na webu) -->
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="24dp">
-
-            <Button
-                android:id="@+id/btnAdminRepeatNow"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Repeat Now"
-                android:backgroundTint="@color/purple"
-                android:textColor="@color/white"
-                android:layout_marginEnd="8dp"/>
-
-            <Button
-                android:id="@+id/btnAdminRepeatLater"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Repeat Later"
-                android:backgroundTint="@color/light_purple"
-                android:textColor="@color/purple"/>
-
-        </LinearLayout>
+            android:textSize="14sp"
+            android:textColor="@color/red"
+            android:visibility="gone"/>
 
     </LinearLayout>
 </ScrollView>

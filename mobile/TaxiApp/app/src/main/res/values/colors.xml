@@ -11,4 +11,5 @@
     <color name="blue">#FF2196F3</color>
     <color name="teal">#FF00796B</color>
     <color name="orange">#FFFF9800</color>
+    <color name="light_gray">#FFD3D3D3</color>
 </resources>
