@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadFragment(Fragment fragment, boolean addToBackStack) {
+    public void loadFragment(Fragment fragment, boolean addToBackStack) {
         if (addToBackStack) {
             getSupportFragmentManager()
                     .beginTransaction()
