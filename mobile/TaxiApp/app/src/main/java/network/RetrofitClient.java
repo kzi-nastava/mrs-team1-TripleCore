@@ -4,6 +4,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import service.api.ApiService;
 
 // Singleton Retrofit client - for making API calls to the backend server
 public class RetrofitClient {
