@@ -1,0 +1,9 @@
+<p>test works!</p>
+
+
+<button (click)="openChild()">Open component</button>
+
+<app-active-ride-tracking
+  *ngIf="isChildOpen"
+  (close)="closeChild()">
+</app-active-ride-tracking>

@@ -1,0 +1,96 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  background: rgba(0, 0, 0, 0.2);
+
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999;
+}
+
+
+.ride-card{
+    z-index: 1000;
+
+    align-self: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+
+    min-width: 400px;
+    width: 600px;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    
+}
+
+mat-card-title{
+    align-self: center;
+    margin-bottom: 15px;
+}
+
+
+h2{
+    align-self: center;
+    font-size: 24px;
+    font-weight: 500;
+    color: #600EA8;
+
+    margin-bottom: 15px;
+}
+
+.action-btn{
+    border: none;
+    border-radius: 20px;      
+    padding: 8px 15px;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+::ng-deep app-map #map {
+  height: 400px !important;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  border-radius: none;
+  font-size: 40px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #555;
+}
+
+.ride-info{
+    margin: 15px 0 15px 0;
+    font-size: 16px;
+}
+
+.panic-btn{
+    background-color: #FF4C4C;
+    color: white;
+}
+
+.finish-btn{
+    background-color: #600EA8;
+    color: white;
+}
+
+

@@ -1,1 +1,31 @@
-<p>active-ride-tracking works!</p>
+<div class="overlay">
+  <mat-card class="ride-card">
+    <button class="close-btn" (click)="closeSelf()">×</button>
+    <h2>Active ride</h2>
+
+    <mat-card-content>
+
+        <app-map 
+        [routeStart]="ride.startLocation"
+        [routeStops]="ride.routeStops"
+        [routeEnd]="ride.endLocation">
+        </app-map>
+
+        <p class="ride-info">
+          Route: {{ ride.startLocation.address }} → {{ ride.endLocation.address }}<br>
+          Driver: {{ ride.driverName }}<br>
+          Vehicle: {{ ride.vehicle }}<br>
+          Passengers: {{ ride.ordererName }} <br>
+          <span *ngFor="let p of ride.linkedPassengers">
+            {{ p }}<br>
+          </span>
+        </p>
+
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button class="action-btn panic-btn">PANIC</button>
+      <button class="action-btn finish-btn">Finish Ride</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
