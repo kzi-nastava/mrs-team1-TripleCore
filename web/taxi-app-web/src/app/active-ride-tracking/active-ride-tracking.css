@@ -65,6 +65,12 @@ h2{
   height: 400px !important;
 }
 
+::ng-deep app-map .map-frame {
+  border: none !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+
 .close-btn {
   position: absolute;
   top: 20px;
@@ -79,7 +85,7 @@ h2{
 }
 
 .ride-info{
-    margin: 15px 0 15px 0;
+    margin: 15px 0 10px 0;
     font-size: 16px;
 }
 
@@ -91,6 +97,10 @@ h2{
 .finish-btn{
     background-color: #600EA8;
     color: white;
+}
+
+.content-contaner{
+    border-bottom: #600EA8 2px solid;
 }
 
 

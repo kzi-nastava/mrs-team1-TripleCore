@@ -5,6 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MapComponent } from '../map/map';
 import { RideDetailsResponse, LocationDTO } from '../models/ride-details-response';
 import { MOCK_RIDE_DETAILS } from './mock-ride';
+import { RideTrackingResponse } from '../models/ride-tracking-response';
+import { VehicleService } from '../services/vehicle-service';
 
 @Component({
   selector: 'app-active-ride-tracking',
@@ -24,11 +26,14 @@ export class ActiveRideTrackingComponent {
     this.close.emit();
   }
 
+  constructor(private vehicleService: VehicleService) {}
+
   @Input() ride: RideDetailsResponse = MOCK_RIDE_DETAILS;
   
-  vehicleLocation: LocationDTO = {
-  latitude: 45.2619,
-  longitude: 19.8392,
-  address: 'Futoška ulica 25, Novi Sad'
-  };
+  rideTrackingInfo!: RideTrackingResponse;
+
+  vehicleLocation?: LocationDTO;
+
+  
+
 }

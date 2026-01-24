@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.vehicle.ActiveRideVehicleDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.vehicle.ActiveVehicleLocationResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.ActiveVehicle;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Location;

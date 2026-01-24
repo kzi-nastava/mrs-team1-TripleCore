@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ActiveRideVehicleDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.vehicle.ActiveVehicleLocationResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.VehicleService;
 
 import java.util.List;
@@ -16,9 +16,13 @@ import java.util.List;
 public class VehicleController {
 
     private final VehicleService vehicleService;
+    private final RideService rideService;
 
-    public VehicleController(VehicleService vehicleService){
+    public VehicleController(
+            VehicleService vehicleService,
+            RideService rideService){
         this.vehicleService = vehicleService;
+        this.rideService = rideService;
     }
 
     @GetMapping("/locations")
@@ -33,16 +37,10 @@ public class VehicleController {
         }
     }
 
-
-
-    @GetMapping("/active-details")
-    public ResponseEntity<ActiveRideVehicleDetailsResponse> getActiveRideVehicleDetails(){
-        ActiveRideVehicleDetailsResponse details = getMockActiveVehicleDetails();
-        return ResponseEntity.ok(details);
-    }
-
-    private ActiveRideVehicleDetailsResponse getMockActiveVehicleDetails(){
-        return new ActiveRideVehicleDetailsResponse(45.2671, 19.8335, 369);
-    }
+//    @GetMapping("/active-ride/{id}")
+//    public ResponseEntity<?> getActiveRideVehicleTracking(@PathVariable("id") Long id){
+//        Ride ride = rideService.getRideById(id);
+//
+//    }
 
 }
