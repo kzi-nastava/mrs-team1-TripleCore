@@ -17,4 +17,8 @@ export class VehicleService {
   getVehicleLocations(): Observable<VehicleLocation[]> {
     return this.http.get<VehicleLocation[]>(`${this.API_URL}/locations`);
   }
+
+  getRideTrackingInfo(rideId: number): Observable<RideTrackingResponse> {
+    return this.http.get<RideTrackingResponse>(`${this.API_URL}/active-ride/${rideId}`);
+  }
 }

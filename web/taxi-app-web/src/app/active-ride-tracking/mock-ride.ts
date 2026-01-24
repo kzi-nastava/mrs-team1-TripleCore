@@ -1,7 +1,7 @@
 import { RideDetailsResponse } from '../models/ride-details-response';
 
 export const MOCK_RIDE_DETAILS: RideDetailsResponse = {
-  id: 42,
+  id: 1,
   ordererName: 'Marko Marković',
 
   ordererProfileImage: null,
