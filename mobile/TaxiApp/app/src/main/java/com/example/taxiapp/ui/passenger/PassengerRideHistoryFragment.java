@@ -95,15 +95,15 @@ public class PassengerRideHistoryFragment extends Fragment {
         LayoutInflater inflater = LayoutInflater.from(requireContext());
 
         for (RideDetailsDTO ride : rides) {
-            MaterialCardView card = (MaterialCardView) inflater.inflate(R.layout.view_admin_ride_card, cardsContainer, false);
+            MaterialCardView card = (MaterialCardView) inflater.inflate(R.layout.view_passenger_ride_card, cardsContainer, false);
 
-            TextView tvRoute = card.findViewById(R.id.tvAdminRoute);
-            TextView tvStart = card.findViewById(R.id.tvAdminStartAddress);
-            TextView tvEnd = card.findViewById(R.id.tvAdminEndAddress);
-            TextView tvDateTime = card.findViewById(R.id.tvAdminDateTime);
-            TextView tvPrice = card.findViewById(R.id.tvAdminPrice);
-            TextView tvStatus = card.findViewById(R.id.tvAdminStatus);
-            TextView tvPanic = card.findViewById(R.id.tvAdminPanic);
+            TextView tvRoute = card.findViewById(R.id.tvPassengerRoute);
+            TextView tvStart = card.findViewById(R.id.tvPassengerStartAddress);
+            TextView tvEnd = card.findViewById(R.id.tvPassengerEndAddress);
+            TextView tvDateTime = card.findViewById(R.id.tvPassengerDateTime);
+            TextView tvPrice = card.findViewById(R.id.tvPassengerPrice);
+            TextView tvStatus = card.findViewById(R.id.tvPassengerStatus);
+            TextView tvPanic = card.findViewById(R.id.tvPassengerPanic);
 
             // Route
             if (ride.startLocation != null && ride.endLocation != null) {
@@ -185,7 +185,9 @@ public class PassengerRideHistoryFragment extends Fragment {
         String dateFrom = etDateFrom.getText().toString();
         String dateTo = etDateTo.getText().toString();
 
-        List<RideDetailsDTO> filteredRides = RideFilterHelper.filterRides(allRides, searchText, dateFrom, dateTo);
+        List<RideDetailsDTO> filteredRides =
+                RideFilterHelper.filterRides(allRides, searchText, dateFrom, dateTo);
+
         populateRideCards(filteredRides);
     }
 
