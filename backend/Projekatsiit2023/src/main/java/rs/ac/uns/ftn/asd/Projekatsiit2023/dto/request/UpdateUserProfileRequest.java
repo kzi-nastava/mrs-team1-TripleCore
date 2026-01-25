@@ -15,13 +15,13 @@ public class UpdateUserProfileRequest{
     @Size(max = 100, message = "Address can be at most 100 characters long")
     private String address;
 
-    @Pattern(regexp = "\\+?[0-9]{10,15}", message = "Invalid phone number")
-    private String phoneNumber;
+    @Pattern(regexp = "^\\+?[0-9]{9,15}$", message = "Invalid phone number")
+    private String phone;
 
     @Email(message = "Email must be valid")
     private String email;
 
-    private String profilePicture;
+    private String profileImage;
 
 
     public String getFirstName() {
@@ -48,20 +48,20 @@ public class UpdateUserProfileRequest{
         this.address = address;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
+    public String getProfileImage() {
+        return profileImage;
     }
 
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public String getEmail() {
