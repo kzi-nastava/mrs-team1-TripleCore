@@ -22,6 +22,8 @@ import com.example.taxiapp.ui.driver.DriverHomeFragment;
 import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
+import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
+import com.example.taxiapp.ui.passenger.PassengerRideHistoryFragment;
 import com.example.taxiapp.ui.shared.RideHistoryFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -85,7 +87,10 @@ public class MainActivity extends AppCompatActivity {
             navigationView.inflateMenu(R.menu.drawer_menu_admin);
         } else if ("DRIVER".equals(userType)) {
             navigationView.inflateMenu(R.menu.drawer_menu_driver);
-        } else {
+        } else if ("PASSENGER".equals(userType)) {
+            navigationView.inflateMenu(R.menu.drawer_menu_passenger);
+        }
+        else {
             navigationView.inflateMenu(R.menu.drawer_menu_guest);
         }
 
@@ -124,6 +129,11 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new AdminRideHistoryFragment();
         }
 
+        // PASSENGER
+        else if (id == R.id.nav_ride_history && "PASSENGER".equals(userType)) {
+            fragmentToLoad = new PassengerRideHistoryFragment();
+        }
+
         // LOGOUT
         else if (id == R.id.nav_logout) {
             // if role is driver - cant logout while active
@@ -150,7 +160,10 @@ public class MainActivity extends AppCompatActivity {
             return new AdminHomeFragment();
         } else if ("DRIVER".equals(userType)) {
             return new DriverHomeFragment();
-        } else {
+        } else if ("PASSENGER".equals(userType)) {
+            return new PassengerHomeFragment();
+        }
+        else {
             return new GuestHomeFragment();
         }
     }
@@ -176,6 +189,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onDriverLoginSuccess() {
         reloadAfterLogin("DRIVER");
+    }
+
+    public void onPassengerLoginSuccess() {
+        reloadAfterLogin("PASSENGER");
     }
 
     public void setLogoutEnabled(boolean enabled, String title) {

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/passenger_ride_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp"
+    android:backgroundTint="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Route i PANIC badge -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvPassengerRoute"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Route: A → B"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
+
+            <!-- PANIC badge -->
+            <TextView
+                android:id="@+id/tvPassengerPanic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PANIC"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:background="@drawable/bg_red_badge"
+                android:padding="4dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <!-- Start & End address -->
+        <TextView
+            android:id="@+id/tvPassengerStartAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Address"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/tvPassengerEndAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="End Address"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="2dp"/>
+
+        <!-- Date and Time -->
+        <TextView
+            android:id="@+id/tvPassengerDateTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="01.12.2025 10:00"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="4dp"/>
+
+        <!-- Price and Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/tvPassengerPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="2500 RSD"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/purple"/>
+
+            <TextView
+                android:id="@+id/tvPassengerStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Completed"
+                android:textSize="14sp"
+                android:textColor="@color/green"/>
+        </LinearLayout>
+
+        <!-- Cancelled by info -->
+        <TextView
+            android:id="@+id/tvPassengerCancelledBy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancelled by: DRIVER"
+            android:textSize="12sp"
+            android:textColor="@color/red"
+            android:visibility="gone"
+            android:layout_marginTop="4dp"/>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
