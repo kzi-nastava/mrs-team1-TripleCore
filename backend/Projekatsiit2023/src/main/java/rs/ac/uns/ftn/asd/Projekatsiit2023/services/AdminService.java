@@ -11,4 +11,6 @@ public class AdminService {
     public AdminService(AdminRepository ar){
         this.adminRepository = ar;
     }
+
+
 }

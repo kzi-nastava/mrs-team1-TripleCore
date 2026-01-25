@@ -1,0 +1,55 @@
+<div class="page-container" *ngIf="ride">
+
+  <!-- LEFT COLUMN: Map -->
+  <div class="column left-column" *ngIf="ride.startLocation && ride.endLocation">
+    <h2 class="heading">Route</h2>
+    <app-map 
+      [routeStart]="ride.startLocation"
+      [routeEnd]="ride.endLocation"
+      [routeStops]="ride.routeStops">
+    </app-map>
+  </div>
+
+  <!-- RIGHT COLUMN: Ride Info -->
+  <div class="column right-column">
+    
+    <div class="info-container">
+      <h2 class="heading">Ride Info</h2>
+      <p class="info">
+        <strong>Route:</strong> {{ ride.startLocation?.address }} → {{ ride.endLocation?.address }}<br>
+        <strong>Start:</strong> {{ ride.startTime | date:'HH:mm dd.MM.yyyy.' }}<br>
+        <strong>End:</strong> {{ ride.endTime | date:'HH:mm dd.MM.yyyy.' }}<br>
+        <strong>Price:</strong> {{ ride.price }} RSD<br>
+        <strong>Status:</strong> {{ ride.status }}
+      </p>
+    </div>
+
+    <div class="info-container">
+      <h2 class="heading">Driver</h2>
+      <p class="info">
+        <strong>Name:</strong> {{ ride.driverName }}<br>
+        <strong>Vehicle:</strong> {{ ride.vehicle }}
+      </p>
+    </div>
+
+    <div class="info-container">
+      <h2 class="heading">Passengers</h2>
+      <p class="info">
+        <strong>Orderer:</strong> {{ ride.ordererName }}<br>
+        <span *ngFor="let p of ride.linkedPassengers">{{ p }}<br></span>
+        <span *ngIf="!ride.linkedPassengers || ride.linkedPassengers.length === 0">No additional passengers</span>
+      </p>
+    </div>
+
+    <div class="info-container">
+      <button mat-raised-button color="primary" (click)="repeatNow()">Repeat Now</button>
+      <button mat-stroked-button color="accent" (click)="repeatLater()">Repeat Later</button>
+    </div>
+
+  </div>
+
+</div>
+
+<div *ngIf="isLoading">
+  <p>Loading ride details...</p>
+</div>

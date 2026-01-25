@@ -73,19 +73,19 @@ input:focus {
   cursor: pointer;
 }
 
-.buttons button[type="button"] {
+.buttons button.reset-btn {
   background-color: #ccc; 
 }
 
-.buttons button[type="button"]:hover {
+.buttons button.reset-btn:hover {
   background-color: #b3b3b3; 
 }
 
-.buttons button[type="submit"] {
+.buttons button.submit-btn {
   background-color: #600EA8;
 }
 
-.buttons button[type="submit"]:hover {
+.buttons button.submit-btn:hover {
   background-color: #4b0b87;
 }
 
@@ -109,21 +109,41 @@ input:focus {
     padding-right: 40px;
 }
 
-.input-wrapper{
+/* .input-wrapper{
     display: flex;
     align-items: center;
     flex: 1;
-    position: relative;
+    position: relative; <!-- ovo je zakomentarisano da bi se stavilo ovo -->
+} */
+
+.input-wrapper{
+    flex: 1;
+    position: relative; /* ovo je dodato da bi se stavilo ovo */
+}
+
+.input-wrapper input{
+    width: 100%;
+    padding-right: 40px;
+    height: 42px;
+    box-sizing: border-box;
 }
 
 .icon-btn{
-    position: absolute;
-    right: 10px;
+  position: absolute;
+    right: 14px;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+
+    height: 18px;       /* visina ikonice */
+    display: flex;
+    align-items: center;
+
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
-}
+  }
 
 .icon-btn img{
     width: 18px;
@@ -150,4 +170,27 @@ input:focus {
 .form-link a:hover{
     text-decoration: underline;
     cursor: pointer;
+}
+
+.disabled-input {
+    opacity: 0.5;
+}
+
+.disabled-btn {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.error-message {
+ color: red;          
+  font-size: 12px;     
+  margin-top: 2px;     
+  text-align: left;      
+}
+
+.success-message {
+  color: green;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
 }

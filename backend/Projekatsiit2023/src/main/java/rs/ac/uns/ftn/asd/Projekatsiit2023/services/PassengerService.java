@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Passenger;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Review;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.PassengerRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.RideRepository;
@@ -16,12 +17,15 @@ public class PassengerService {
 
     private final PassengerRepository passengerRepository;
     private final RideRepository rideRepository;
+    private final RideService rideService;
 
     public PassengerService(
             PassengerRepository passengerRepository,
-            RideRepository rideRepository) {
+            RideRepository rideRepository,
+            RideService rideService) {
         this.passengerRepository = passengerRepository;
         this.rideRepository = rideRepository;
+        this.rideService = rideService;
     }
 
     public Passenger getPassengerById(Long id) {
@@ -33,11 +37,26 @@ public class PassengerService {
         try {
             List<Ride> rides = rideRepository.findByPassengerId(passengerId);
 
-            return rides.stream()
-                    .map(RideService::createRideDetails)
-                    .toList();
+            List<RideDetailsResponse> dtoList = new ArrayList<>();
+            for (Ride ride : rides){
+                dtoList.add(rideService.createRideDetails(ride));
+            }
+            return dtoList;
         } catch (Exception e) {
             return new ArrayList<>();
         }
+    }
+
+    public RideDetailsResponse getRideDetails(Long passengerId, Long rideId) {
+        Ride ride = rideService.getRideById(rideId);
+        // check if passenger is part of the ride
+        boolean isPassengerInRide = ride.getOrderer().getId().equals(passengerId) ||
+                ride.getLinkedPassengers().stream().anyMatch(p -> p.getId().equals(passengerId));
+
+        if (!isPassengerInRide) {
+            throw new EntityNotFoundException("Passenger with id: " + passengerId + " not found in ride with id: " + rideId);
+        }
+
+        return rideService.createRideDetails(ride);
     }
 }

@@ -1,78 +1,94 @@
-<div class="page-container">
+<div class="page-container" *ngIf="ride">
+
+  <!-- LEFT COLUMN -->
   <div class="column left-column">
-    <div id="map-container">
+
+    <div id="map-container" *ngIf="ride?.startLocation && ride?.endLocation">
       <h2 class="heading">Route</h2>
-      <app-map></app-map>
+      <app-map
+        [routeStart]="ride.startLocation"
+        [routeEnd]="ride.endLocation"
+        [routeStops]="ride.routeStops"
+      ></app-map>
     </div>
-    
+
+    <!-- Inconsistencies -->
     <div class="info-container">
       <h2 class="heading">Inconsistencies</h2>
-      <p class="info">
-        <span *ngIf="rideData?.reports?.length; else noInconsistencies">
-          <span *ngFor="let r of rideData.reports">{{ r.description }}<br></span>
-        </span>
-        <ng-template #noInconsistencies>
-          No inconsistencies
-        </ng-template>
-      </p>
+      <p class="info">{{ ride?.inconsistencies ?? 'No inconsistencies' }}</p>
     </div>
-    
+
+    <!-- Reviews -->
     <div class="info-container">
-      <h2 class="heading">Ride ratings</h2>
-      <p class="info">Passenger rating: {{ rideData?.rating ?? 'N/A' }}</p>
+      <h2 class="heading">Reviews</h2>
+      <ng-container *ngIf="ride?.reviews?.length; else noReviews">
+        <div class="review-item" *ngFor="let review of ride?.reviews">
+          <strong>Passenger:</strong> {{ review.passengerName }}<br>
+          <strong>Driver Rating:</strong> {{ review.driverRating ?? 'N/A' }} / 5<br>
+          <strong>Vehicle Rating:</strong> {{ review.vehicleRating ?? 'N/A' }} / 5<br>
+          <strong>Comment:</strong> {{ review.comment ?? '-' }}
+          <hr>
+        </div>
+      </ng-container>
+      <ng-template #noReviews>
+        <p class="info">No reviews</p>
+      </ng-template>
     </div>
+
   </div>
 
+  <!-- RIGHT COLUMN -->
   <div class="column right-column">
+
+    <!-- Ride Info -->
     <div class="info-container">
-      <h2 class="heading">Ride info</h2>
+      <h2 class="heading">Ride Info</h2>
       <p class="info">
-        Route: {{ rideData?.pickup }} → {{ rideData?.destination }}<br>
-        Start: {{ rideData?.startDate | date:'short' }}<br>
-        End: {{ rideData?.endDate | date:'short' }}<br>
-        Price: {{ rideData?.price }} €<br>
-        Status: {{ rideData?.status || (rideData?.cancelled ? 'Cancelled' : 'Completed') }}<br>
-        <span *ngIf="rideData?.cancelled">
-          Cancelled by: {{ rideData?.cancelledBy }}
-        </span>
+        <strong>Route:</strong> {{ ride?.startLocation?.address }} → {{ ride?.endLocation?.address }}<br>
+        <strong>Start:</strong> {{ ride?.startTime | date:'HH:mm dd.MM.yyyy.' }}<br>
+        <strong>End:</strong> {{ ride?.endTime | date:'HH:mm dd.MM.yyyy.' }}<br>
+        <strong>Price:</strong> {{ ride?.price }} RSD<br>
+        <strong>Status:</strong> {{ ride?.status }}
       </p>
     </div>
-    
+
+    <!-- Driver Info -->
     <div class="info-container">
       <h2 class="heading">Driver</h2>
       <p class="info">
-        Name: {{ rideData?.driver?.name }}<br>
-        Vehicle: {{ rideData?.driver?.vehicle }}<br>
-        Rating: {{ rideData?.driver?.rating }}
+        <strong>Name:</strong> {{ ride?.driverName }}<br>
+        <strong>Vehicle:</strong> {{ ride?.vehicle }}
       </p>
     </div>
-    
+
+    <!-- Passengers -->
     <div class="info-container">
       <h2 class="heading">Passengers</h2>
       <p class="info">
-        <span *ngIf="rideData?.passengers?.length">
-          <span *ngFor="let p of rideData.passengers; let i = index">
-            {{ i === 0 ? 'Orderer: ' : '' }}{{ p.name }}<br>
-          </span>
+        <strong>Orderer:</strong> {{ getOrderer() }}<br>
+        <span *ngFor="let p of getPassengers()">
+          {{ p }}<br>
         </span>
-        <span *ngIf="!rideData?.passengers?.length">
-          No passengers
-        </span>
+        <span *ngIf="getPassengers().length === 0">No additional passengers</span>
       </p>
     </div>
-    
-    <div class="info-container" *ngIf="rideData?.panicTriggered">
-      <h2 class="heading">PANIC info</h2>
+
+    <!-- Panic Info -->
+    <div class="info-container" *ngIf="ride?.panic">
+      <h2 class="heading">PANIC Info</h2>
       <p class="info">
-        Triggered: Yes<br>
-        Triggered by: {{ getPanicTriggeredBy() }}<br>
-        Time: {{ rideData?.endDate | date:'HH:mm' }}
+        <strong>Triggered by:</strong> {{ getPanicTriggeredBy() }}<br>
+        <strong>Time:</strong> {{ ride?.panicTriggeredAt ?? '-' }}
       </p>
     </div>
-    
-    <div style="margin-top: 30px;">
-      <button mat-raised-button color="primary" style="margin-right: 10px;" (click)="repeatRouteNow()">Repeat Now</button>
-      <button mat-stroked-button color="accent" (click)="repeatRouteLater()">Repeat Later</button>
+
+    <!-- Cancellation Info -->
+    <div class="info-container" *ngIf="ride?.status === 'CANCELLED'">
+      <h2 class="heading">Cancellation Info</h2>
+      <p class="info">
+        <strong>Cancelled by:</strong> {{ ride?.cancelledBy ?? '-' }}
+      </p>
     </div>
+
   </div>
 </div>

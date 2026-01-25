@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -16,14 +18,25 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
+
+import helper.RideFilterHelper;
+import model.RideDetailsDTO;
+import service.AdminService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdminRideHistoryFragment extends Fragment {
 
-    private TextInputEditText etDateFrom;
-    private TextInputEditText etDateTo;
-    private TextInputEditText etTextFilter;
+    private LinearLayout cardsContainer;
+    private TextInputEditText etDateFrom, etDateTo, etTextFilter;
+    private Button btnClear, btnApply;
+
+    private List<RideDetailsDTO> allRides = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,104 +46,109 @@ public class AdminRideHistoryFragment extends Fragment {
         etDateFrom = view.findViewById(R.id.etDateFrom);
         etDateTo = view.findViewById(R.id.etDateTo);
         etTextFilter = view.findViewById(R.id.etTextFilter);
-        Button clearBtn = view.findViewById(R.id.btnClear);
-        Button applyBtn = view.findViewById(R.id.btnApply);
-
-        MaterialCardView card1 = view.findViewById(R.id.admin_card1);
-        MaterialCardView card2 = view.findViewById(R.id.admin_card2);
-        MaterialCardView card3 = view.findViewById(R.id.admin_card3);
+        btnClear = view.findViewById(R.id.btnClear);
+        btnApply = view.findViewById(R.id.btnApply);
+        cardsContainer = view.findViewById(R.id.cards_container);
 
         etDateFrom.setOnClickListener(v -> showDatePicker(etDateFrom));
         etDateTo.setOnClickListener(v -> showDatePicker(etDateTo));
 
-        clearBtn.setOnClickListener(v -> clearInputs());
+        btnClear.setOnClickListener(v -> clearInputs());
+        btnApply.setOnClickListener(v -> applyFilters());
 
-        applyBtn.setOnClickListener(v -> {
-
-        });
-
-        setupAdminCard1(card1);
-        setupAdminCard2(card2);
-        setupAdminCard3(card3);
-
-        card1.setOnClickListener(v -> openRideDetails(1));
-        card2.setOnClickListener(v -> openRideDetails(2));
-        card3.setOnClickListener(v -> openRideDetails(3));
+        fetchRidesFromBackend();
 
         return view;
     }
 
-    private void setupAdminCard1(MaterialCardView card) {
-        if (card == null) return;
-
-        View cardView = card.getChildAt(0);
-        if (cardView instanceof ViewGroup) {
-            TextView tvRoute = cardView.findViewById(R.id.tvAdminRoute);
-            TextView tvDateTime = cardView.findViewById(R.id.tvAdminDateTime);
-            TextView tvPrice = cardView.findViewById(R.id.tvAdminPrice);
-            TextView tvStatus = cardView.findViewById(R.id.tvAdminStatus);
-            TextView tvPanic = cardView.findViewById(R.id.tvAdminPanic);
-
-            if (tvRoute != null) tvRoute.setText("Novi Sad → Beograd");
-            if (tvDateTime != null) tvDateTime.setText("01.12.2025 10:00 - 11:15");
-            if (tvPrice != null) tvPrice.setText("2500 €");
-            if (tvStatus != null) {
-                tvStatus.setText("Completed");
-                tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
+    private void fetchRidesFromBackend() {
+        AdminService.getInstance().getAllRides(new Callback<List<RideDetailsDTO>>() {
+            @Override
+            public void onResponse(Call<List<RideDetailsDTO>> call, Response<List<RideDetailsDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    allRides = response.body();
+                    populateRideCards(allRides);
+                }
             }
-            if (tvPanic != null) tvPanic.setVisibility(View.GONE);
-        }
+
+            @Override
+            public void onFailure(Call<List<RideDetailsDTO>> call, Throwable t) {
+                Toast.makeText(requireContext(), "Failed to fetch rides", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void setupAdminCard2(MaterialCardView card) {
-        if (card == null) return;
+    private void populateRideCards(List<RideDetailsDTO> rides) {
+        cardsContainer.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
 
-        View cardView = card.getChildAt(0);
-        if (cardView instanceof ViewGroup) {
-            TextView tvRoute = cardView.findViewById(R.id.tvAdminRoute);
-            TextView tvDateTime = cardView.findViewById(R.id.tvAdminDateTime);
-            TextView tvPrice = cardView.findViewById(R.id.tvAdminPrice);
-            TextView tvStatus = cardView.findViewById(R.id.tvAdminStatus);
-            TextView tvPanic = cardView.findViewById(R.id.tvAdminPanic);
-            TextView tvCancelledBy = cardView.findViewById(R.id.tvAdminCancelledBy);
+        for (RideDetailsDTO ride : rides) {
+            MaterialCardView card = (MaterialCardView) inflater.inflate(R.layout.view_admin_ride_card, cardsContainer, false);
 
-            if (tvRoute != null) tvRoute.setText("Beograd → Niš");
-            if (tvDateTime != null) tvDateTime.setText("03.12.2025 08:00 - 08:30");
-            if (tvPrice != null) tvPrice.setText("0 €");
-            if (tvStatus != null) {
-                tvStatus.setText("Cancelled");
-                tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.red));
+            TextView tvRoute = card.findViewById(R.id.tvAdminRoute);
+            TextView tvStart = card.findViewById(R.id.tvAdminStartAddress);
+            TextView tvEnd = card.findViewById(R.id.tvAdminEndAddress);
+            TextView tvDateTime = card.findViewById(R.id.tvAdminDateTime);
+            TextView tvPrice = card.findViewById(R.id.tvAdminPrice);
+            TextView tvStatus = card.findViewById(R.id.tvAdminStatus);
+            TextView tvCancelledBy = card.findViewById(R.id.tvAdminCancelledBy);
+            TextView tvPanic = card.findViewById(R.id.tvAdminPanic);
+
+            // Route
+            if (ride.startLocation != null && ride.endLocation != null) {
+                tvRoute.setText(ride.startLocation.address + " → " + ride.endLocation.address);
+                tvStart.setText(ride.startLocation.address);
+                tvEnd.setText(ride.endLocation.address);
             }
-            if (tvPanic != null) {
+
+            // Date and Time
+            String start = ride.startTime != null ? ride.startTime : "N/A";
+            String end = ride.endTime != null ? ride.endTime : "N/A";
+            tvDateTime.setText(start + " - " + end);
+
+            // Price
+            tvPrice.setText(ride.price + " RSD");
+
+            // Status
+            if (ride.status != null) {
+                switch (ride.status) {
+                    case "FINISHED":
+                    case "IN_PROGRESS":
+                    case "ACCEPTED":
+                        tvStatus.setText(ride.status);
+                        tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
+                        if (tvCancelledBy != null) tvCancelledBy.setVisibility(View.GONE);
+                        break;
+                    case "CANCELLED":
+                        tvStatus.setText(ride.status);
+                        tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.red));
+                        if (tvCancelledBy != null) {
+                            if (ride.cancelledBy != null) {
+                                tvCancelledBy.setVisibility(View.VISIBLE);
+                                tvCancelledBy.setText("Cancelled by: " + ride.cancelledBy);
+                            } else {
+                                tvCancelledBy.setVisibility(View.GONE);
+                            }
+                        }
+                        break;
+                    default:
+                        tvStatus.setText(ride.status);
+                        tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
+                        if (tvCancelledBy != null) tvCancelledBy.setVisibility(View.GONE);
+                }
+            }
+
+            // Panic badge
+            if (ride.panic) {
                 tvPanic.setVisibility(View.VISIBLE);
-                tvPanic.setBackgroundResource(R.drawable.bg_red_badge);
+            } else {
+                tvPanic.setVisibility(View.GONE);
             }
-            if (tvCancelledBy != null) {
-                tvCancelledBy.setVisibility(View.VISIBLE);
-                tvCancelledBy.setText("Cancelled by: DRIVER");
-            }
-        }
-    }
 
-    private void setupAdminCard3(MaterialCardView card) {
-        if (card == null) return;
+            // Card click opens details
+            card.setOnClickListener(v -> openRideDetails(ride.id));
 
-        View cardView = card.getChildAt(0);
-        if (cardView instanceof ViewGroup) {
-            TextView tvRoute = cardView.findViewById(R.id.tvAdminRoute);
-            TextView tvDateTime = cardView.findViewById(R.id.tvAdminDateTime);
-            TextView tvPrice = cardView.findViewById(R.id.tvAdminPrice);
-            TextView tvStatus = cardView.findViewById(R.id.tvAdminStatus);
-            TextView tvPanic = cardView.findViewById(R.id.tvAdminPanic);
-
-            if (tvRoute != null) tvRoute.setText("Subotica → Novi Sad");
-            if (tvDateTime != null) tvDateTime.setText("02.12.2025 12:00 - 13:30");
-            if (tvPrice != null) tvPrice.setText("1800 €");
-            if (tvStatus != null) {
-                tvStatus.setText("Completed");
-                tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.green));
-            }
-            if (tvPanic != null) tvPanic.setVisibility(View.GONE);
+            cardsContainer.addView(card);
         }
     }
 
@@ -145,27 +163,32 @@ public class AdminRideHistoryFragment extends Fragment {
                 (view, selectedYear, selectedMonth, selectedDay) -> {
                     Calendar selectedDate = Calendar.getInstance();
                     selectedDate.set(selectedYear, selectedMonth, selectedDay);
-
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                     dateInput.setText(sdf.format(selectedDate.getTime()));
                 },
-                year,
-                month,
-                day
+                year, month, day
         );
 
         datePickerDialog.show();
     }
 
-    private void clearInputs(){
+    private void clearInputs() {
         etTextFilter.setText("");
         etDateFrom.setText("");
         etDateTo.setText("");
     }
 
-    private void openRideDetails(int rideId) {
-        AdminRideDetailsFragment fragment = AdminRideDetailsFragment.newInstance(rideId);
+    private void applyFilters() {
+        String searchText = etTextFilter.getText().toString();
+        String dateFrom = etDateFrom.getText().toString();
+        String dateTo = etDateTo.getText().toString();
 
+        List<RideDetailsDTO> filteredRides = RideFilterHelper.filterRides(allRides, searchText, dateFrom, dateTo);
+        populateRideCards(filteredRides);
+    }
+
+    private void openRideDetails(Long rideId) {
+        AdminRideDetailsFragment fragment = AdminRideDetailsFragment.newInstance(Math.toIntExact(rideId));
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main_container, fragment)
