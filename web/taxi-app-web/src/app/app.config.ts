@@ -107,6 +107,10 @@ const routes: Routes = [
     loadComponent: () => import('./driver/driver-reviews/driver-reviews').then(m => m.DriverReviewsComponent)
   },
   {
+    path: 'passenger-ride-details/:id',
+    loadComponent: () => import('./passenger/passenger-ride-details/passenger-ride-details').then(m => m.PassengerRideDetailsComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
