@@ -5,6 +5,7 @@ import { RideCancelRequest } from '../../models/ride-cancel-request';
 import { RideCancelResponse } from '../../models/ride-cancel-response';
 import { RideStopRequest } from '../../models/ride-stop-request';
 import { RideStopResponse } from '../../models/ride-stop-response';
+import { RideTrackingResponse } from '../../models/ride-tracking-response';
 
 @Injectable({
   providedIn: 'root'

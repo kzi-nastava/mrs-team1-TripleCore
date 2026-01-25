@@ -23,6 +23,8 @@ import { FavoriteRoutesComponent } from './passenger/favorite-routes/favorite-ro
 import { AdminPanicPageComponent } from './admin/admin-panic-page/admin-panic-page';
 import { StartRideComponent } from './driver/start-ride/start-ride';
 import { DriverReviewsComponent } from './driver/driver-reviews/driver-reviews';
+import { ActiveRideTrackingComponent } from './active-ride-tracking/active-ride-tracking';
+import { TestComponent } from './test/test';
 import { PassengerRideDetailsComponent } from './passenger/passenger-ride-details/passenger-ride-details';
 
 export const appRoutes: Routes = [
@@ -51,5 +53,7 @@ export const appRoutes: Routes = [
   { path: 'admin/panic-notifications', component: AdminPanicPageComponent},
   { path: 'start-ride', component: StartRideComponent },
   { path: 'driver/:driverId/reviews', component: DriverReviewsComponent },
+  { path: 'active-ride-tracking', component: ActiveRideTrackingComponent },
+  { path: 'test', component: TestComponent},
   { path: '**', redirectTo: '' },
 ];

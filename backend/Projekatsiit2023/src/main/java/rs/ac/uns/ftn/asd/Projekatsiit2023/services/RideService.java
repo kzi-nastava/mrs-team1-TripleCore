@@ -23,6 +23,7 @@ public class RideService {
     private final UserRepository userRepository;
 
     private final PanicService panicService;
+    private final VehicleService vehicleService;
 
     public RideService(
             RideRepository rideRepository,
@@ -31,7 +32,8 @@ public class RideService {
             RouteRepository routeRepository,
             ReviewService reviewService,
             UserRepository userRepository,
-            PanicService panicService
+            PanicService panicService,
+            VehicleService vehicleService
     ) {
         this.rideRepository = rideRepository;
         this.driverRepository = driverRepository;
@@ -40,6 +42,7 @@ public class RideService {
         this.reviewService = reviewService;
         this.userRepository = userRepository;
         this.panicService = panicService;
+        this.vehicleService = vehicleService;
     }
 
     public List<Ride> getAllRides(){
@@ -223,6 +226,11 @@ public class RideService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public ActiveVehicle getActiveVehicleForRide(Long rideId){
+        Ride ride = getRideById(rideId);
+        return vehicleService.getActiveVehicle(ride.getDriver().getVehicle().getId());
     }
 
 }

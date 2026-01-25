@@ -107,6 +107,12 @@ const routes: Routes = [
     loadComponent: () => import('./driver/driver-reviews/driver-reviews').then(m => m.DriverReviewsComponent)
   },
   {
+    path: 'active-ride-tracking',
+    loadComponent: () => import('./active-ride-tracking/active-ride-tracking').then(m => m.ActiveRideTrackingComponent)
+  },
+  {
+    path: 'test',
+    loadComponent: () => import('./test/test').then(m => m.TestComponent)
     path: 'passenger-ride-details/:id',
     loadComponent: () => import('./passenger/passenger-ride-details/passenger-ride-details').then(m => m.PassengerRideDetailsComponent)
   },
