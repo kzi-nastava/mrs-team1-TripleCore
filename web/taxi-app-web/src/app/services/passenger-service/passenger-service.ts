@@ -16,4 +16,10 @@ export class PassengerService {
       `${this.apiUrl}/${passengerId}/ride-history`
     );
   }
+
+  getRideDetails(passengerId: number, rideId: number): Observable<RideDetailsResponse> {
+    return this.http.get<RideDetailsResponse>(
+      `${this.apiUrl}/${passengerId}/ride-history/${rideId}`
+    );
+  }
 }
