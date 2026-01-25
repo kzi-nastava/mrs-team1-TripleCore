@@ -113,6 +113,8 @@ const routes: Routes = [
   {
     path: 'test',
     loadComponent: () => import('./test/test').then(m => m.TestComponent)
+  },
+  {
     path: 'passenger-ride-details/:id',
     loadComponent: () => import('./passenger/passenger-ride-details/passenger-ride-details').then(m => m.PassengerRideDetailsComponent)
   },
