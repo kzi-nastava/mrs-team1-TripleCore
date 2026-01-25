@@ -92,8 +92,9 @@ public class LoginFragment extends Fragment {
                                 main.onAdminLoginSuccess();
                             } else if (UserRole.DRIVER.equals(loginResponse.getRole())) {
                                 main.onDriverLoginSuccess();
+                            } else if (UserRole.PASSENGER.equals(loginResponse.getRole())) {
+                                main.onPassengerLoginSuccess();
                             }
-                            // here is going to be PASSENGER
                         }
                     });
 
