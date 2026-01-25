@@ -32,7 +32,7 @@
   </a>
 </app-navbar>
 
-<div class="container mt-5">
+<div class="container mt-5" *ngIf="driverProfile as profile">
     <h2 class="text-center mb-5 profile-title">Profile information</h2>
 
     <div class="row justify-content-center d-flex gap-5">
@@ -43,7 +43,7 @@
                     
                     <div class="info-item d-flex align-items-center mb-3">
                         <img src="icons\icons8-combo-chart-96.png" alt="Active hours chart" class="card-icon me-3">
-                        <span>Active hours in last 24 hours: <strong>{{activeLast24Hours}} hours</strong></span>
+                        <span>Active hours in last 24 hours: <strong>{{workingHoursToday}} hours</strong></span>
                     </div>
 
                     <div class="info-item d-flex align-items-center mb-4">
@@ -64,27 +64,27 @@
                     <div class="vehicle-details text-start">
                         <div class="info-item mb-2">
                             <img src="icons/icons8-car-96.png" alt="Car icon" class="card-icon me-2"> 
-                            Vehicle model: <strong>{{vehicleModel}}</strong>
+                            Vehicle brand and model: <strong>{{profile.vehicle.brand}} {{profile.vehicle.model}}</strong>
                         </div>
                         <div class="info-item mb-2">
                             <img src="icons/icons8-vehicle-96.png" alt="Vehicle icon" class="card-icon me-2"> 
-                            Vehicle type: <strong>{{vehicleType}}</strong>
+                            Vehicle type: <strong>{{formatVehicleType(profile.vehicle.type || '')}}</strong>
                         </div>
                         <div class="info-item mb-2">
                             <img src="icons/icons8-licence-plate-100.png" alt="License plate icon" class="card-icon me-2"> 
-                            Licence plate number: <strong>{{licencePlateNumber}}</strong>
+                            Licence plate number: <strong>{{profile.vehicle.plateNumber}}</strong>
                         </div>
                         <div class="info-item mb-2">
                             <img src="icons/icons8-seat-96.png" alt="Seat icon" class="card-icon me-2"> 
-                            Number of seats: <strong>{{numberOfSeats}}</strong>
+                            Number of seats: <strong>{{profile.vehicle.seatNumber}}</strong>
                         </div>
                         <div class="info-item mb-2">
                             <img src="icons/icons8-baby-bottle-96.png" alt="Baby transport icon" class="card-icon me-2"> 
-                            Baby transport available: <strong>{{babyTransportAvailable ? "Yes": "No"}}</strong>
+                            Baby transport available: <strong>{{profile.vehicle.babyFriendly ? "Yes": "No"}}</strong>
                         </div>
                         <div class="info-item mb-2">
                             <img src="icons/icons8-pet-96.png" alt="Pets transport icon" class="card-icon me-2"> 
-                            Pets transport available: <strong>{{petsTransportAvailable ? "Yes": "No"}}</strong>
+                            Pets transport available: <strong>{{profile.vehicle.petFriendly ? "Yes": "No"}}</strong>
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { Router } from '@angular/router';
@@ -7,6 +7,8 @@ import { RouterModule } from '@angular/router';
 import { LogoutService } from '../../services/auth-service/logout-service';
 import { DriverStatusService } from '../../services/driver-service/driver-status-service';
 import { DriverAvailabilityService } from '../../services/driver-service/driver-availability-service';
+import { UserProfileService } from '../../services/user-info-service/user-info-service';
+import { DriverProfileResponse, VehicleType } from '../../models/driver-profile-response';
 
 @Component({
   selector: 'app-driver-additional-info',
@@ -14,24 +16,23 @@ import { DriverAvailabilityService } from '../../services/driver-service/driver-
   templateUrl: './driver-additional-info.html',
   styleUrls: ['./driver-additional-info.css'],
 })
-export class DriverAdditionalInfoComponent {
+export class DriverAdditionalInfoComponent implements OnInit {
   isActive: boolean = true;
   isLoading: boolean = false;
 
-  activeLast24Hours: number = 8;
+  workingHoursToday: number = 0;
 
-  vehicleModel: string = "Audi A3";
-  vehicleType: string = "Standard";
-  licencePlateNumber: string = "BG123-AB";
-  numberOfSeats: number = 5;
-  babyTransportAvailable: boolean = true;
-  petsTransportAvailable: boolean = true;
+  
+
+  driverProfile: DriverProfileResponse | null = null;
 
   constructor(
     private router: Router,
      private logoutService: LogoutService,
      private driverStatusService: DriverStatusService,
-     private driverAvailabilityService: DriverAvailabilityService) {}
+     private driverAvailabilityService: DriverAvailabilityService,
+     private userProfileService: UserProfileService
+    ) {}
   
   onLogoutClick() {
     this.logoutService.logoutWithBackend();
@@ -44,6 +45,24 @@ export class DriverAdditionalInfoComponent {
   ngOnInit(): void {
     const driverId = this.getDriverId();
     this.isActive = this.driverStatusService.isActive();
+
+    const cahcedProfile = localStorage.getItem('driverProfile')
+    if (cahcedProfile) {
+      this.driverProfile = JSON.parse(cahcedProfile) as DriverProfileResponse;
+      this.workingHoursToday = this.driverProfile.workingHoursToday;
+    } else {
+      this.userProfileService.getDriverProfile(driverId).subscribe({
+        next: (profile) => {
+          this.driverProfile = profile;
+          this.workingHoursToday = profile.workingHoursToday;
+          localStorage.setItem('driverProfile', JSON.stringify(profile));
+        },
+        error: (error) => {
+          console.error('Error loading driver profile:', error);
+        }
+    });
+
+    }
   }
 
   getDriverId(): number {
@@ -76,4 +95,22 @@ export class DriverAdditionalInfoComponent {
         }
       });
   }
+
+    public formatVehicleType(type: VehicleType | string): string {
+    
+      switch (type) {
+        case VehicleType.STANDARD:
+        case 'STANDARD':
+          return 'Standard';
+        case VehicleType.LUXURY:
+        case 'LUXURY':
+          return 'Luxury';
+        case VehicleType.VAN:
+        case 'VAN':
+          return 'Van';
+        default:
+          return '';
+      }
+  }
+
 }

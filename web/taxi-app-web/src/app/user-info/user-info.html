@@ -7,66 +7,77 @@
     </label>
     <p class="profile-pic-instruction">Click the image to change profile picture</p>
 
-    <form>
+    <form (ngSubmit)="submitChanges()">
         <div class="form-row">
             <label>First Name</label>
                     <div class="input-wrapper">
-                        <input type="text" [(ngModel)]="firstName" name="firstName" [readonly]="!editable['firstName']" (input)="markChanged()" required >
+                        <input type="text" [(ngModel)]="firstName" name="firstName" [readonly]="!editable['firstName']" (input)="markChanged(); validateField('firstName')" [class.disabled-input]="!editable['firstName']" required >
                         <button type="button" class="icon-btn" (click)="enableEdit('firstName')">
                             <img src="icons/icons8-pencil-48.png" alt="edit icon">
                         </button>
+                                 <div class="error-message" *ngIf="errors['firstName']">{{errors['firstName']}}</div> <!-- ovo je premjesteno ovdje -->
                 </div>
+                <!-- <div class="error-message" *ngIf="errors['firstName']">{{errors['firstName']}}</div> -->
         </div>
       
         <div class="form-row">
                 <label>Last Name</label>
                         <div class="input-wrapper">
-                            <input type="text" [(ngModel)]="lastName" name="lastName"  [readonly]="!editable['lastName']" (input)="markChanged()" required>
+                            <input type="text" [(ngModel)]="lastName" name="lastName"  [readonly]="!editable['lastName']" (input)="markChanged(); validateField('lastName')" [class.disabled-input]="!editable['lastName']" required>
                             <button type="button" class="icon-btn" (click)="enableEdit('lastName')">
                                 <img src="icons/icons8-pencil-48.png" alt="edit icon">
                             </button>
+                                       <div class="error-message" *ngIf="errors['lastName']">{{errors['lastName']}}</div>
                 </div>
-             
+ 
         </div>
 
         <div class="form-row">
             <label>Address</label>
                 <div class="input-wrapper">
-                <input type="text" [(ngModel)]="address" name="address"  [readonly]="!editable['address']" (input)="markChanged()" required>
+                <input type="text" [(ngModel)]="address" name="address"  [readonly]="!editable['address']" (input)="markChanged(); validateField('address')" [class.disabled-input]="!editable['address']" required>
                     <button type="button" class="icon-btn" (click)="enableEdit('address')">
                         <img src="icons/icons8-pencil-48.png" alt="edit icon">
                     </button>
+                     <div class="error-message" *ngIf="errors['address']">{{errors['address']}}</div>
                 </div> 
         </div>
       
         <div class="form-row">
             <label>Phone</label> 
                 <div class="input-wrapper">
-                    <input type="text" [(ngModel)]="phone" name="phone"  [readonly]="!editable['phone']" (input)="markChanged()" required>
+                    <input type="text" [(ngModel)]="phone" name="phone"  [readonly]="!editable['phone']" (input)="markChanged(); validateField('phone')" [class.disabled-input]="!editable['phone']" required>
                         <button type="button" class="icon-btn" (click)="enableEdit('phone')">
                             <img src="icons/icons8-pencil-48.png" alt="edit icon">
                         </button>
+                          <div class="error-message" *ngIf="errors['phone']">{{errors['phone']}}</div>
                 </div>
+              
         </div>
       
         <div class ="form-row">
             <label>Email</label>
                 <div class="input-wrapper">
-                    <input type="text" [(ngModel)]="email" name="email"  [readonly]="!editable['email']" (input)="markChanged()" required>
+                    <input type="text" [(ngModel)]="email" name="email" [readonly]="!editable['email']" (input)="markChanged(); validateField('email')" [class.disabled-input]="!editable['email']" required>
                         <button type="button" class="icon-btn" (click)="enableEdit('email')">
                             <img src="icons/icons8-pencil-48.png" alt="edit icon">
                         </button>
+                            <div class="error-message" *ngIf="errors['email']">{{errors['email']}}</div>
                 </div>
+            
         </div>     
 
       <div class="form-link">
-        <a routerLink="/change-password">Change Password</a>
+        <a routerLink="/forgot-password">Reset Password</a>
       </div>
 
+      <div class="success-message" *ngIf="successMessage">
+        {{ successMessage }}
+    </div>
     
       <div class="buttons">
-        <button type="button" [disabled]="!hasChanges" (click)="resetEdit()">Reset edit</button>
-        <button type="submit" [disabled]="!hasChanges" (click)="submitChanges()">Submit Changes</button>
+        <button type="button" class="reset-btn" [disabled]="!hasChanges" [class.disabled-btn]="!hasChanges" (click)="resetEdit()">Reset edit</button>
+        <button type="submit" class="submit-btn" [disabled]="!hasChanges" [class.disabled-btn]="!hasChanges">Submit Changes</button>
       </div>
 
 
