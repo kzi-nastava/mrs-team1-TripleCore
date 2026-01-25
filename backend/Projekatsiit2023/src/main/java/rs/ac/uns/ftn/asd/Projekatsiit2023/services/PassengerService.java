@@ -46,4 +46,17 @@ public class PassengerService {
             return new ArrayList<>();
         }
     }
+
+    public RideDetailsResponse getRideDetails(Long passengerId, Long rideId) {
+        Ride ride = rideService.getRideById(rideId);
+        // check if passenger is part of the ride
+        boolean isPassengerInRide = ride.getOrderer().getId().equals(passengerId) ||
+                ride.getLinkedPassengers().stream().anyMatch(p -> p.getId().equals(passengerId));
+
+        if (!isPassengerInRide) {
+            throw new EntityNotFoundException("Passenger with id: " + passengerId + " not found in ride with id: " + rideId);
+        }
+
+        return rideService.createRideDetails(ride);
+    }
 }

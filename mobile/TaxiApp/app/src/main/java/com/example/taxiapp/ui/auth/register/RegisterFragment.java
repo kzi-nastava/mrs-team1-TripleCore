@@ -1,5 +1,6 @@
 package com.example.taxiapp.ui.auth.register;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,25 +11,52 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.example.taxiapp.ui.MainActivity;
+import com.example.taxiapp.ui.auth.login.LoginFragment;
+
+import model.RegisterRequest;
+import model.RegisterResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.AuthService;
 
 public class RegisterFragment extends Fragment {
 
-    private static final int PICK_IMAGE_REQUEST = 1;
-
-    private EditText etFirstName, etLastName, etEmail, etPassword, etConfirmPassword, etAddress, etPhone;
+    private EditText etFirstName, etLastName, etEmail,
+            etPassword, etConfirmPassword, etAddress, etPhone;
     private Button btnRegister, btnReset;
     private ImageView ivProfilePic;
     private Uri selectedImageUri;
 
+    private final ActivityResultLauncher<Intent> imagePickerLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == Activity.RESULT_OK
+                                && result.getData() != null
+                                && result.getData().getData() != null) {
+
+                            selectedImageUri = result.getData().getData();
+                            ivProfilePic.setImageURI(selectedImageUri);
+                        }
+                    }
+            );
+
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
         etFirstName = view.findViewById(R.id.etFirstName);
@@ -53,16 +81,7 @@ public class RegisterFragment extends Fragment {
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null) {
-            selectedImageUri = data.getData();
-            ivProfilePic.setImageURI(selectedImageUri);
-        }
+        imagePickerLauncher.launch(intent);
     }
 
     private void attemptRegister() {
@@ -71,8 +90,12 @@ public class RegisterFragment extends Fragment {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
+        String address = etAddress.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
 
-        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()
+                || password.isEmpty() || confirmPassword.isEmpty()
+                || address.isEmpty() || phone.isEmpty()) {
             showMessage("Please fill all required fields.");
             return;
         }
@@ -82,8 +105,41 @@ public class RegisterFragment extends Fragment {
             return;
         }
 
-        showMessage("Registration successful! Activation email sent to " + email);
-        resetForm();
+        RegisterRequest request = new RegisterRequest(
+                firstName,
+                lastName,
+                email,
+                password,
+                confirmPassword,
+                address,
+                phone,
+                null,          // profileImage (za sad)
+                "PASSENGER"    // role
+        );
+
+        AuthService.getInstance().register(request, new Callback<RegisterResponse>() {
+            @Override
+            public void onResponse(Call<RegisterResponse> call,
+                                   Response<RegisterResponse> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    showMessage(response.body().getMessage());
+
+                    // redirect to login
+                    if (getActivity() instanceof MainActivity){
+                        MainActivity main = (MainActivity) getActivity();
+                        main.loadFragment(new LoginFragment(), true);
+                    }
+                } else {
+                    showMessage("Registration failed. Email may already exist.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                showMessage("Server error. Please try again later.");
+            }
+        });
     }
 
     private void showMessage(String message) {
@@ -103,6 +159,5 @@ public class RegisterFragment extends Fragment {
         etPhone.setText("");
         ivProfilePic.setImageResource(R.drawable.profile);
         selectedImageUri = null;
-        Toast.makeText(getActivity(), "Form reset", Toast.LENGTH_SHORT).show();
     }
 }

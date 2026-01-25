@@ -30,7 +30,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Novi Sad → Beograd"
+                android:text="Route: A → B"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"/>
@@ -41,14 +41,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="PANIC"
-                android:background="@drawable/bg_red_badge"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:textColor="@color/white"
                 android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:background="@drawable/bg_red_badge"
+                android:padding="4dp"
                 android:visibility="gone"/>
-
         </LinearLayout>
+
+        <!-- Start & End address -->
+        <TextView
+            android:id="@+id/tvAdminStartAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Address"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/tvAdminEndAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="End Address"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="2dp"/>
 
         <!-- Date and Time -->
         <TextView
@@ -84,7 +102,6 @@
                 android:text="Completed"
                 android:textSize="14sp"
                 android:textColor="@color/green"/>
-
         </LinearLayout>
 
         <!-- Cancelled by info -->

@@ -45,6 +45,10 @@ public class RideService {
         this.vehicleService = vehicleService;
     }
 
+    public List<Ride> getAllRides(){
+        return rideRepository.findAll();
+    }
+
     public Ride getRideById(Long id){
         return rideRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ride with id: " + id + " not found"));

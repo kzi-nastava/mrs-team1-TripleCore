@@ -37,4 +37,14 @@ public class PassengerController {
         List<RideDetailsResponse> response = passengerService.getRideHistory(id);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{id}/ride-history/{rideId}")
+    public ResponseEntity<?> getPassengerRideDetails(@PathVariable Long id, @PathVariable Long rideId) {
+        try {
+            RideDetailsResponse response = passengerService.getRideDetails(id, rideId);
+            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException nfe) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
+        }
+    }
 }

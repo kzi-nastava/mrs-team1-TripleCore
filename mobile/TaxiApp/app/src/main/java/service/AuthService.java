@@ -2,6 +2,8 @@ package service;
 
 import model.LoginRequest;
 import model.LoginResponse;
+import model.RegisterRequest;
+import model.RegisterResponse;
 import network.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,5 +24,12 @@ public class AuthService {
     public void login(String email, String password, Callback<LoginResponse> callback) {
         LoginRequest request = new LoginRequest(email, password);
         RetrofitClient.getApiService().login(request).enqueue(callback);
+    }
+
+    public void register(RegisterRequest request,
+                         Callback<RegisterResponse> callback) {
+
+        RetrofitClient
+                .getApiService().register(request).enqueue(callback);
     }
 }
