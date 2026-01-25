@@ -23,6 +23,7 @@ import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragmen
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
+import com.example.taxiapp.ui.passenger.PassengerRideHistoryFragment;
 import com.example.taxiapp.ui.shared.RideHistoryFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -126,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
         // ADMIN
         else if (id == R.id.nav_admin_ride_history && "ADMIN".equals(userType)) {
             fragmentToLoad = new AdminRideHistoryFragment();
+        }
+
+        // PASSENGER
+        else if (id == R.id.nav_ride_history && "PASSENGER".equals(userType)) {
+            fragmentToLoad = new PassengerRideHistoryFragment();
         }
 
         // LOGOUT

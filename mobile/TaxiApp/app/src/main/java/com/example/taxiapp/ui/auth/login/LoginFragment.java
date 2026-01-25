@@ -79,6 +79,7 @@ public class LoginFragment extends Fragment {
                             .putString("userEmail", loginResponse.getEmail())
                             .putString("userFirstName", loginResponse.getFirstName())
                             .putString("userLastName", loginResponse.getLastName())
+                            .putLong("userId", loginResponse.getId())
                             .apply();
 
                     getActivity().runOnUiThread(() -> {
