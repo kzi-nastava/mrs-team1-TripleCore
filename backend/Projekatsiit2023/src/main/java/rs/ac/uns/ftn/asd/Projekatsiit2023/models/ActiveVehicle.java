@@ -32,6 +32,15 @@ public class ActiveVehicle {
 
     private boolean available;
 
+    @OneToOne()
+    private Ride ride;
+
+    @Column(columnDefinition = "TEXT")
+    private String routeCoordinates; // this is the route the active vehicle is moving along
+
+    @Column(nullable = false)
+    private int routeIndex = 0;
+
     public ActiveVehicle(Vehicle vehicle, Location location, boolean available) {
         this.vehicle = vehicle;
         this.location = location;

@@ -31,6 +31,10 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
   @Input() routeData: any = null;
 
+  @Input() activeRideVehicleLocation?: LocationDTO;
+  private activeRideMarker?: L.Marker;
+  private activeRideLayer?: L.LayerGroup;
+
   private redIcon = L.icon({
     iconUrl: '/icons/location-red.png',
     iconSize: [32, 32],
@@ -52,6 +56,12 @@ export class MapComponent implements AfterViewInit, OnChanges {
     popupAnchor: [0, -32],
   });
 
+  private logoIcon = L.icon({
+    iconUrl: 'icons/taxi-no-shadow.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16]
+  });
+
   private startIcon = L.divIcon({
     html: '<div style="background-color: #10B981; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>',
     className: 'custom-div-icon',
@@ -66,6 +76,8 @@ export class MapComponent implements AfterViewInit, OnChanges {
     iconAnchor: [8, 8]
   });
 
+  
+
   ngAfterViewInit(): void {
     this.initMap();
     if (this.vehicleLocations)
@@ -78,6 +90,10 @@ export class MapComponent implements AfterViewInit, OnChanges {
       this.drawRoute();
     }
 
+    if (this.activeRideVehicleLocation) {
+      this.renderActiveRideVehicle();
+    }
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -87,6 +103,10 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
     if (changes['routeData'] && this.map) {
       this.drawRoute();
+    }
+
+    if (changes['activeRideVehicleLocation'] && this.map) {
+      this.renderActiveRideVehicle();
     }
   }
 
@@ -113,7 +133,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
         const marker = L.marker([loc.latitude, loc.longitude], { icon: loc.available ? this.greenIcon : this.redIcon });
         marker.bindPopup(loc.available ? 'Available' : 'Not Available');
         return marker;
-      })
+      }),
     );
 
     this.markersLayer.addTo(this.map);
@@ -214,4 +234,25 @@ export class MapComponent implements AfterViewInit, OnChanges {
     if (this.startMarker) { this.map.removeLayer(this.startMarker); this.startMarker = undefined; }
     if (this.endMarker) { this.map.removeLayer(this.endMarker); this.endMarker = undefined; }
   }
+
+  private renderActiveRideVehicle(): void {
+  if (!this.map || !this.activeRideVehicleLocation) return;
+
+  const { latitude, longitude } = this.activeRideVehicleLocation;
+
+  if (this.activeRideMarker) {
+    this.activeRideMarker.setLatLng([latitude, longitude]);
+    return;
+  }
+
+  this.activeRideMarker = L.marker(
+    [latitude, longitude],
+    {
+      icon: this.logoIcon,
+      zIndexOffset: 1000
+    });
+
+  this.activeRideLayer = L.layerGroup([this.activeRideMarker]).addTo(this.map);
+}
+
 }

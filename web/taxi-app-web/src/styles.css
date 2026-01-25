@@ -86,3 +86,11 @@ a {
   color: #600EA8;
 }
 
+/* Review form styles */
+.comment-field .mat-mdc-text-field-wrapper {
+  background-color: #ffffff !important;
+}
+
+
+
+

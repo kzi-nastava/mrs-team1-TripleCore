@@ -14,6 +14,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideCancelResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideEstimateResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideFinishResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideStopResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
@@ -25,6 +26,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RouteService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RestController

@@ -5,6 +5,8 @@
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;      /* allows columns to wrap on small screens */
+  height: fit-content;
+  padding-bottom: 30px;
 }
 
 .heading{

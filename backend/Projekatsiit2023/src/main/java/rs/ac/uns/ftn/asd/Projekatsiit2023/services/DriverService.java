@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.VehicleType;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Driver;
@@ -40,10 +41,14 @@ public class DriverService {
     // change here so the function throws exceptions
     public List<RideDetailsResponse> getRideHistory(Long driverId){
         try{
-            List<Ride> rides = rideService.getDriverRides(driverId);
-           return rides.stream()
-                    .map(RideService::createRideDetails)
-                    .toList();
+            List<RideDetailsResponse> details = new ArrayList<>();
+            for (Ride ride : rideService.getDriverRides(driverId)){
+                if (ride.getStatus().equals(RideStatus.CANCELLED) || ride.getStatus().equals(RideStatus.FINISHED)){
+                    details.add(rideService.createRideDetails(ride));
+                }
+
+            }
+            return details;
         } catch (Exception e){
             e.printStackTrace();
             throw e;

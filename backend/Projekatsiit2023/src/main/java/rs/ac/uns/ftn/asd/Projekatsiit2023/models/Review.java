@@ -29,6 +29,6 @@ public class Review {
     private Passenger passenger;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id", nullable = false)
-    private Driver driver;
+    @JoinColumn(name = "ride_id", nullable = false)
+    private Ride ride;
 }
