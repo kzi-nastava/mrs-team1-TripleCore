@@ -194,7 +194,14 @@
         </span>
 
         <!-- Rate Ride Button (only for FINISHED, unrated) -->
-        <button *ngIf="ride.status === 'FINISHED' && !ride.isRated"
+        
+        <app-review-form
+          *ngIf="isReviewFormOpen"
+          (close)="closeReviewForm()"
+          [rideId]="ride.id">
+        </app-review-form>
+        <button 
+                *ngIf="ride.status === 'FINISHED' && !ride.isRated"
                 mat-icon-button 
                 color="primary"
                 (click)="openRatingDialog(ride)"
