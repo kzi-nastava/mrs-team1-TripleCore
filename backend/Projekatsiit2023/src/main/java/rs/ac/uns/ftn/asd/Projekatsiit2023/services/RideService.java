@@ -230,7 +230,7 @@ public class RideService {
 
     public ActiveVehicle getActiveVehicleForRide(Long rideId){
         Ride ride = getRideById(rideId);
-        return vehicleService.getActiveVehicle(ride.getDriver().getVehicle().getId());
+        return vehicleService.getActiveVehicle(ride.getDriver().getVehicle().getIda());
     }
 
 }
