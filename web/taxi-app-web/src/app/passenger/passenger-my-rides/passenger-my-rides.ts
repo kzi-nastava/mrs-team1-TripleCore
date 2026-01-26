@@ -20,6 +20,7 @@ import { RideService } from '../../services/ride-service/ride-service';
 import { PassengerRide, adaptToPassengerRide } from '../../utils/passenger-ride-adapter';
 import { RideDetailsResponse } from '../../models/ride-details-response';
 import { RideCancelRequest } from '../../models/ride-cancel-request';
+import { ReviewFormComponent } from '../../reviews/review-form/review-form';
 
 @Component({
   selector: 'app-passenger-my-rides',
@@ -37,7 +38,8 @@ import { RideCancelRequest } from '../../models/ride-cancel-request';
     CommonModule,
     FormsModule,
     NavbarComponent,
-    RouterLink
+    RouterLink,
+    ReviewFormComponent
   ],
   providers: [DatePipe],
   templateUrl: './passenger-my-rides.html',
@@ -280,6 +282,16 @@ export class PassengerMyRidesComponent implements OnInit {
     return Math.floor(diffMs / (1000 * 60));
   }
 
+  isReviewFormOpen = false;
+
+  openReviewForm(): void {
+    this.isReviewFormOpen = true;
+  }
+
+  closeReviewForm(): void {
+    this.isReviewFormOpen = false;
+  }
+
   openRatingDialog(ride: PassengerRide): void {
     if (ride.status !== 'FINISHED') {
       alert('You can only rate finished rides.');
@@ -291,8 +303,7 @@ export class PassengerMyRidesComponent implements OnInit {
       return;
     }
     
-    // TODO: Implement rating dialog
-    alert(`Rating dialog for ride with ${ride.driverName} would open here.`);
+    this.openReviewForm();
   }
 
   rateRide(rideId: number, driverRating: number, vehicleRating: number, comment: string): void {

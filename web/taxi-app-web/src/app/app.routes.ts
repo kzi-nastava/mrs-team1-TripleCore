@@ -26,6 +26,7 @@ import { DriverReviewsComponent } from './driver/driver-reviews/driver-reviews';
 import { ActiveRideTrackingComponent } from './active-ride-tracking/active-ride-tracking';
 import { TestComponent } from './test/test';
 import { PassengerRideDetailsComponent } from './passenger/passenger-ride-details/passenger-ride-details';
+import { PassengerReviewsComponent } from './passenger/passenger-reviews/passenger-reviews';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -35,7 +36,7 @@ export const appRoutes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'user-info', component: UserInfoComponent },
   { path: 'driver-home', component: DriverHomeComponent },
-  { path: 'driver/:driver-id/ride-history', component: DriverRideHistoryComponent },
+  { path: 'driver-ride-history', component: DriverRideHistoryComponent },
   { path: 'ride-details', component: RideDetailsComponent },
   { path: 'estimate-route', component: EstimateRouteComponent },
   { path: 'admin-home', component: AdminHomeComponent },
@@ -52,8 +53,9 @@ export const appRoutes: Routes = [
   { path: 'favorite-routes', component: FavoriteRoutesComponent },
   { path: 'admin/panic-notifications', component: AdminPanicPageComponent},
   { path: 'start-ride', component: StartRideComponent },
-  { path: 'driver/:driverId/reviews', component: DriverReviewsComponent },
+  { path: 'driver-reviews', component: DriverReviewsComponent },
   { path: 'active-ride-tracking', component: ActiveRideTrackingComponent },
   { path: 'test', component: TestComponent},
+  { path: 'passenger-reviews', component: PassengerReviewsComponent },
   { path: '**', redirectTo: '' },
 ];

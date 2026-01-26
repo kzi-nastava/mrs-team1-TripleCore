@@ -43,10 +43,7 @@ public class DriverService {
         try{
             List<RideDetailsResponse> details = new ArrayList<>();
             for (Ride ride : rideService.getDriverRides(driverId)){
-                if (ride.getStatus().equals(RideStatus.CANCELLED) || ride.getStatus().equals(RideStatus.FINISHED)){
-                    details.add(rideService.createRideDetails(ride));
-                }
-
+                details.add(rideService.createRideDetails(ride));
             }
             return details;
         } catch (Exception e){

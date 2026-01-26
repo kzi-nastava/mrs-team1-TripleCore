@@ -6,6 +6,12 @@
         </a>
     </li>
 
+    <li class="nav-item">
+    <a class="img-and-link" routerLink="/passenger-reviews">
+        <span class="nav-link">My Reviews</span>
+    </a>
+  </li>
+
   <a class="nav-link img-and-link" routerLink="/user-info" matTooltip="My Profile">
     <img src="icons/icons8-test-account-48.png" class="nav-item-icon">
   </a>
@@ -194,7 +200,14 @@
         </span>
 
         <!-- Rate Ride Button (only for FINISHED, unrated) -->
-        <button *ngIf="ride.status === 'FINISHED' && !ride.isRated"
+        
+        <app-review-form
+          *ngIf="isReviewFormOpen"
+          (close)="closeReviewForm()"
+          [rideId]="ride.id">
+        </app-review-form>
+        <button 
+                *ngIf="ride.status === 'FINISHED' && !ride.isRated"
                 mat-icon-button 
                 color="primary"
                 (click)="openRatingDialog(ride)"
