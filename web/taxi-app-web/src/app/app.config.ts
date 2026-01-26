@@ -38,7 +38,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'driver/:driver-id/ride-history',
+    path: 'driver-ride-history',
     loadComponent: () => import('./driver/driver-ride-history/driver-ride-history').then(m => m.DriverRideHistoryComponent)
   },
   {
@@ -103,7 +103,7 @@ const routes: Routes = [
     loadComponent: () => import('./driver/start-ride/start-ride').then(m => m.StartRideComponent)
   },
   {
-    path: 'driver/:driverId/reviews',
+    path: 'driver-reviews',
     loadComponent: () => import('./driver/driver-reviews/driver-reviews').then(m => m.DriverReviewsComponent)
   },
   {
