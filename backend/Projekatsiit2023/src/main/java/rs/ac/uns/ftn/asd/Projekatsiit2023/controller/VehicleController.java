@@ -80,8 +80,22 @@ public class VehicleController {
 
     @PostMapping("/active-vehicle/{id}/move")
     public ResponseEntity<?> moveActiveVehicle(@PathVariable("id") Long id){
-        vehicleService.moveActiveVehicle(id);
-        return ResponseEntity.ok("Vehicle moved");
+        try{
+            drivingSimulationService.moveActiveRideVehicle(id);
+            ActiveVehicle av = vehicleService.getActiveVehicle(id);
+            //test
+            ActiveRideVehicleDetailsResponse response = new ActiveRideVehicleDetailsResponse();
+            response.setVehicleId(av.getVehicleId());
+            response.setRideId(av.getRide().getId());
+            response.setVehicleLocation(av.getLocation());
+            // hardcoded for now
+            response.setEstimatedTime(15L);
+            response.setEstimatedDistance(200);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
 }
