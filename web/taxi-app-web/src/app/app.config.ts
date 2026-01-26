@@ -119,6 +119,10 @@ const routes: Routes = [
     loadComponent: () => import('./passenger/passenger-ride-details/passenger-ride-details').then(m => m.PassengerRideDetailsComponent)
   },
   {
+    path: 'passenger-reviews',
+    loadComponent: () => import('./passenger/passenger-reviews/passenger-reviews').then(m => m.PassengerReviewsComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

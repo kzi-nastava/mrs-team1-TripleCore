@@ -24,4 +24,8 @@ export class ReviewService {
   getDriverReviews(driverId: number): Observable<ReviewDTO[]> {
     return this.http.get<ReviewDTO[]>(`${this.apiUrl}/driver/${driverId}`);
   }
+
+  getPassengerReviews(passengerId: number): Observable<ReviewDTO[]> {
+    return this.http.get<ReviewDTO[]>(`${this.apiUrl}/passenger/${passengerId}`);
+  }
 }

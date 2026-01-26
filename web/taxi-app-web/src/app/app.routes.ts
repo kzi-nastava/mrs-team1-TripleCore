@@ -26,6 +26,7 @@ import { DriverReviewsComponent } from './driver/driver-reviews/driver-reviews';
 import { ActiveRideTrackingComponent } from './active-ride-tracking/active-ride-tracking';
 import { TestComponent } from './test/test';
 import { PassengerRideDetailsComponent } from './passenger/passenger-ride-details/passenger-ride-details';
+import { PassengerReviewsComponent } from './passenger/passenger-reviews/passenger-reviews';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -55,5 +56,6 @@ export const appRoutes: Routes = [
   { path: 'driver/:driverId/reviews', component: DriverReviewsComponent },
   { path: 'active-ride-tracking', component: ActiveRideTrackingComponent },
   { path: 'test', component: TestComponent},
+  { path: 'passenger-reviews', component: PassengerReviewsComponent },
   { path: '**', redirectTo: '' },
 ];
