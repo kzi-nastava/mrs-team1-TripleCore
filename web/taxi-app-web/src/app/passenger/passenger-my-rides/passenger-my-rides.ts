@@ -286,17 +286,6 @@ export class PassengerMyRidesComponent implements OnInit {
     return Math.floor(diffMs / (1000 * 60));
   }
 
-  // Active ride tracking
-  isActiveRideTrackingOpen = false;
-
-  openActiveRideTracking(): void {
-    this.isActiveRideTrackingOpen = true;
-  }
-  closeActiveRideTracking(): void {
-    this.isActiveRideTrackingOpen = false;
-  }
-
-
   // Review Form Handling
   isReviewFormOpen = false;
 

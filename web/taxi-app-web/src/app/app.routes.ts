@@ -54,7 +54,7 @@ export const appRoutes: Routes = [
   { path: 'admin/panic-notifications', component: AdminPanicPageComponent},
   { path: 'start-ride', component: StartRideComponent },
   { path: 'driver-reviews', component: DriverReviewsComponent },
-  { path: 'active-ride-tracking', component: ActiveRideTrackingComponent },
+  { path: 'active-ride-tracking/:rideId', component: ActiveRideTrackingComponent },
   { path: 'test', component: TestComponent},
   { path: 'passenger-reviews', component: PassengerReviewsComponent },
   { path: '**', redirectTo: '' },

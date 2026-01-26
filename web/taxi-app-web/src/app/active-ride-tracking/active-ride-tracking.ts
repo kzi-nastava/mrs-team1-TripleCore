@@ -10,6 +10,7 @@ import { VehicleService } from '../services/vehicle-service';
 import { Subscription, interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { RideService } from '../services/ride-service/ride-service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-active-ride-tracking',
@@ -30,13 +31,14 @@ export class ActiveRideTrackingComponent {
   }
 
   constructor(
+    private route: ActivatedRoute,
     private rideService: RideService,
     private vehicleService: VehicleService, 
     private cdr: ChangeDetectorRef) {}
 
   @Input() rideId!: number;
   
-  ride: RideDetailsResponse = MOCK_RIDE_DETAILS;
+  ride!: RideDetailsResponse;
   rideTrackingInfo?: RideTrackingResponse;
 
   vehicleLocation?: LocationDTO;
@@ -45,8 +47,23 @@ export class ActiveRideTrackingComponent {
 
 
   ngOnInit(): void {
-  console.log('ActiveRideTrackingComponent initialized with ride:', this.ride);
-  this.cdr.detectChanges();
+
+  const rideId = Number(this.route.snapshot.paramMap.get('rideId'));
+      
+  this.rideService.getRideDetailsById(rideId).subscribe({
+    next: rideDetails => {
+      console.log('Ride details:', rideDetails);
+      this.ride = rideDetails;
+      console.log('Loaded ride details', this.ride);
+      this.cdr.detectChanges();
+    },
+    error: err => {
+      if (err.status === 404) {
+        console.error('Ride not found');
+      }
+    }
+  });
+
   this.trackingSub = interval(2000)
     .pipe(
       switchMap(() =>

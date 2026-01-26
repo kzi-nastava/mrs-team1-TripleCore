@@ -6,6 +6,7 @@ import { RideCancelResponse } from '../../models/ride-cancel-response';
 import { RideStopRequest } from '../../models/ride-stop-request';
 import { RideStopResponse } from '../../models/ride-stop-response';
 import { RideTrackingResponse } from '../../models/ride-tracking-response';
+import { RideDetailsResponse } from '../../models/ride-details-response';
 
 @Injectable({
   providedIn: 'root'
@@ -33,4 +34,9 @@ export class RideService {
   }
 
   // get ride details
+    getRideDetailsById(id: number): Observable<RideDetailsResponse> {
+      return this.http.get<RideDetailsResponse>(
+        `${this.apiUrl}/ride-details/${id}`
+      );
+    }
 }

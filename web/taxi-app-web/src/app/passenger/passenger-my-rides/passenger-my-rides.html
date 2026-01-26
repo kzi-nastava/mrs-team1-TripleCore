@@ -170,16 +170,10 @@
       <th mat-header-cell *matHeaderCellDef> Actions </th>
       <td mat-cell *matCellDef="let ride">
         <div class="actions-cell">
-          <app-active-ride-tracking 
-          [rideId]="ride.id"
-          *ngIf="isActiveRideTrackingOpen"
-          (close)="closeActiveRideTracking()">
-          </app-active-ride-tracking>
           <!-- View Details Button -->
           <button
                   mat-icon-button 
-                  [routerLink]="ride.status !== 'IN_PROGRESS' ? ['/passenger-ride-details', ride.id] : null"
-                  (click)="openActiveRideTracking()"
+                      [routerLink]="ride.status !== 'IN_PROGRESS' ? ['/passenger-ride-details', ride.id] : ['/active-ride-tracking', ride.id]"
                   matTooltip="View details"
                   class="action-btn view-btn">
             <mat-icon>visibility</mat-icon>

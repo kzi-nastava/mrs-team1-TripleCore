@@ -104,7 +104,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
     if (this.map) {
       setTimeout(() => {
         this.map.invalidateSize();
-      }, 0);
+      }, 50);
     }
     if (changes['vehicleLocations'] && this.map) {
       this.renderMarkers();
@@ -118,6 +118,13 @@ export class MapComponent implements AfterViewInit, OnChanges {
       this.renderActiveRideVehicle();
     }
   }
+
+  ngOnDestroy(): void {
+  if (this.map) {
+    this.map.remove();
+    this.map = undefined as any;
+  }
+}
 
   private initMap(): void {
     this.map = L.map('map', {

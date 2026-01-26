@@ -244,11 +244,11 @@ public class  RideController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/ride-details/{id}")
     public ResponseEntity<?> getRideById(@PathVariable("id") Long id){
         try{
             Ride ride = rideService.getRideById(id);
-            return ResponseEntity.ok(ride);
+            return ResponseEntity.ok(rideService.createRideDetails(ride));
         }
         catch (EntityNotFoundException nfe) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
