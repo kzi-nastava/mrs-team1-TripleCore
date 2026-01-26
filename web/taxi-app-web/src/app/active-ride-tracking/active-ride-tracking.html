@@ -1,4 +1,4 @@
-<div class="overlay">
+<div class="overlay" *ngIf="ride">
   <mat-card class="ride-card">
     <button class="close-btn" (click)="closeSelf()">×</button>
     <h2>Active ride</h2>
@@ -6,6 +6,7 @@
     <mat-card-content>
 
         <app-map 
+        *ngIf="ride?.startLocation && ride?.endLocation"
         [routeStart]="ride.startLocation"
         [routeStops]="ride.routeStops"
         [routeEnd]="ride.endLocation"
@@ -33,7 +34,6 @@
     </mat-card-content>
 
     <mat-card-actions align="end">
-      <button class="action-btn panic-btn">PANIC</button>
       <button class="action-btn finish-btn">Finish Ride</button>
     </mat-card-actions>
   </mat-card>

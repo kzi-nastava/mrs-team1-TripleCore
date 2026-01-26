@@ -12,6 +12,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Route;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RouteService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.VehicleService;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.driving.DrivingSimulationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.impl.RouteServiceImpl;
 
 import java.util.ArrayList;
@@ -24,20 +25,24 @@ public class VehicleController {
     private final VehicleService vehicleService;
     private final RideService rideService;
     private final RouteServiceImpl routeService;
+    private final DrivingSimulationService drivingSimulationService;
 
     public VehicleController(
             VehicleService vehicleService,
             RideService rideService,
-            RouteServiceImpl routeService){
+            RouteServiceImpl routeService,
+            DrivingSimulationService drivingSimulationService){
         this.vehicleService = vehicleService;
         this.rideService = rideService;
         this.routeService = routeService;
+        this.drivingSimulationService = drivingSimulationService;
     }
 
     @GetMapping("/locations")
     public ResponseEntity<?> getVehicleLocations() {
         try{
             List<ActiveVehicleLocationResponse> vehicles = vehicleService.getActiveVehicleLocations();
+            drivingSimulationService.moveAllIdleVehicles();
             return ResponseEntity.ok(vehicles);
         } catch (Exception e){
             return ResponseEntity
@@ -53,7 +58,6 @@ public class VehicleController {
             ActiveVehicle av = rideService.getActiveVehicleForRide(id);
             ActiveRideVehicleDetailsResponse response = vehicleService.generateActiveRideVehicleDeatils(av);
             // movement test
-            vehicleService.moveVehicleTest(av.getVehicleId());
             return ResponseEntity.ok(response);
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -64,16 +68,8 @@ public class VehicleController {
     public ResponseEntity<?> testRouteService(@PathVariable("id") Long id){
         try{
             ActiveVehicle av = vehicleService.getActiveVehicle(id);
-            List<Location> points = new ArrayList<>();
-            points.add(av.getLocation());
-
-            Location herojaPinkija16 = new Location(
-                    45.2459,
-                    19.8425,
-                    "Heroja Pinkija 16, Novi Sad"
-            );
-
-            points.add(herojaPinkija16);
+            Ride ride = rideService.getRideById(av.getRide().getId());
+            List<Location> points = routeService.convertRouteToLocationList(ride.getRoute());
 
             vehicleService.setRouteForActiveVehicle(id, points);
             return ResponseEntity.ok("Route added to active vehicle");

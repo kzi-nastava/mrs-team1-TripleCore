@@ -31,4 +31,6 @@ export class RideService {
       { responseType: 'text' }
     );
   }
+
+  // get ride details
 }

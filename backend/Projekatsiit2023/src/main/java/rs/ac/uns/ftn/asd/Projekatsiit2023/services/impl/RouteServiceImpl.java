@@ -265,4 +265,16 @@ public class RouteServiceImpl implements RouteService {
         return extractCoordinatesFromGraphHopper(path);
     }
 
+    public Location getRandomNoviSadLocation(){
+        double minLat = 45.2300;
+        double maxLat = 45.2800;
+        double minLon = 19.8000;
+        double maxLon = 19.8800;
+
+        double latitude = minLat + (Math.random() * (maxLat - minLat));
+        double longitude = minLon + (Math.random() * (maxLon - minLon));
+
+        return new Location(latitude, longitude, null);
+    }
+
 }

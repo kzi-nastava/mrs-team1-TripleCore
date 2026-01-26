@@ -255,5 +255,16 @@ public class  RideController {
         }
     }
 
+    @PostMapping("/create-mock")
+    public ResponseEntity<?> createMockRides() {
+        try {
+            rideService.createMockRides();
+            return ResponseEntity.ok("Mock rides created");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating mock rides: " + e.getMessage());
+        }
+    }
+
 
 }

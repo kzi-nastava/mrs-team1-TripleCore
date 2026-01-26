@@ -9,6 +9,7 @@ import { RideTrackingResponse } from '../models/ride-tracking-response';
 import { VehicleService } from '../services/vehicle-service';
 import { Subscription, interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { RideService } from '../services/ride-service/ride-service';
 
 @Component({
   selector: 'app-active-ride-tracking',
@@ -28,11 +29,15 @@ export class ActiveRideTrackingComponent {
     this.close.emit();
   }
 
-  constructor(private vehicleService: VehicleService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private rideService: RideService,
+    private vehicleService: VehicleService, 
+    private cdr: ChangeDetectorRef) {}
 
-  @Input() ride: RideDetailsResponse = MOCK_RIDE_DETAILS;
+  @Input() rideId!: number;
   
-  rideTrackingInfo!: RideTrackingResponse;
+  ride: RideDetailsResponse = MOCK_RIDE_DETAILS;
+  rideTrackingInfo?: RideTrackingResponse;
 
   vehicleLocation?: LocationDTO;
 
@@ -40,6 +45,8 @@ export class ActiveRideTrackingComponent {
 
 
   ngOnInit(): void {
+  console.log('ActiveRideTrackingComponent initialized with ride:', this.ride);
+  this.cdr.detectChanges();
   this.trackingSub = interval(2000)
     .pipe(
       switchMap(() =>
@@ -61,11 +68,9 @@ export class ActiveRideTrackingComponent {
         console.error('Error loading ride tracking info', err);
       }
     });
-}
+ }
 
-ngOnDestroy(): void {
-  this.trackingSub?.unsubscribe();
-}
-  
-
+  ngOnDestroy(): void {
+    this.trackingSub?.unsubscribe();
+  }
 }

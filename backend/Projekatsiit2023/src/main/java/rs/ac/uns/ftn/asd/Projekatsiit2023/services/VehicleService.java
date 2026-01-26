@@ -20,15 +20,12 @@ import java.util.Optional;
 public class VehicleService {
 
     private final ActiveVehicleRepository activeVehicleRepository;
-    private final DrivingSimulationService drivingSimulationService;
     private final RouteServiceImpl routeService;
 
     public VehicleService(
             ActiveVehicleRepository activeVehicleRepository,
-            DrivingSimulationService drivingSimulationService,
             RouteServiceImpl routeService){
         this.activeVehicleRepository = activeVehicleRepository;
-        this.drivingSimulationService = drivingSimulationService;
         this.routeService = routeService;
     }
 
@@ -46,14 +43,19 @@ public class VehicleService {
     }
 
 
-    public void addActiveVehicle(Vehicle vehicle, Location location, boolean available) {
-
+    public void addActiveVehicle(Vehicle vehicle, Location location, String route, boolean available, Ride ride) {
+        ActiveVehicle av;
         if (activeVehicleRepository.existsById(vehicle.getId())) {
-            throw new IllegalStateException("Vehicle is already active");
+            av = activeVehicleRepository.findById(vehicle.getId()).get();
+            av.setLocation(location);
+            av.setRouteCoordinates(route);
+            av.setRouteIndex(0);
+            av.setAvailable(available);
+            av.setRide(ride);
+        } else {
+            av = new ActiveVehicle(vehicle, location, available);
         }
-
-        ActiveVehicle activeVehicle = new ActiveVehicle(vehicle, location, available);
-        activeVehicleRepository.save(activeVehicle);
+        activeVehicleRepository.save(av);
     }
 
     @Transactional
@@ -123,10 +125,6 @@ public class VehicleService {
         return response;
     }
 
-    public void moveVehicleTest(Long vehicleId){
-        drivingSimulationService.MoveVehicle(vehicleId);
-    }
-
     public void setRouteForActiveVehicle(Long vehicleId, List<Location> points){
             ActiveVehicle av = activeVehicleRepository.findById(vehicleId)
                     .orElseThrow();
@@ -164,11 +162,11 @@ public class VehicleService {
 
 
     public void moveActiveVehicle(Long vehicleId){
-        ActiveVehicle av = activeVehicleRepository.findById(vehicleId).orElseThrow();
-        Location loc = getLocationAtRouteIndex(av.getRouteCoordinates(), av.getRouteIndex() + 1);
+            ActiveVehicle av = activeVehicleRepository.findById(vehicleId).orElseThrow();
+            Location loc = getLocationAtRouteIndex(av.getRouteCoordinates(), av.getRouteIndex() + 1);
 
-        av.setRouteIndex(av.getRouteIndex() + 1);
-        av.setLocation(loc);
-        activeVehicleRepository.save(av);
+            av.setRouteIndex(av.getRouteIndex() + 1);
+            av.setLocation(loc);
+            activeVehicleRepository.save(av);
     }
 }
