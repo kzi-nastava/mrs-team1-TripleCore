@@ -119,6 +119,14 @@ const routes: Routes = [
     loadComponent: () => import('./passenger/passenger-ride-details/passenger-ride-details').then(m => m.PassengerRideDetailsComponent)
   },
   {
+    path: 'change-profile-request',
+    loadComponent: () => import('./change-profile-request/change-profile-request').then(m => m.ChangeProfileRequestComponent)
+  },
+  {
+    path: 'driver-profile-change-review/:requestId',
+    loadComponent: () => import('./driver-profile-change-review/driver-profile-change-review').then(m => m.DriverProfileChangeReviewComponent)
+  },
+  {
     path: 'passenger-reviews',
     loadComponent: () => import('./passenger/passenger-reviews/passenger-reviews').then(m => m.PassengerReviewsComponent)
   },

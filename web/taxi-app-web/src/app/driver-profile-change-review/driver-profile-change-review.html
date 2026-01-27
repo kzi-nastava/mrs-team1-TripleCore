@@ -1,4 +1,3 @@
-<div class="admin-home-container">
   <app-navbar>
     <li class="nav-item">
       <a class="nav-link img-and-link" routerLink="/admin-ride-history">
@@ -7,13 +6,13 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link img-and-link" routerLink="/change-profile-request">
+      <a class="nav-link img-and-link selected-nav-link" routerLink="/change-profile-request">
         Change Profile Requests
       </a>
     </li>
 
     <li class="nav-item">
-      <a class="nav-link img-and-link selected-nav-link" routerLink="/admin-home">
+      <a class="nav-link img-and-link" routerLink="/admin-home">
         Dashboard
       </a>
     </li>
@@ -61,5 +60,40 @@
     </li>
   </app-navbar>
 
-  <app-map></app-map>
+
+  <div class="review-container">
+  <h2>Accept/Decline profile information changes</h2>
+
+  <div class="cards-container" *ngIf="requestDetails as rd">
+
+
+    <div class="profile-card old">
+       <img [src]="rd.currentProfile.profileImage || 'icons/icons8-user-100.png'" class="avatar">
+      <p class="label old-label">Profile picture</p>
+
+      <div class="field old-field">{{ rd.currentProfile.firstName }}</div>
+      <div class="field old-field">{{ rd.currentProfile.lastName }}</div>
+      <div class="field old-field">{{ rd.currentProfile.email }}</div>
+      <div class="field old-field">{{ rd.currentProfile.address }}</div>
+      <div class="field old-field">{{ rd.currentProfile.phone }}</div>
+    </div>
+
+    <div class="profile-card new">
+      <img [src]="rd.requestedProfile.profileImage || 'icons/icons8-user-100.png'" class="avatar">
+      <p class="label new-label">Profile picture</p>
+
+      <div class="field new-field">{{ rd.requestedProfile.firstName }}</div>
+      <div class="field new-field">{{ rd.requestedProfile.lastName }}</div>
+      <div class="field new-field">{{ rd.requestedProfile.email }}</div>
+      <div class="field new-field">{{ rd.requestedProfile.address }}</div>
+      <div class="field new-field">{{ rd.requestedProfile.phone }}</div>
+    </div>
+
+  </div>
+
+  <div class="buttons">
+    <button class="decline" (click)="rejectRequest()" [disabled]="isActionInProgress">Reject Changes</button>
+    <button class="accept" (click)="approveRequest()" [disabled]="isActionInProgress">Accept Changes</button>
+  </div>
+
 </div>

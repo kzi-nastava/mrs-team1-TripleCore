@@ -1,4 +1,3 @@
-<div class="admin-home-container">
   <app-navbar>
     <li class="nav-item">
       <a class="nav-link img-and-link" routerLink="/admin-ride-history">
@@ -7,13 +6,13 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link img-and-link" routerLink="/change-profile-request">
+      <a class="nav-link img-and-link selected-nav-link" routerLink="/change-profile-request">
         Change Profile Requests
       </a>
     </li>
 
     <li class="nav-item">
-      <a class="nav-link img-and-link selected-nav-link" routerLink="/admin-home">
+      <a class="nav-link img-and-link" routerLink="/admin-home">
         Dashboard
       </a>
     </li>
@@ -61,5 +60,44 @@
     </li>
   </app-navbar>
 
-  <app-map></app-map>
+<div class="container page-content">
+  <h2 class="text-center mb-5 profile-title">
+    Profile Change Requests
+  </h2>
+
+  <div class="row justify-content-center d-flex gap-4">
+
+
+    <div class="col-auto mb-4" *ngFor="let req of driverProfileChangeRequests">
+
+      <div class="card request-card shadow-sm">
+
+
+        <div class="card-header">
+          <span class="driver-title">Driver</span> – 
+          <span class="driver-email">{{ req.email }}</span>
+        </div>
+
+        <div class="card-body">
+          <p class="created">Created: {{ req.createdAt | date:'dd.MM.yyyy' }}</p>
+          <p>Status: 
+            <span class="status-badge" [ngClass]="req.status.toLowerCase()">
+              {{ req.status }}
+            </span>
+          </p>
+        </div>
+
+        <div class="card-footer">
+          <button class="btn btn-primary review-btn" (click)="goToReviewPage(req.id)">Review request</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div *ngIf="driverProfileChangeRequests.length === 0"
+         class="text-center text-muted mt-5">
+      No profile change requests.
+    </div>
+
+  </div>
 </div>

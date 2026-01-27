@@ -26,6 +26,8 @@ import { DriverReviewsComponent } from './driver/driver-reviews/driver-reviews';
 import { ActiveRideTrackingComponent } from './active-ride-tracking/active-ride-tracking';
 import { TestComponent } from './test/test';
 import { PassengerRideDetailsComponent } from './passenger/passenger-ride-details/passenger-ride-details';
+import { ChangeProfileRequestComponent } from './change-profile-request/change-profile-request';
+import { DriverProfileChangeReviewComponent } from './driver-profile-change-review/driver-profile-change-review';
 import { PassengerReviewsComponent } from './passenger/passenger-reviews/passenger-reviews';
 
 export const appRoutes: Routes = [
@@ -53,6 +55,11 @@ export const appRoutes: Routes = [
   { path: 'favorite-routes', component: FavoriteRoutesComponent },
   { path: 'admin/panic-notifications', component: AdminPanicPageComponent},
   { path: 'start-ride', component: StartRideComponent },
+  { path: 'driver/:driverId/reviews', component: DriverReviewsComponent },
+  { path: 'active-ride-tracking', component: ActiveRideTrackingComponent },
+  { path: 'change-profile-request', component: ChangeProfileRequestComponent },
+  { path: 'test', component: TestComponent},
+  { path: 'driver-profile-change-review/:requestId', component: DriverProfileChangeReviewComponent},
   { path: 'driver-reviews', component: DriverReviewsComponent },
   { path: 'active-ride-tracking/:rideId', component: ActiveRideTrackingComponent },
   { path: 'test', component: TestComponent},

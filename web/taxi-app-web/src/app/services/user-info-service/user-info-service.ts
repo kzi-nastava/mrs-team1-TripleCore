@@ -27,4 +27,12 @@ export class UserProfileService {
     return this.http.put<void>(`${this.baseUrl}?userId=${userId}`, request);
   }
 
+getUserRole(userId: number): Observable<{ role: string }> {
+  return this.http.get<{ role: string }>(`${this.baseUrl}/role?userId=${userId}`);
+}
+
+createDriverProfileChangeRequest(driverId: number, request: UpdateUserProfileRequest) {
+  return this.http.post(`${this.baseUrl}/driver/${driverId}/change-request`, request);
+}
+
 }

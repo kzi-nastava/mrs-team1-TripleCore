@@ -15,6 +15,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Panic;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Review;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.RouteStop;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.DriverProfileChangeRequestService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.PanicService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.ReviewService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
@@ -32,11 +33,13 @@ public class AdminController {
 
     private final PanicService panicService;
     private final RideService rideService;
+    private final DriverProfileChangeRequestService driverProfileChangeRequestService;
 
     public AdminController(PanicService panicService,
-                           RideService rideService) {
+                           RideService rideService, DriverProfileChangeRequestService driverProfileChangeRequestService) {
         this.panicService = panicService;
         this.rideService = rideService;
+        this.driverProfileChangeRequestService = driverProfileChangeRequestService;
     }
 
     @GetMapping("/rides")
@@ -123,41 +126,32 @@ public class AdminController {
 
     @GetMapping("/driver-profile-requests")
     public ResponseEntity<List<DriverProfileChangeRequestResponse>> getRequests() {
-        return ResponseEntity.ok(mockRequests);
+        return ResponseEntity.ok(driverProfileChangeRequestService.getAllPending());
     }
 
-    private List<DriverProfileChangeRequestResponse> mockRequests = new ArrayList<>(List.of(
-            new DriverProfileChangeRequestResponse(
-                    1L,
-                    41L,
-                    new UpdateUserProfileRequest(),
-                    DriverUpdateRequestStatus.PENDING
-            ),
-            new DriverProfileChangeRequestResponse(
-                    2L,
-                    42L,
-                    new UpdateUserProfileRequest(),
-                    DriverUpdateRequestStatus.PENDING
-            )
-    ));
+    @GetMapping("/driver-profile-requests/{id}")
+    public DriverProfileChangeRequestDetailsResponse getRequestDetails(@PathVariable Long id) {
+        return driverProfileChangeRequestService.getDetails(id);
+    }
 
     @PutMapping("/driver-profile-requests/{id}/approve")
-    public ResponseEntity<Void> approve(@PathVariable Long id) {
-        mockRequests.stream()
-                .filter(r -> r.getRequestId().equals(id))
-                .findFirst()
-                .ifPresent(r -> r.setStatus(DriverUpdateRequestStatus.APPROVED));
-
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> approveRequest(@PathVariable Long id) {
+        try{
+            driverProfileChangeRequestService.approveRequest(id);
+            return ResponseEntity.ok("Request approved successfully");
+        } catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping("/driver-profile-requests/{id}/reject")
-    public ResponseEntity<Void> reject(@PathVariable Long id) {
-        mockRequests.stream()
-                .filter(r -> r.getRequestId().equals(id))
-                .findFirst()
-                .ifPresent(r -> r.setStatus(DriverUpdateRequestStatus.REJECTED));
-
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> rejectRequest(@PathVariable Long id) {
+        try{
+            driverProfileChangeRequestService.rejectRequest(id);
+            return ResponseEntity.ok("Request rejected successfully");
+        } catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
+
 }
