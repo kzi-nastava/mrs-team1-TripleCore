@@ -24,19 +24,11 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './active-ride-tracking.css',
 })
 export class ActiveRideTrackingComponent {
-  @Output() close = new EventEmitter<void>();
-
-  closeSelf(): void {
-    this.close.emit();
-  }
-
   constructor(
     private route: ActivatedRoute,
     private rideService: RideService,
     private vehicleService: VehicleService, 
     private cdr: ChangeDetectorRef) {}
-
-  @Input() rideId!: number;
   
   ride!: RideDetailsResponse;
   rideTrackingInfo?: RideTrackingResponse;
@@ -49,6 +41,8 @@ export class ActiveRideTrackingComponent {
   ngOnInit(): void {
 
   const rideId = Number(this.route.snapshot.paramMap.get('rideId'));
+  const role = localStorage.getItem('role');
+  console.log('ActiveRideTrackingComponent initialized for rideId:', rideId, 'role:', role);
       
   this.rideService.getRideDetailsById(rideId).subscribe({
     next: rideDetails => {
