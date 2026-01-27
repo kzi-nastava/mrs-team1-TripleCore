@@ -9,6 +9,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.models.ActiveVehicle;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Location;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Route;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.ActiveVehicleRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RouteService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.VehicleService;
@@ -26,16 +27,19 @@ public class VehicleController {
     private final RideService rideService;
     private final RouteServiceImpl routeService;
     private final DrivingSimulationService drivingSimulationService;
+    private final ActiveVehicleRepository activeVehicleRepository;
 
     public VehicleController(
             VehicleService vehicleService,
             RideService rideService,
             RouteServiceImpl routeService,
-            DrivingSimulationService drivingSimulationService){
+            DrivingSimulationService drivingSimulationService,
+            ActiveVehicleRepository activeVehicleRepository){
         this.vehicleService = vehicleService;
         this.rideService = rideService;
         this.routeService = routeService;
         this.drivingSimulationService = drivingSimulationService;
+        this.activeVehicleRepository = activeVehicleRepository;
     }
 
     @GetMapping("/locations")
@@ -56,8 +60,16 @@ public class VehicleController {
         /* There needs to be a check if the ride is actually in progress */
         try{
             ActiveVehicle av = rideService.getActiveVehicleForRide(id);
-            ActiveRideVehicleDetailsResponse response = vehicleService.generateActiveRideVehicleDeatils(av);
-            // movement test
+            vehicleService.moveActiveVehicle(av.getVehicleId());
+
+            ActiveRideVehicleDetailsResponse response = new ActiveRideVehicleDetailsResponse();
+            response.setVehicleId(av.getVehicleId());
+            response.setRideId(av.getRide().getId());
+            response.setVehicleLocation(av.getLocation());
+            // hardcoded for now
+            response.setEstimatedTime(15L);
+            response.setEstimatedDistance(200);
+
             return ResponseEntity.ok(response);
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -81,9 +93,14 @@ public class VehicleController {
     @PostMapping("/active-vehicle/{id}/move")
     public ResponseEntity<?> moveActiveVehicle(@PathVariable("id") Long id){
         try{
-            drivingSimulationService.moveActiveRideVehicle(id);
-            ActiveVehicle av = vehicleService.getActiveVehicle(id);
-            //test
+            ActiveVehicle av = activeVehicleRepository.findById(id).orElseThrow();
+            Location loc = vehicleService.getLocationAtRouteIndex(av.getRouteCoordinates(), av.getRouteIndex() + 1);
+
+            av.setRouteIndex(av.getRouteIndex() + 1);
+            av.setLocation(loc);
+
+            activeVehicleRepository.saveAndFlush(av);
+
             ActiveRideVehicleDetailsResponse response = new ActiveRideVehicleDetailsResponse();
             response.setVehicleId(av.getVehicleId());
             response.setRideId(av.getRide().getId());

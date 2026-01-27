@@ -81,7 +81,6 @@ public class DrivingSimulationService {
     public void moveActiveRideVehicle(Long vehicleId){
         ActiveVehicle av = activeVehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new EntityNotFoundException("Active vehicle not found"));
-
         try{
             Location loc = vehicleService.getLocationAtRouteIndex(av.getRouteCoordinates(), av.getRouteIndex() + 1);
 
@@ -89,17 +88,8 @@ public class DrivingSimulationService {
             av.setLocation(loc);
             activeVehicleRepository.saveAndFlush(av);
         } catch (IndexOutOfBoundsException ex){
-            Location newDestination = routeService.getRandomNoviSadLocation();
-            String newRoute = routeService.calculateRouteThroughPoints(
-                    List.of(av.getLocation(), newDestination));
-
-            av.setRouteCoordinates(newRoute);
-            av.setRouteIndex(0);
-            activeVehicleRepository.saveAndFlush(av);
-        } catch (Exception e){
             activeVehicleRepository.saveAndFlush(av);
         }
-
     }
 
 
