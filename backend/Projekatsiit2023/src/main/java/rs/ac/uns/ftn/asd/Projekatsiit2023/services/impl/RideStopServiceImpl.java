@@ -5,8 +5,12 @@ import org.springframework.transaction.annotation.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RideStopRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.RideStopResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.ActiveVehicle;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Driver;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Location;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.ActiveVehicleRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.DriverRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.RideRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideStopService;
 
@@ -16,9 +20,15 @@ import java.time.LocalDateTime;
 public class RideStopServiceImpl implements RideStopService {
 
     private final RideRepository rideRepository;
+    private final ActiveVehicleRepository activeVehicleRepository;
+    private final DriverRepository driverRepository;
 
-    public RideStopServiceImpl(RideRepository rideRepository) {
+    public RideStopServiceImpl(RideRepository rideRepository,
+                               ActiveVehicleRepository activeVehicleRepository,
+                               DriverRepository driverRepository) {
         this.rideRepository = rideRepository;
+        this.activeVehicleRepository = activeVehicleRepository;
+        this.driverRepository = driverRepository;
     }
 
     @Override
@@ -50,6 +60,18 @@ public class RideStopServiceImpl implements RideStopService {
         ride.setEndTime(LocalDateTime.now());
 
         rideRepository.save(ride);
+
+        // remove rideId from active vehicle
+        ActiveVehicle activeVehicle = activeVehicleRepository.findById(ride.getDriver().getVehicle().getId()).orElseThrow();
+        activeVehicle.setRide(null);
+        activeVehicle.setAvailable(true);
+        activeVehicleRepository.save(activeVehicle);
+
+        // set driver available
+        Driver driver = ride.getDriver();
+        driver.setAvailable(true);
+        driver.setCurrentlyWorking(false);
+        driverRepository.save(driver);
 
         // return response
         return new RideStopResponse(

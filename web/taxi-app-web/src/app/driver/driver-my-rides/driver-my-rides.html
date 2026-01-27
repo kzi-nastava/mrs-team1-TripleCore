@@ -81,10 +81,6 @@
                          class="passenger-avatar">
                     <div class="passenger-info">
                         <div class="passenger-name">{{ride.passengerName}}</div>
-                        <div class="passenger-rating">
-                            <mat-icon class="star-icon">star</mat-icon>
-                            {{ride.passengerRating || 'No rating'}}
-                        </div>
                     </div>
                 </div>
             </td>
@@ -162,7 +158,7 @@
                     </button>
                     
                     <!-- Cancel Ride Button (only for ACCEPTED) -->
-                    <button *ngIf="ride.status === 'ACCEPTED'"
+                    <button *ngIf="ride.status === 'ACCEPTED' || ride.status === 'REQUESTED'"
                             mat-icon-button 
                             (click)="openCancelDialog(ride)"
                             matTooltip="Cancel ride"
