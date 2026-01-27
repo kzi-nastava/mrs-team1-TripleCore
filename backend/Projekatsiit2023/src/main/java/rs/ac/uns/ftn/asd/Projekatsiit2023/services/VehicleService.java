@@ -169,4 +169,37 @@ public class VehicleService {
             av.setLocation(loc);
             activeVehicleRepository.save(av);
     }
+
+    public ActiveRideVehicleDetailsResponse getRideTrackingResponse(ActiveVehicle av) {
+
+        Ride ride = av.getRide();
+        if (ride == null) {
+            throw new IllegalArgumentException("Active vehicle must be linked to an active ride");
+        }
+
+        if (av.getLocation() == null || ride.getRoute().getEndLocation() == null) {
+            throw new IllegalStateException("Invalid location data for tracking");
+        }
+
+        int remainingDistance =
+                routeService.calculateDistanceBetweenTwoPoints(
+                        av.getLocation(),
+                        ride.getRoute().getEndLocation()
+                );
+
+        final double AVERAGE_SPEED_M_S = 11.11;
+
+        long estimatedTimeSeconds =
+                Math.max(1, Math.round(remainingDistance / AVERAGE_SPEED_M_S));
+
+        ActiveRideVehicleDetailsResponse response = new ActiveRideVehicleDetailsResponse();
+        response.setRideId(ride.getId());
+        response.setVehicleId(av.getVehicleId());
+        response.setVehicleLocation(av.getLocation());
+        response.setEstimatedDistance(remainingDistance);
+        response.setEstimatedTime(estimatedTimeSeconds);
+
+        return response;
+    }
+
 }

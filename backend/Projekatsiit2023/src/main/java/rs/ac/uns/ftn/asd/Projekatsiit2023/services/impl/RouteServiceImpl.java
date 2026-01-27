@@ -276,5 +276,30 @@ public class RouteServiceImpl implements RouteService {
 
         return new Location(latitude, longitude, null);
     }
+    
+    public int calculateDistanceBetweenTwoPoints(Location from, Location to) {
+
+        final double EARTH_RADIUS_METERS = 6371000;
+
+        double lat1 = Math.toRadians(from.getLatitude());
+        double lon1 = Math.toRadians(from.getLongitude());
+        double lat2 = Math.toRadians(to.getLatitude());
+        double lon2 = Math.toRadians(to.getLongitude());
+
+        double deltaLat = lat2 - lat1;
+        double deltaLon = lon2 - lon1;
+
+        double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2)
+                + Math.cos(lat1) * Math.cos(lat2)
+                * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        double distanceMeters = EARTH_RADIUS_METERS * c;
+
+        return (int) Math.round(distanceMeters);
+    }
+
+
 
 }

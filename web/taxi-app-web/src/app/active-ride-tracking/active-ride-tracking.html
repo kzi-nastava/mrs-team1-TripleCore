@@ -27,9 +27,10 @@
           </div>
 
           <div class="content-container">
-          <p class="ride-info">
-            Estimated Distance:  km<br>
-            Estimated Time:  mins<br></p>
+          <p class="ride-info" *ngIf="rideTrackingInfo as info">
+            Estimated Distance: {{ info.estimatedDistance / 1000 | number:'1.2-2' }} km<br>
+            Estimated Time: {{ info.estimatedTime / 60 | number:'1.2-2' }} mins
+          </p>
           </div>
         </div>
 
