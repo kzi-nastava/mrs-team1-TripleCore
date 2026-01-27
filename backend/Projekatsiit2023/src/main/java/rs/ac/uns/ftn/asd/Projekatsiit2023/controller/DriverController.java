@@ -67,4 +67,10 @@ public class DriverController {
         List<RideDetailsResponse> response =  driverService.getRideHistory(id);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/create-mock")
+    public ResponseEntity<?> createMockDrivers(){
+        driverService.AddMockDrivers();
+        return ResponseEntity.ok("Drivers added");
+    }
 }

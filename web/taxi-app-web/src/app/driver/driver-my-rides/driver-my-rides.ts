@@ -77,15 +77,7 @@ export class DriverMyRidesComponent implements OnInit {
 
   private getDriverId(): number {
     try {
-      const userData = localStorage.getItem('user');
-      if (userData) {
-        const user = JSON.parse(userData);
-        if (user.id) {
-          return user.id;
-        }
-      }
-      
-      const driverId = localStorage.getItem('driverId');
+      const driverId = localStorage.getItem('userId');
       if (driverId) {
         return parseInt(driverId, 10);
       }
@@ -192,11 +184,6 @@ export class DriverMyRidesComponent implements OnInit {
   }
 
   openCancelDialog(ride: FrontendRide): void {
-    if (ride.status !== 'ACCEPTED') {
-      alert('Only accepted rides can be canceled.');
-      return;
-    }
-    
     const dialogRef = this.dialog.open(DriverCancelRideDialogComponent, {
       width: '450px',
       data: { ride }
