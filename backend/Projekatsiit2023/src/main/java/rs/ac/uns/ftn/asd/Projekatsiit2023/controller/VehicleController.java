@@ -62,13 +62,8 @@ public class VehicleController {
             ActiveVehicle av = rideService.getActiveVehicleForRide(id);
             vehicleService.moveActiveVehicle(av.getVehicleId());
 
-            ActiveRideVehicleDetailsResponse response = new ActiveRideVehicleDetailsResponse();
-            response.setVehicleId(av.getVehicleId());
-            response.setRideId(av.getRide().getId());
-            response.setVehicleLocation(av.getLocation());
-            // hardcoded for now
-            response.setEstimatedTime(15L);
-            response.setEstimatedDistance(200);
+            ActiveRideVehicleDetailsResponse response =
+                    vehicleService.getRideTrackingResponse(av);
 
             return ResponseEntity.ok(response);
         } catch (Exception e){
