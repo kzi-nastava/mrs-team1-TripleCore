@@ -36,6 +36,9 @@
       </mat-card-content>
 
       <mat-card-actions align="end">
-        <!-- <button class="action-btn finish-btn">Finish Ride</button> -->
+        <button 
+        class="action-btn finish-btn"
+        *ngIf="role === 'DRIVER'" 
+        (click)="finishRide()">Finish Ride</button>
       </mat-card-actions>
     </mat-card>

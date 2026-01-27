@@ -22,6 +22,7 @@ public class RideService {
     private final RouteRepository routeRepository;
     private final ReviewService reviewService;
     private final UserRepository userRepository;
+    private final ActiveVehicleRepository activeVehicleRepository;
 
     private final PanicService panicService;
     private final VehicleService vehicleService;
@@ -36,7 +37,8 @@ public class RideService {
             UserRepository userRepository,
             PanicService panicService,
             VehicleService vehicleService,
-            RouteServiceImpl routeService
+            RouteServiceImpl routeService,
+            ActiveVehicleRepository activeVehicleRepository
     ) {
         this.rideRepository = rideRepository;
         this.driverRepository = driverRepository;
@@ -47,6 +49,7 @@ public class RideService {
         this.panicService = panicService;
         this.vehicleService = vehicleService;
         this.routeService = routeService;
+        this.activeVehicleRepository = activeVehicleRepository;
     }
 
     public List<Ride> getAllRides(){
@@ -369,6 +372,30 @@ public class RideService {
         rideRepository.save(ride5);
         String route5 = routeService.calculateRouteThroughPoints(routeService.convertRouteToLocationList(r5));
         vehicleService.addActiveVehicle(ride5.getDriver().getVehicle(), ride5.getRoute().getStartLocation(), route5, false, ride5);
+    }
+
+    public void finishRide(Long rideId){
+        Ride ride = rideRepository.findById(rideId).orElseThrow();
+        if (!ride.getStatus().equals(RideStatus.IN_PROGRESS)){
+            throw new IllegalArgumentException("Ride with that id is not in progress");
+        }
+
+        Driver driver = ride.getDriver();
+        Vehicle vehicle = driver.getVehicle();
+        ActiveVehicle av = vehicleService.getActiveVehicle(vehicle.getId());
+
+        ride.setActualEndLocation(av.getLocation());
+        ride.setEndTime(LocalDateTime.now());
+        ride.setStatus(RideStatus.FINISHED);
+        rideRepository.save(ride);
+
+        driver.setAvailable(true);
+        driver.setCurrentlyWorking(true);
+        driverRepository.save(driver);
+
+        av.setRide(null);
+        av.setAvailable(true);
+        activeVehicleRepository.save(av);
     }
 
 }

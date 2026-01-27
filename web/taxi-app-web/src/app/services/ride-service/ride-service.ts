@@ -34,9 +34,13 @@ export class RideService {
   }
 
   // get ride details
-    getRideDetailsById(id: number): Observable<RideDetailsResponse> {
-      return this.http.get<RideDetailsResponse>(
-        `${this.apiUrl}/ride-details/${id}`
-      );
-    }
+  getRideDetailsById(id: number): Observable<RideDetailsResponse> {
+    return this.http.get<RideDetailsResponse>(
+      `${this.apiUrl}/ride-details/${id}`
+    );
+  }
+
+  finishRide(rideId: number): Observable<string> {
+    return this.http.post(`${this.apiUrl}/${rideId}/finish`, null, { responseType: 'text' });
+  }
 }
