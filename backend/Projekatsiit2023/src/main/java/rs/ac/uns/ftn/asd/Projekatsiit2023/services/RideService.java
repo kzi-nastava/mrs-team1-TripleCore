@@ -7,6 +7,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.impl.RouteServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class RideService {
 
     private final PanicService panicService;
     private final VehicleService vehicleService;
+    private final RouteServiceImpl routeService;
 
     public RideService(
             RideRepository rideRepository,
@@ -33,7 +35,8 @@ public class RideService {
             ReviewService reviewService,
             UserRepository userRepository,
             PanicService panicService,
-            VehicleService vehicleService
+            VehicleService vehicleService,
+            RouteServiceImpl routeService
     ) {
         this.rideRepository = rideRepository;
         this.driverRepository = driverRepository;
@@ -43,6 +46,7 @@ public class RideService {
         this.userRepository = userRepository;
         this.panicService = panicService;
         this.vehicleService = vehicleService;
+        this.routeService = routeService;
     }
 
     public List<Ride> getAllRides(){
@@ -231,6 +235,140 @@ public class RideService {
     public ActiveVehicle getActiveVehicleForRide(Long rideId){
         Ride ride = getRideById(rideId);
         return vehicleService.getActiveVehicle(ride.getDriver().getVehicle().getId());
+    }
+
+    public void createMockRides() {
+        // --- RUTA 1 ---
+        Route r1 = new Route();
+        r1.setStartLocation(new Location(
+                45.2459, 19.8514, "Liman IV, Novi Sad"
+        ));
+        r1.setEndLocation(new Location(
+                45.2539, 19.8712, "Petrovaradinska tvrđava, Novi Sad"
+        ));
+        r1.setEstimatedDistanceMeters(4100);
+        r1.setEstimatedDurationSeconds(900L);
+
+        routeRepository.save(r1);
+
+        Ride ride1 = new Ride();
+        ride1.setOrderer(passengerRepository.findById(2L).orElseThrow());
+        ride1.setDriver(driverRepository.findById(1L).orElseThrow());
+        ride1.setRoute(r1);
+        ride1.setStartTime(LocalDateTime.now().plusMinutes(10));
+        ride1.setBabyFriendly(true);
+        ride1.setPetFriendly(false);
+        ride1.setStatus(RideStatus.IN_PROGRESS);
+
+        rideRepository.save(ride1);
+        String route1 = routeService.calculateRouteThroughPoints(routeService.convertRouteToLocationList(r1));
+        vehicleService.addActiveVehicle(ride1.getDriver().getVehicle(), ride1.getRoute().getStartLocation(), route1, false, ride1);
+
+        // --- RUTA 2 ---
+        Route r2 = new Route();
+        r2.setStartLocation(new Location(
+                45.2620, 19.8105, "Detelinara, Novi Sad"
+        ));
+        r2.setEndLocation(new Location(
+                45.2539, 19.8712, "Petrovaradinska tvrđava, Novi Sad"
+        ));
+        r2.setEstimatedDistanceMeters(4500);
+        r2.setEstimatedDurationSeconds(950L);
+
+        routeRepository.save(r2);
+
+        Ride ride2 = new Ride();
+        ride2.setOrderer(passengerRepository.findById(15L).orElseThrow());
+        ride2.setDriver(driverRepository.findById(20L).orElseThrow());
+        ride2.setRoute(r2);
+        ride2.setStartTime(LocalDateTime.now().plusMinutes(15));
+        ride2.setBabyFriendly(false);
+        ride2.setPetFriendly(true);
+        ride2.setStatus(RideStatus.IN_PROGRESS);
+
+        rideRepository.save(ride2);
+        String route2 = routeService.calculateRouteThroughPoints(routeService.convertRouteToLocationList(r2));
+        vehicleService.addActiveVehicle(ride2.getDriver().getVehicle(), ride2.getRoute().getStartLocation(), route2, false, ride2);
+
+
+        // --- RUTA 3 ---
+        Route r3 = new Route();
+        r3.setStartLocation(new Location(
+                45.2420, 19.8150, "Telep, Novi Sad"
+        ));
+        r3.setEndLocation(new Location(
+                45.2558, 19.8443, "Trg slobode, Novi Sad"
+        ));
+        r3.setEstimatedDistanceMeters(3600);
+        r3.setEstimatedDurationSeconds(850L);
+
+        routeRepository.save(r3);
+
+        Ride ride3 = new Ride();
+        ride3.setOrderer(passengerRepository.findById(17L).orElseThrow());
+        ride3.setDriver(driverRepository.findById(21L).orElseThrow());
+        ride3.setRoute(r3);
+        ride3.setStartTime(LocalDateTime.now().plusMinutes(20));
+        ride3.setBabyFriendly(true);
+        ride3.setPetFriendly(true);
+        ride3.setStatus(RideStatus.IN_PROGRESS);
+
+
+        rideRepository.save(ride3);
+        String route3 = routeService.calculateRouteThroughPoints(routeService.convertRouteToLocationList(r3));
+        vehicleService.addActiveVehicle(ride3.getDriver().getVehicle(), ride3.getRoute().getStartLocation(), route3, false, ride3);
+
+        // --- RUTA 4 ---
+        Route r4 = new Route();
+        r4.setStartLocation(new Location(
+                45.2469, 19.8517, "Liman I, Novi Sad"
+        ));
+        r4.setEndLocation(new Location(
+                45.2455, 19.8598, "Liman IV, Novi Sad"
+        ));
+        r4.setEstimatedDistanceMeters(1500);
+        r4.setEstimatedDurationSeconds(400L);
+
+        routeRepository.save(r4);
+
+        Ride ride4 = new Ride();
+        ride4.setOrderer(passengerRepository.findById(18L).orElseThrow());
+        ride4.setDriver(driverRepository.findById(22L).orElseThrow());
+        ride4.setRoute(r4);
+        ride4.setStartTime(LocalDateTime.now().plusMinutes(25));
+        ride4.setBabyFriendly(false);
+        ride4.setPetFriendly(false);
+        ride4.setStatus(RideStatus.IN_PROGRESS);
+
+        rideRepository.save(ride4);
+        String route4 = routeService.calculateRouteThroughPoints(routeService.convertRouteToLocationList(r4));
+        vehicleService.addActiveVehicle(ride4.getDriver().getVehicle(), ride4.getRoute().getStartLocation(), route4, false, ride4);
+
+        // --- RUTA 5 ---
+        Route r5 = new Route();
+        r5.setStartLocation(new Location(
+                45.2420, 19.8150, "Telep, Novi Sad"
+        ));
+        r5.setEndLocation(new Location(
+                45.2469, 19.8517, "Liman I, Novi Sad"
+        ));
+        r5.setEstimatedDistanceMeters(3500);
+        r5.setEstimatedDurationSeconds(850L);
+
+        routeRepository.save(r5);
+
+        Ride ride5 = new Ride();
+        ride5.setOrderer(passengerRepository.findById(19L).orElseThrow());
+        ride5.setDriver(driverRepository.findById(23L).orElseThrow());
+        ride5.setRoute(r5);
+        ride5.setStartTime(LocalDateTime.now().plusMinutes(30));
+        ride5.setBabyFriendly(true);
+        ride5.setPetFriendly(false);
+        ride5.setStatus(RideStatus.IN_PROGRESS);
+
+        rideRepository.save(ride5);
+        String route5 = routeService.calculateRouteThroughPoints(routeService.convertRouteToLocationList(r5));
+        vehicleService.addActiveVehicle(ride5.getDriver().getVehicle(), ride5.getRoute().getStartLocation(), route5, false, ride5);
     }
 
 }

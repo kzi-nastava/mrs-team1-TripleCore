@@ -94,9 +94,18 @@ export class MapComponent implements AfterViewInit, OnChanges {
       this.renderActiveRideVehicle();
     }
 
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 0);
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.map) {
+      setTimeout(() => {
+        this.map.invalidateSize();
+      }, 50);
+    }
     if (changes['vehicleLocations'] && this.map) {
       this.renderMarkers();
     }
@@ -109,6 +118,13 @@ export class MapComponent implements AfterViewInit, OnChanges {
       this.renderActiveRideVehicle();
     }
   }
+
+  ngOnDestroy(): void {
+  if (this.map) {
+    this.map.remove();
+    this.map = undefined as any;
+  }
+}
 
   private initMap(): void {
     this.map = L.map('map', {
@@ -130,7 +146,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
     this.markersLayer = L.layerGroup(
       this.vehicleLocations.map(loc => {
-        const marker = L.marker([loc.latitude, loc.longitude], { icon: loc.available ? this.greenIcon : this.redIcon });
+        const marker = L.marker([loc.latitude, loc.longitude], { icon: this.logoIcon });
         marker.bindPopup(loc.available ? 'Available' : 'Not Available');
         return marker;
       }),
