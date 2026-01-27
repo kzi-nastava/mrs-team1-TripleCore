@@ -1,5 +1,6 @@
 <div class="overlay">
   <mat-card class="review-card">
+    <button class="close-btn" (click)="closeSelf()">×</button>
     <h2>Leave a review</h2>
 
     <mat-card-content>
@@ -47,11 +48,11 @@
     </mat-card-content>
 
     <mat-card-actions align="end">
-      <button class="cancel-btn" (click)="cancel()">
+      <button class="action-btn cancel-btn" (click)="cancel()">
         Cancel
       </button>
       <button
-        class="submit-btn"
+        class="action-btn submit-btn"
         [disabled]="!isFormValid()"
         (click)="submit()">
         Submit

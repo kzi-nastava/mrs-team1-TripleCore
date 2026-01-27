@@ -38,11 +38,11 @@ const routes: Routes = [
 
   },
   {
-    path: 'driver/:driver-id/ride-history',
+    path: 'driver-ride-history',
     loadComponent: () => import('./driver/driver-ride-history/driver-ride-history').then(m => m.DriverRideHistoryComponent)
   },
   {
-    path: 'ride-details',
+    path: 'ride-details/:rideId',
     loadComponent: () => import('./shared/ride-details/ride-details').then(m => m.RideDetailsComponent)
   },
   {
@@ -103,11 +103,11 @@ const routes: Routes = [
     loadComponent: () => import('./driver/start-ride/start-ride').then(m => m.StartRideComponent)
   },
   {
-    path: 'driver/:driverId/reviews',
+    path: 'driver-reviews',
     loadComponent: () => import('./driver/driver-reviews/driver-reviews').then(m => m.DriverReviewsComponent)
   },
   {
-    path: 'active-ride-tracking',
+    path: 'active-ride-tracking/:rideId',
     loadComponent: () => import('./active-ride-tracking/active-ride-tracking').then(m => m.ActiveRideTrackingComponent)
   },
   {
@@ -125,6 +125,10 @@ const routes: Routes = [
   {
     path: 'driver-profile-change-review/:requestId',
     loadComponent: () => import('./driver-profile-change-review/driver-profile-change-review').then(m => m.DriverProfileChangeReviewComponent)
+  },
+  {
+    path: 'passenger-reviews',
+    loadComponent: () => import('./passenger/passenger-reviews/passenger-reviews').then(m => m.PassengerReviewsComponent)
   },
   {
     path: '**',

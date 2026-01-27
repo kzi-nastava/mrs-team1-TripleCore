@@ -9,12 +9,15 @@ import model.RideDetailsDTO;
 
 public class RideFilterHelper {
 
-    private static final DateTimeFormatter PICKER_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter PICKER_FORMATTER =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public static List<RideDetailsDTO> filterRides(List<RideDetailsDTO> rides,
-                                                   String searchText,
-                                                   String dateFromStr,
-                                                   String dateToStr) {
+    public static List<RideDetailsDTO> filterRides(
+            List<RideDetailsDTO> rides,
+            String searchText,
+            String dateFromStr,
+            String dateToStr
+    ) {
         List<RideDetailsDTO> filtered = new ArrayList<>();
 
         LocalDate dateFrom = null;
@@ -35,28 +38,33 @@ public class RideFilterHelper {
             boolean matchesSearch = true;
             boolean matchesDate = true;
 
-            // Search po orderer, driver i adresama
+            // Text search
             if (searchText != null && !searchText.isEmpty()) {
                 String lowerSearch = searchText.toLowerCase();
+
                 String orderer = ride.ordererName != null ? ride.ordererName.toLowerCase() : "";
                 String driver = ride.driverName != null ? ride.driverName.toLowerCase() : "";
-                String addressStart = ride.startLocation != null && ride.startLocation.address != null
+                String start = ride.startLocation != null && ride.startLocation.address != null
                         ? ride.startLocation.address.toLowerCase() : "";
-                String addressEnd = ride.endLocation != null && ride.endLocation.address != null
+                String end = ride.endLocation != null && ride.endLocation.address != null
                         ? ride.endLocation.address.toLowerCase() : "";
+
                 matchesSearch =
                         orderer.contains(lowerSearch) ||
                                 driver.contains(lowerSearch) ||
-                                addressStart.contains(lowerSearch) ||
-                                addressEnd.contains(lowerSearch);
+                                start.contains(lowerSearch) ||
+                                end.contains(lowerSearch);
             }
 
-            // Filter
+            // Date filter
             if ((dateFrom != null || dateTo != null) && ride.startTime != null) {
                 try {
-                    LocalDate rideDate = LocalDate.parse(ride.startTime.split("T")[0]); // ISO format
+                    LocalDate rideDate =
+                            LocalDate.parse(ride.startTime.split("T")[0]);
+
                     if (dateFrom != null && rideDate.isBefore(dateFrom)) matchesDate = false;
                     if (dateTo != null && rideDate.isAfter(dateTo)) matchesDate = false;
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -66,6 +74,26 @@ public class RideFilterHelper {
                 filtered.add(ride);
             }
         }
+
+        return filtered;
+    }
+
+    public static List<RideDetailsDTO> filterAndSortRides(
+            List<RideDetailsDTO> rides,
+            String searchText,
+            String dateFromStr,
+            String dateToStr,
+            boolean sortDescending
+    ) {
+
+        List<RideDetailsDTO> filtered = filterRides(rides, searchText, dateFromStr, dateToStr);
+
+        filtered.sort((r1, r2) -> {
+            if (r1.startTime == null || r2.startTime == null) return 0;
+            return sortDescending
+                    ? r2.startTime.compareTo(r1.startTime)
+                    : r1.startTime.compareTo(r2.startTime);
+        });
 
         return filtered;
     }

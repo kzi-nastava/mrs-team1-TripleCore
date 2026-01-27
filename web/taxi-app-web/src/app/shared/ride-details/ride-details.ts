@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar';
 import { MapComponent } from '../../map/map';
 import { RideDetailsResponse } from '../../models/ride-details-response';
 import { DatePipe, CommonModule } from '@angular/common';
+import { RideService } from '../../services/ride-service/ride-service';
 
 
 @Component({
@@ -15,15 +16,27 @@ import { DatePipe, CommonModule } from '@angular/common';
 export class RideDetailsComponent implements OnInit {
   ride!: RideDetailsResponse;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router, 
+    private rideService: RideService,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    if (history.state?.ride) {
-      this.ride = history.state.ride;
-      console.log('Ride details loaded:', this.ride);
-    } else {
-      // fallback if no ride data is present, navigate back to ride history
-      this.router.navigate(['/driver-ride-history']);
+    const rideId = Number(this.route.snapshot.paramMap.get('rideId'));
+
+    this.rideService.getRideDetailsById(rideId).subscribe({
+    next: rideDetails => {
+      console.log('Ride details:', rideDetails);
+      this.ride = rideDetails;
+      this.cdr.detectChanges();
+    },
+    error: err => {
+      if (err.status === 404) {
+        console.error('Ride not found');
+      }
     }
+  });
   }
 }

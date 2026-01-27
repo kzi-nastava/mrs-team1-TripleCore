@@ -20,6 +20,7 @@ import { FrontendRide, adaptToFrontendRide, } from '../../utils/driver-ride-adap
 import { RideStatus } from '../../models/ride-details-response';
 import { DriverService } from '../../services/driver-service';
 import { RideService } from '../../services/ride-service/ride-service';
+import { ActiveRideTrackingComponent } from '../../active-ride-tracking/active-ride-tracking';
 
 @Component({
   selector: 'app-driver-my-rides',
@@ -37,7 +38,8 @@ import { RideService } from '../../services/ride-service/ride-service';
     CommonModule,
     FormsModule,
     NavbarComponent,
-    RouterLink
+    RouterLink,
+    ActiveRideTrackingComponent
   ],
   providers: [DatePipe],
   templateUrl: './driver-my-rides.html',

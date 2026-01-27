@@ -11,6 +11,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Vehicle;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.ActiveVehicleRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.driving.DrivingSimulationService;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.impl.RouteServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,13 +20,13 @@ import java.util.Optional;
 public class VehicleService {
 
     private final ActiveVehicleRepository activeVehicleRepository;
-    private final DrivingSimulationService drivingSimulationService;
+    private final RouteServiceImpl routeService;
 
     public VehicleService(
             ActiveVehicleRepository activeVehicleRepository,
-            DrivingSimulationService drivingSimulationService){
+            RouteServiceImpl routeService){
         this.activeVehicleRepository = activeVehicleRepository;
-        this.drivingSimulationService = drivingSimulationService;
+        this.routeService = routeService;
     }
 
     public List<ActiveVehicle> getActiveVehicles() {
@@ -42,14 +43,19 @@ public class VehicleService {
     }
 
 
-    public void addActiveVehicle(Vehicle vehicle, Location location, boolean available) {
-
+    public void addActiveVehicle(Vehicle vehicle, Location location, String route, boolean available, Ride ride) {
+        ActiveVehicle av;
         if (activeVehicleRepository.existsById(vehicle.getId())) {
-            throw new IllegalStateException("Vehicle is already active");
+            av = activeVehicleRepository.findById(vehicle.getId()).get();
+            av.setLocation(location);
+            av.setRouteCoordinates(route);
+            av.setRouteIndex(0);
+            av.setAvailable(available);
+            av.setRide(ride);
+        } else {
+            av = new ActiveVehicle(vehicle, location, available);
         }
-
-        ActiveVehicle activeVehicle = new ActiveVehicle(vehicle, location, available);
-        activeVehicleRepository.save(activeVehicle);
+        activeVehicleRepository.save(av);
     }
 
     @Transactional
@@ -119,7 +125,48 @@ public class VehicleService {
         return response;
     }
 
-    public void moveVehicleTest(Long vehicleId){
-        drivingSimulationService.MoveVehicle(vehicleId);
+    public void setRouteForActiveVehicle(Long vehicleId, List<Location> points){
+            ActiveVehicle av = activeVehicleRepository.findById(vehicleId)
+                    .orElseThrow();
+            String route = routeService.calculateRouteThroughPoints(points);
+            av.setRouteCoordinates(route);
+            av.setRouteIndex(0);
+            activeVehicleRepository.save(av);
+    }
+
+    public Location getLocationAtRouteIndex(String routeCoordinates, int routeIndex) {
+        if (routeCoordinates == null || routeCoordinates.isBlank()) {
+            throw new IllegalArgumentException("Route coordinates are empty");
+        }
+
+        String[] points = routeCoordinates.split(";");
+
+        if (routeIndex < 0 || routeIndex >= points.length) {
+            throw new IndexOutOfBoundsException(
+                    "Route index " + routeIndex + " is out of bounds (0-" + (points.length - 1) + ")"
+            );
+        }
+
+        String point = points[routeIndex];
+        String[] latLon = point.split(",");
+
+        if (latLon.length != 2) {
+            throw new IllegalStateException("Invalid coordinate format: " + point);
+        }
+
+        double latitude = Double.parseDouble(latLon[0]);
+        double longitude = Double.parseDouble(latLon[1]);
+
+        return new Location(latitude, longitude, null);
+    }
+
+
+    public void moveActiveVehicle(Long vehicleId){
+            ActiveVehicle av = activeVehicleRepository.findById(vehicleId).orElseThrow();
+            Location loc = getLocationAtRouteIndex(av.getRouteCoordinates(), av.getRouteIndex() + 1);
+
+            av.setRouteIndex(av.getRouteIndex() + 1);
+            av.setLocation(loc);
+            activeVehicleRepository.save(av);
     }
 }

@@ -28,6 +28,7 @@ import { TestComponent } from './test/test';
 import { PassengerRideDetailsComponent } from './passenger/passenger-ride-details/passenger-ride-details';
 import { ChangeProfileRequestComponent } from './change-profile-request/change-profile-request';
 import { DriverProfileChangeReviewComponent } from './driver-profile-change-review/driver-profile-change-review';
+import { PassengerReviewsComponent } from './passenger/passenger-reviews/passenger-reviews';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -37,8 +38,8 @@ export const appRoutes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'user-info', component: UserInfoComponent },
   { path: 'driver-home', component: DriverHomeComponent },
-  { path: 'driver/:driver-id/ride-history', component: DriverRideHistoryComponent },
-  { path: 'ride-details', component: RideDetailsComponent },
+  { path: 'driver-ride-history', component: DriverRideHistoryComponent },
+  { path: 'ride-details/:rideId', component: RideDetailsComponent },
   { path: 'estimate-route', component: EstimateRouteComponent },
   { path: 'admin-home', component: AdminHomeComponent },
   { path: 'admin-ride-history', component: AdminRideHistoryComponent },
@@ -59,5 +60,9 @@ export const appRoutes: Routes = [
   { path: 'change-profile-request', component: ChangeProfileRequestComponent },
   { path: 'test', component: TestComponent},
   { path: 'driver-profile-change-review/:requestId', component: DriverProfileChangeReviewComponent},
+  { path: 'driver-reviews', component: DriverReviewsComponent },
+  { path: 'active-ride-tracking/:rideId', component: ActiveRideTrackingComponent },
+  { path: 'test', component: TestComponent},
+  { path: 'passenger-reviews', component: PassengerReviewsComponent },
   { path: '**', redirectTo: '' },
 ];

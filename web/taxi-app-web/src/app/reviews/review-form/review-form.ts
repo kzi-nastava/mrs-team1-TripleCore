@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -24,14 +24,20 @@ import { ReviewService } from '../../services/review-service/review-service';
 })
 export class ReviewFormComponent {
 
+  @Output() close = new EventEmitter<void>();
+
+  closeSelf(): void {
+    this.close.emit();
+  }
+
   constructor(private reviewService: ReviewService) {}
 
   stars = [1, 2, 3, 4, 5];
 
   // passenger id 
-  passengerId = 2;
-  rideId = 1;
+  passengerId: number = localStorage.getItem('userId') ? parseInt(localStorage.getItem('userId')!) : 0;
   // ride id
+  @Input() rideId!: number;
 
   driverRating = 1;
   vehicleRating = 1;

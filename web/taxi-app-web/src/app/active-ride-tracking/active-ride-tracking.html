@@ -1,40 +1,44 @@
-<div class="overlay">
-  <mat-card class="ride-card">
-    <button class="close-btn" (click)="closeSelf()">×</button>
-    <h2>Active ride</h2>
 
-    <mat-card-content>
+<mat-card class="ride-card">
+      <h2>Active ride</h2>
 
-        <app-map 
-        [routeStart]="ride.startLocation"
-        [routeStops]="ride.routeStops"
-        [routeEnd]="ride.endLocation"
-        [activeRideVehicleLocation]="vehicleLocation">
-        </app-map>
+      <mat-card-content>
 
-        <div class="content-contaner">
-        <p class="ride-info">
-          Route: {{ ride.startLocation.address }} → {{ ride.endLocation.address }}<br>
-          Driver: {{ ride.driverName }}<br>
-          Vehicle: {{ ride.vehicle }}<br>
-          Passengers: {{ ride.ordererName }} <br>
-          <span *ngFor="let p of ride.linkedPassengers">
-            {{ p }}<br>
-          </span>
-        </p>
+        <div class="column">
+          <app-map 
+          [routeStart]="ride.startLocation"
+          [routeStops]="ride.routeStops"
+          [routeEnd]="ride.endLocation"
+          [activeRideVehicleLocation]="vehicleLocation">
+          </app-map>
         </div>
 
-        <div class="content-container">
-        <p class="ride-info">
-          Estimated Distance:  km<br>
-          Estimated Time:  mins<br>
+        <div class="column">
+          <div class="content-contaner">
+          <p class="ride-info">
+            Route: {{ ride.startLocation.address }} → {{ ride.endLocation.address }}<br>
+            Driver: {{ ride.driverName }}<br>
+            Vehicle: {{ ride.vehicle }}<br>
+            Passengers: {{ ride.ordererName }} <br>
+            <span *ngFor="let p of ride.linkedPassengers">
+              {{ p }}<br>
+            </span>
+          </p>
+          </div>
+
+          <div class="content-container">
+          <p class="ride-info">
+            Estimated Distance:  km<br>
+            Estimated Time:  mins<br></p>
+          </div>
         </div>
 
-    </mat-card-content>
+      </mat-card-content>
 
-    <mat-card-actions align="end">
-      <button class="action-btn panic-btn">PANIC</button>
-      <button class="action-btn finish-btn">Finish Ride</button>
-    </mat-card-actions>
-  </mat-card>
-</div>
+      <mat-card-actions align="end">
+        <button 
+        class="action-btn finish-btn"
+        *ngIf="role === 'DRIVER'" 
+        (click)="finishRide()">Finish Ride</button>
+      </mat-card-actions>
+    </mat-card>

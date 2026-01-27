@@ -64,7 +64,7 @@ h2{
     margin-bottom: 15px;
 }
 
-button{
+.action-btn{
     border: none;
     border-radius: 20px;      
     padding: 8px 15px;
@@ -86,3 +86,15 @@ button{
 }
 
 
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  border-radius: none;
+  font-size: 40px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #555;
+}

@@ -20,6 +20,8 @@ import { RideService } from '../../services/ride-service/ride-service';
 import { PassengerRide, adaptToPassengerRide } from '../../utils/passenger-ride-adapter';
 import { RideDetailsResponse } from '../../models/ride-details-response';
 import { RideCancelRequest } from '../../models/ride-cancel-request';
+import { ReviewFormComponent } from '../../reviews/review-form/review-form';
+import { ActiveRideTrackingComponent } from '../../active-ride-tracking/active-ride-tracking';
 
 @Component({
   selector: 'app-passenger-my-rides',
@@ -37,7 +39,9 @@ import { RideCancelRequest } from '../../models/ride-cancel-request';
     CommonModule,
     FormsModule,
     NavbarComponent,
-    RouterLink
+    RouterLink,
+    ReviewFormComponent,
+    ActiveRideTrackingComponent
   ],
   providers: [DatePipe],
   templateUrl: './passenger-my-rides.html',
@@ -267,9 +271,11 @@ export class PassengerMyRidesComponent implements OnInit {
   }
 
   canCancelRide(ride: PassengerRide): boolean {
-    if (ride.status !== 'ACCEPTED') return false;
-    
+    if (!(ride.status === 'ACCEPTED' || ride.status === 'REQUESTED')) {
+      return false;
+    }
     const minutesUntil = this.getMinutesUntilRide(ride);
+    console.log(`Status: ${ride.status}, Minutes until ride: ${minutesUntil}`);
     return minutesUntil > 10;
   }
 
@@ -278,6 +284,16 @@ export class PassengerMyRidesComponent implements OnInit {
     const rideTime = new Date(ride.date);
     const diffMs = rideTime.getTime() - now.getTime();
     return Math.floor(diffMs / (1000 * 60));
+  }
+
+  // Review Form Handling
+  isReviewFormOpen = false;
+
+  openReviewForm(): void {
+    this.isReviewFormOpen = true;
+  }
+  closeReviewForm(): void {
+    this.isReviewFormOpen = false;
   }
 
   openRatingDialog(ride: PassengerRide): void {
@@ -291,8 +307,7 @@ export class PassengerMyRidesComponent implements OnInit {
       return;
     }
     
-    // TODO: Implement rating dialog
-    alert(`Rating dialog for ride with ${ride.driverName} would open here.`);
+    this.openReviewForm();
   }
 
   rateRide(rideId: number, driverRating: number, vehicleRating: number, comment: string): void {

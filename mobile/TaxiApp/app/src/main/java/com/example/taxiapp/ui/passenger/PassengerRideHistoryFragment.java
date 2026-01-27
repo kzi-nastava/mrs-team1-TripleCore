@@ -1,6 +1,8 @@
 package com.example.taxiapp.ui.passenger;
 
 import android.app.DatePickerDialog;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 import helper.RideFilterHelper;
+import helper.ShakeDetector;
 import model.RideDetailsDTO;
 import service.PassengerService;
 import retrofit2.Call;
@@ -38,11 +41,20 @@ public class PassengerRideHistoryFragment extends Fragment {
 
     private List<RideDetailsDTO> allRides = new ArrayList<>();
 
+    // SENSOR SHAKE
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private ShakeDetector shakeDetector;
+
+    private boolean sortDescending = true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_passenger_ride_history, container, false);
 
+        // UI
         etDateFrom = view.findViewById(R.id.etDateFrom);
         etDateTo = view.findViewById(R.id.etDateTo);
         etTextFilter = view.findViewById(R.id.etTextFilter);
@@ -54,7 +66,12 @@ public class PassengerRideHistoryFragment extends Fragment {
         etDateTo.setOnClickListener(v -> showDatePicker(etDateTo));
 
         btnClear.setOnClickListener(v -> clearInputs());
-        btnApply.setOnClickListener(v -> applyFilters());
+        btnApply.setOnClickListener(v -> applyFiltersAndSort());
+
+        // SENSOR SHAKE init
+        sensorManager = (SensorManager) requireContext().getSystemService(requireContext().SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        shakeDetector = new ShakeDetector(() -> applyFiltersAndSort());
 
         fetchRidesFromBackend();
 
@@ -62,15 +79,12 @@ public class PassengerRideHistoryFragment extends Fragment {
     }
 
     private void fetchRidesFromBackend() {
-        Long passengerId =
-                PassengerService.getInstance().getLoggedInUserId(requireContext());
+        Long passengerId = PassengerService.getInstance().getLoggedInUserId(requireContext());
 
         if (passengerId == -1) {
-            Toast.makeText(getContext(),
-                    "User not logged in", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
             return;
         }
-
 
         PassengerService.getInstance().getRideHistory(passengerId, new Callback<List<RideDetailsDTO>>() {
             @Override
@@ -140,11 +154,7 @@ public class PassengerRideHistoryFragment extends Fragment {
             }
 
             // Panic badge
-            if (ride.panic) {
-                tvPanic.setVisibility(View.VISIBLE);
-            } else {
-                tvPanic.setVisibility(View.GONE);
-            }
+            tvPanic.setVisibility(ride.panic ? View.VISIBLE : View.GONE);
 
             // Card click opens ride details fragment
             card.setOnClickListener(v -> openRideDetails(ride.id));
@@ -180,15 +190,29 @@ public class PassengerRideHistoryFragment extends Fragment {
         populateRideCards(allRides);
     }
 
-    private void applyFilters() {
+    private void applyFiltersAndSort() {
         String searchText = etTextFilter.getText().toString();
         String dateFrom = etDateFrom.getText().toString();
         String dateTo = etDateTo.getText().toString();
 
-        List<RideDetailsDTO> filteredRides =
-                RideFilterHelper.filterRides(allRides, searchText, dateFrom, dateTo);
+        List<RideDetailsDTO> result =
+                RideFilterHelper.filterAndSortRides(
+                        allRides,
+                        searchText,
+                        dateFrom,
+                        dateTo,
+                        sortDescending
+                );
 
-        populateRideCards(filteredRides);
+        populateRideCards(result);
+
+        Toast.makeText(
+                requireContext(),
+                sortDescending ? "Sorted by newest first" : "Sorted by oldest first",
+                Toast.LENGTH_SHORT
+        ).show();
+
+        sortDescending = !sortDescending;
     }
 
     private void openRideDetails(Long rideId) {
@@ -198,5 +222,23 @@ public class PassengerRideHistoryFragment extends Fragment {
                 .replace(R.id.main_container, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (accelerometer != null) {
+            sensorManager.registerListener(
+                    shakeDetector,
+                    accelerometer,
+                    SensorManager.SENSOR_DELAY_UI
+            );
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(shakeDetector);
     }
 }

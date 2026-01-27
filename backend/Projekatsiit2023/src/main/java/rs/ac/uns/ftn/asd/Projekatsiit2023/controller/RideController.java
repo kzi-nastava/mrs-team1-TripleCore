@@ -106,37 +106,19 @@ public class  RideController {
         return id == 2 || id == 4;
     }
 
-    private boolean rideExists(Long id) {
-        return id >= 1 && id <= 5;
-    }
+
 
     @PostMapping ("/{id}/finish")
     public ResponseEntity<?> finishRide(
-            @PathVariable("id") Long id,
-            @Valid @RequestBody RideFinishRequest request){
+            @PathVariable("id") Long id){
 
-        if (!rideExists(id)) {
-            return ResponseEntity.status(404)
-                    .body("Ride with ID " + id + " not found");
+        try{
+            Ride ride = rideService.getRideById(id);
+            rideService.finishRide(ride.getId());
+            return ResponseEntity.ok("Finish ride endpoint reached");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-
-        if (!isRideInProgress(id)) {
-            return ResponseEntity.badRequest()
-                    .body("Ride is not in progress. Only rides in progress can be finished.");
-        }
-
-        // did the price change
-        boolean priceChanged = getRandomBoolean();
-        double newPrice = 0;
-        if (priceChanged) newPrice = 1500;
-
-        RideFinishResponse response = new RideFinishResponse(
-                String.format("Ride #%d finished successfully", id),
-                priceChanged,
-                newPrice
-        );
-
-        return ResponseEntity.ok(response);
     }
 
     public boolean getRandomBoolean() {
@@ -244,14 +226,25 @@ public class  RideController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/ride-details/{id}")
     public ResponseEntity<?> getRideById(@PathVariable("id") Long id){
         try{
             Ride ride = rideService.getRideById(id);
-            return ResponseEntity.ok(ride);
+            return ResponseEntity.ok(rideService.createRideDetails(ride));
         }
         catch (EntityNotFoundException nfe) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
+        }
+    }
+
+    @PostMapping("/create-mock")
+    public ResponseEntity<?> createMockRides() {
+        try {
+            rideService.createMockRides();
+            return ResponseEntity.ok("Mock rides created");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating mock rides: " + e.getMessage());
         }
     }
 
