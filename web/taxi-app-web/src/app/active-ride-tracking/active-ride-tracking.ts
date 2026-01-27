@@ -9,6 +9,8 @@ import { RideTrackingResponse } from '../models/ride-tracking-response';
 import { VehicleService } from '../services/vehicle-service';
 import { Subscription, interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { RideService } from '../services/ride-service/ride-service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-active-ride-tracking',
@@ -28,11 +30,16 @@ export class ActiveRideTrackingComponent {
     this.close.emit();
   }
 
-  constructor(private vehicleService: VehicleService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private route: ActivatedRoute,
+    private rideService: RideService,
+    private vehicleService: VehicleService, 
+    private cdr: ChangeDetectorRef) {}
 
-  @Input() ride: RideDetailsResponse = MOCK_RIDE_DETAILS;
+  @Input() rideId!: number;
   
-  rideTrackingInfo!: RideTrackingResponse;
+  ride!: RideDetailsResponse;
+  rideTrackingInfo?: RideTrackingResponse;
 
   vehicleLocation?: LocationDTO;
 
@@ -40,6 +47,23 @@ export class ActiveRideTrackingComponent {
 
 
   ngOnInit(): void {
+
+  const rideId = Number(this.route.snapshot.paramMap.get('rideId'));
+      
+  this.rideService.getRideDetailsById(rideId).subscribe({
+    next: rideDetails => {
+      console.log('Ride details:', rideDetails);
+      this.ride = rideDetails;
+      console.log('Loaded ride details', this.ride);
+      this.cdr.detectChanges();
+    },
+    error: err => {
+      if (err.status === 404) {
+        console.error('Ride not found');
+      }
+    }
+  });
+
   this.trackingSub = interval(2000)
     .pipe(
       switchMap(() =>
@@ -61,11 +85,9 @@ export class ActiveRideTrackingComponent {
         console.error('Error loading ride tracking info', err);
       }
     });
-}
+ }
 
-ngOnDestroy(): void {
-  this.trackingSub?.unsubscribe();
-}
-  
-
+  ngOnDestroy(): void {
+    this.trackingSub?.unsubscribe();
+  }
 }

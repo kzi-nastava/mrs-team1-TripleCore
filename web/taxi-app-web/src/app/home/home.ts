@@ -52,6 +52,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: locations => {
         this.vehicleLocations = [...locations];
         this.cdr.detectChanges();
+        console.log('Updated vehicle locations:', this.vehicleLocations);
       },
       error: err => console.error(err)
     });

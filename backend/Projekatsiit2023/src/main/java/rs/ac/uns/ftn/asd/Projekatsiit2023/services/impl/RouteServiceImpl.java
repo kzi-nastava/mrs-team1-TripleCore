@@ -182,4 +182,99 @@ public class RouteServiceImpl implements RouteService {
         return routeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Route with id: " + id + " not found"));
     }
+
+
+    private String buildGraphHopperUrl(List<Location> points) {
+        if (points == null || points.size() < 2) {
+            throw new IllegalArgumentException("At least two points are required to calculate a route");
+        }
+
+        StringBuilder url = new StringBuilder(GRAPHHOPPER_URL);
+        url.append("?");
+
+        for (Location point : points) {
+            url.append(String.format(
+                    Locale.US,
+                    "point=%f,%f&",
+                    point.getLatitude(),
+                    point.getLongitude()
+            ));
+        }
+
+        url.append("vehicle=car");
+        url.append("&locale=en");
+        url.append("&instructions=false");
+        url.append("&calc_points=true");
+        url.append("&points_encoded=false");
+        url.append("&key=").append(GRAPHHOPPER_API_KEY);
+
+        return url.toString();
+    }
+
+    private GraphHopperResponse callGraphHopperForMultiplePoints(List<Location> points) {
+        try {
+            String url = buildGraphHopperUrl(points);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                return objectMapper.readValue(response.getBody(), GraphHopperResponse.class);
+            }
+
+            log.error("GraphHopper returned empty or non-OK response");
+            return null;
+
+        } catch (Exception e) {
+            log.error("Error calling GraphHopper with multiple points", e);
+            return null;
+        }
+    }
+
+    public List<Location> convertRouteToLocationList(Route route){
+        List<Location> points = new ArrayList<>();
+        points.add(route.getStartLocation());
+        if (!route.getStops().isEmpty()){
+            for (RouteStop routeStop : route.getStops()){
+                points.add(routeStop.getLocation());
+            }
+        }
+        points.add(route.getEndLocation());
+        return points;
+    }
+
+    public String calculateRouteThroughPoints(List<Location> points) {
+
+        GraphHopperResponse ghResponse = callGraphHopperForMultiplePoints(points);
+
+        if (ghResponse == null || ghResponse.getPaths() == null || ghResponse.getPaths().isEmpty()) {
+            throw new RuntimeException("No route returned from GraphHopper");
+        }
+
+        GraphHopperResponse.Path path = ghResponse.getPaths().get(0);
+
+        return extractCoordinatesFromGraphHopper(path);
+    }
+
+    public Location getRandomNoviSadLocation(){
+        double minLat = 45.2300;
+        double maxLat = 45.2800;
+        double minLon = 19.8000;
+        double maxLon = 19.8800;
+
+        double latitude = minLat + (Math.random() * (maxLat - minLat));
+        double longitude = minLon + (Math.random() * (maxLon - minLon));
+
+        return new Location(latitude, longitude, null);
+    }
+
 }

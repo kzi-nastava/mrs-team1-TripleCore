@@ -107,7 +107,7 @@ const routes: Routes = [
     loadComponent: () => import('./driver/driver-reviews/driver-reviews').then(m => m.DriverReviewsComponent)
   },
   {
-    path: 'active-ride-tracking',
+    path: 'active-ride-tracking/:rideId',
     loadComponent: () => import('./active-ride-tracking/active-ride-tracking').then(m => m.ActiveRideTrackingComponent)
   },
   {
