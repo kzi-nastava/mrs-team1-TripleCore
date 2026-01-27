@@ -3,36 +3,37 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response;
 import lombok.Setter;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.UpdateUserProfileRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.DriverUpdateRequestStatus;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.DriverProfileChangeRequest;
+
+import java.time.LocalDateTime;
 
 public class DriverProfileChangeRequestResponse {
-    private Long requestId;
-    private Long driverId;
-    private UpdateUserProfileRequest requestedChanges;
-    @Setter
-    private DriverUpdateRequestStatus status;
+    private Long id;
+    private String email;
+    private LocalDateTime createdAt;
+    private String status;
 
-    public DriverProfileChangeRequestResponse(Long requestId, Long driverId,
-                                              UpdateUserProfileRequest requestedChanges,
-                                              DriverUpdateRequestStatus status) {
-        this.requestId = requestId;
-        this.driverId = driverId;
-        this.requestedChanges = requestedChanges;
-        this.status = status;
+    public DriverProfileChangeRequestResponse(DriverProfileChangeRequest req) {
+        this.id = req.getId();
+        this.email = req.getEmail();
+        this.createdAt = req.getCreatedAt();
+        this.status = req.getStatus().toString();
     }
 
-    public Long getRequestId() {
-        return requestId;
+    public Long getId() {
+        return id;
     }
 
-    public Long getDriverId() {
-        return driverId;
+    public String getEmail() {
+        return email;
     }
 
-    public UpdateUserProfileRequest getRequestedChanges() {
-        return requestedChanges;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public DriverUpdateRequestStatus getStatus() {
+    public String getStatus() {
         return status;
     }
+
 }

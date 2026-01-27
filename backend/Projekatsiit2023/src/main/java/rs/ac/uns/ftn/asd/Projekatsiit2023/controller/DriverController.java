@@ -44,24 +44,6 @@ public class DriverController {
         }
     }
 
-    @PutMapping("/profile")
-    public ResponseEntity<DriverProfileChangeRequestResponse> requestProfileUpdate(
-            @RequestBody UpdateUserProfileRequest request) {
-
-        DriverProfileChangeRequestResponse response =
-                new DriverProfileChangeRequestResponse(
-                        1L,
-                        41L,
-                        request,
-                        DriverUpdateRequestStatus.PENDING
-                );
-
-        return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
-                .body(response);
-    }
-
-
 
     @GetMapping("/{id}/next-ride")
     public ResponseEntity<?> getNextRide(@PathVariable("id") Long id){

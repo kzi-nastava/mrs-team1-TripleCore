@@ -10,9 +10,12 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.DriverProfileResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.UserProfileResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.VehicleType;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.DriverProfileChangeRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.UserProfileService;
 
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -45,6 +48,22 @@ public class ProfileController {
         } catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @PostMapping("/driver/{driverId}/change-request")
+    public ResponseEntity<?> createDriverProfileChangeRequest(@PathVariable Long driverId, @Valid @RequestBody UpdateUserProfileRequest request) {
+        try {
+            DriverProfileChangeRequest newRequest = userProfileService.createProfileChangeRequest(driverId, request);
+            return ResponseEntity.ok(newRequest);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/role")
+    public ResponseEntity<Map<String, String>> getUserRole(@RequestParam Long userId) {
+        UserRole role = userProfileService.getCurrentUserRole(userId);
+        return ResponseEntity.ok(Collections.singletonMap("role", role.toString()));
     }
 
     @PutMapping("/password")

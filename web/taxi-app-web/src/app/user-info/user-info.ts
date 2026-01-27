@@ -125,38 +125,60 @@ export class UserInfoComponent implements OnInit {
     this.errors = {};
   }
 
-  submitChanges(){
- 
-    if (!this.isFormValid()) {
-      console.error('Form is invalid. Please correct the errors before submitting.');
-      return;
-    }
+submitChanges() {
+  if (!this.isFormValid()) {
+    console.error('Form is invalid. Please correct the errors before submitting.');
+    return;
+  }
 
-    const userId = localStorage.getItem('userId');
-    const updateRequest: UpdateUserProfileRequest = {
-      firstName: this.firstName,
-      lastName: this.lastName,
-      address: this.address,
-      phone: this.phone.replace(/\s+/g, ''),
-      email: this.email,
-      profileImage: this.profilePic
-    } 
+  const userId = Number(localStorage.getItem('userId'));
+  const updateRequest: UpdateUserProfileRequest = {
+    firstName: this.firstName,
+    lastName: this.lastName,
+    address: this.address,
+    phone: this.phone.replace(/\s+/g, ''),
+    email: this.email,
+    profileImage: this.profilePic
+  };
 
-    console.log('Submitting profile update:', updateRequest);
-    this.userProfileService.updateUserProfile(Number(userId), updateRequest).subscribe({
-      next: () => {
-        console.log('Profile updated successfully');
-        this.successMessage = 'Profile updated successfully';
-        this.hasChanges = false;
-        Object.keys(this.editable).forEach(key => this.editable[key] = false);
-        this.cdr.detectChanges();
-      },
-      error: (err: any) => {
-        console.error('Error updating profile:', err);
+  this.userProfileService.getUserRole(userId).subscribe({
+    next: res => {
+      const role = res.role;
+
+      if (role === 'DRIVER') {
+        this.userProfileService.createDriverProfileChangeRequest(userId, updateRequest).subscribe({
+          next: () => {
+            this.successMessage = 'Driver profile change request submitted successfully';
+            this.hasChanges = false;
+            Object.keys(this.editable).forEach(key => this.editable[key] = false);
+            this.cdr.detectChanges();
+          },
+          error: err => {
+            console.error('Error submitting driver profile change request:', err);
+          }
+        });
+      } else {
+        this.userProfileService.updateUserProfile(userId, updateRequest).subscribe({
+          next: () => {
+            console.log('Profile updated successfully');
+            this.successMessage = 'Profile updated successfully';
+            this.hasChanges = false;
+            Object.keys(this.editable).forEach(key => this.editable[key] = false);
+            this.cdr.detectChanges();
+          },
+          error: err => {
+            console.error('Error updating profile:', err);
+          }
+        });
       }
-    });
-  } 
-  
+    },
+    error: err => {
+      console.error('Error fetching user role:', err);
+    }
+  });
+}
+
+
   validateField(field: string){
     switch(field){
       case 'firstName':
