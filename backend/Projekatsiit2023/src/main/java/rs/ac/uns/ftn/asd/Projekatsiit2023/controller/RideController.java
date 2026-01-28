@@ -183,31 +183,31 @@ public class  RideController {
                 "notification: ride accepted"));
     }
 
-    @PostMapping("/favorites")
-    public ResponseEntity<FavoriteRouteResponse> addFavoriteRoute(
-            @Valid @RequestBody FavoriteRouteRequest request) {
-
-        Long routeId = 101L;
-
-        FavoriteRouteResponse response = new FavoriteRouteResponse(
-                routeId,
-                request.getStartLocation(),
-                request.getEndLocation(),
-                "Route added to favorites"
-        );
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/favorites/{userId}")
-    public ResponseEntity<List<FavoriteRouteResponse>> getFavoriteRoutes(@PathVariable Long userId) {
-
-        List<FavoriteRouteResponse> favorites = List.of(
-                new FavoriteRouteResponse(101L, "Beograd, Nemanjina 1", "Beograd, Bulevar Kralja Aleksandra 10", "Favorite route 1"),
-                new FavoriteRouteResponse(102L, "Beograd, Studentski trg 5", "Beograd, Trg Slavija 2", "Favorite route 2")
-        );
-        return ResponseEntity.ok(favorites);
-    }
+//    @PostMapping("/favorites")
+//    public ResponseEntity<FavoriteRouteResponse> addFavoriteRoute(
+//            @Valid @RequestBody FavoriteRouteRequest request) {
+//
+//        Long routeId = 101L;
+//
+//        FavoriteRouteResponse response = new FavoriteRouteResponse(
+//                routeId,
+//                request.getStartLocation(),
+//                request.getEndLocation(),
+//                "Route added to favorites"
+//        );
+//
+//        return ResponseEntity.ok(response);
+//    }
+//
+//    @GetMapping("/favorites/{userId}")
+//    public ResponseEntity<List<FavoriteRouteResponse>> getFavoriteRoutes(@PathVariable Long userId) {
+//
+//        List<FavoriteRouteResponse> favorites = List.of(
+//                new FavoriteRouteResponse(101L, "Beograd, Nemanjina 1", "Beograd, Bulevar Kralja Aleksandra 10", "Favorite route 1"),
+//                new FavoriteRouteResponse(102L, "Beograd, Studentski trg 5", "Beograd, Trg Slavija 2", "Favorite route 2")
+//        );
+//        return ResponseEntity.ok(favorites);
+//    }
 
     @PostMapping("/{rideId}/start") public ResponseEntity<String> startRide(@PathVariable Long rideId) {
         System.out.println("Ride " + rideId + " started");

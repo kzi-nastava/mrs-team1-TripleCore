@@ -4,8 +4,10 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.FavoriteRouteResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Passenger;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.FavoriteRouteService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.PassengerService;
 
 import java.util.List;
@@ -14,9 +16,11 @@ import java.util.List;
 @RequestMapping("/api/passengers")
 public class PassengerController {
     private final PassengerService passengerService;
+    private final FavoriteRouteService favoriteRouteService;
 
-    public PassengerController(PassengerService passengerService) {
+    public PassengerController(PassengerService passengerService, FavoriteRouteService favoriteRouteService) {
         this.passengerService = passengerService;
+        this.favoriteRouteService = favoriteRouteService;
     }
 
     @GetMapping("/{id}")
@@ -47,4 +51,12 @@ public class PassengerController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
         }
     }
+
+    @GetMapping("/{id}/favorite-routes")
+    public ResponseEntity<List<FavoriteRouteResponse>> getFavoriteRoutes(@PathVariable Long id) {
+        List<FavoriteRouteResponse> favorites = favoriteRouteService.getFavoriteRoutesByUserId(id);
+        return ResponseEntity.ok(favorites);
+    }
+
+
 }
