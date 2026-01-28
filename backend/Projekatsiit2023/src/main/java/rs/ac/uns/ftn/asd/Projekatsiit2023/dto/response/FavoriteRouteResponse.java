@@ -2,33 +2,68 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response;
 
 public class FavoriteRouteResponse {
     private Long id;
-    private String routeName;
-    private String origin;
-    private String destination;
-    private String message;
 
-    public FavoriteRouteResponse(Long id, String origin, String destination, String message) {
+    private String startAddress;
+    double startLat;
+    double startLon;
+
+    private String endAddress;
+    double endLat;
+    double endLon;
+
+    double estimatedDistanceMeters;
+    Long estimatedDurationSeconds;
+
+    public FavoriteRouteResponse(Long id, String startAddress, double startLat, double startLon, String endAddress, double endLat, double endLon, double estimatedDistanceMeters, Long estimatedDurationSeconds) {
         this.id = id;
-        this.origin = origin;
-        this.destination = destination;
-        this.message = message;
+        this.startAddress = startAddress;
+        this.startLat = startLat;
+        this.startLon = startLon;
+        this.endAddress = endAddress;
+        this.endLat = endLat;
+        this.endLon = endLon;
+        this.estimatedDistanceMeters = estimatedDistanceMeters;
+        this.estimatedDurationSeconds = estimatedDurationSeconds;
+
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getOrigin() {
-        return origin;
+    public String getStartAddress() {
+        return startAddress;
     }
 
-    public String getDestination() {
-        return destination;
+    public double getStartLat() {
+        return startLat;
     }
 
-    public String getMessage() {
-        return message;
+    public double getStartLon() {
+        return startLon;
     }
+
+    public String getEndAddress() {
+        return endAddress;
+    }
+
+    public double getEndLat() {
+        return endLat;
+    }
+
+    public double getEndLon() {
+        return endLon;
+    }
+
+    public double getEstimatedDistanceMeters() {
+        return estimatedDistanceMeters;
+    }
+
+    public Long getEstimatedDurationSeconds() {
+        return estimatedDurationSeconds;
+    }
+
+
 
 
 
