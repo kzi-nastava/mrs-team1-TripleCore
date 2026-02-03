@@ -25,14 +25,6 @@ public class PassengerService {
         return instance;
     }
 
-    public Long getLoggedInUserId(Context context) {
-        SharedPreferences prefs =
-                context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
-
-        return prefs.getLong("userId", -1);
-    }
-
-
     public void getRideHistory(Long passengerId, Callback<List<RideDetailsDTO>> callback) {
         RetrofitClient.getApiService()
                 .getPassengerRideHistory(passengerId)

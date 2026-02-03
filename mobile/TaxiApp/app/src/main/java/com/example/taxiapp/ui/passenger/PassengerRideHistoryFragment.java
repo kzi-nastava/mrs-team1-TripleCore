@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import helper.RideFilterHelper;
 import helper.ShakeDetector;
 import model.RideDetailsDTO;
 import service.PassengerService;
+import service.AuthService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -79,7 +81,7 @@ public class PassengerRideHistoryFragment extends Fragment {
     }
 
     private void fetchRidesFromBackend() {
-        Long passengerId = PassengerService.getInstance().getLoggedInUserId(requireContext());
+        Long passengerId = AuthService.getInstance().getLoggedInUserId(requireContext());
 
         if (passengerId == -1) {
             Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();

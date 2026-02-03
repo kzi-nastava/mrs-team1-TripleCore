@@ -50,8 +50,15 @@ public class LoginServiceImpl implements LoginService {
         // temporary generate fake JWT token
         String fakeToken = "FAKE-JWT-TOKEN-" + user.getId();
 
+        boolean driverAvailable = false;
+
         // if user is driver, set driverAvailable to true
-        boolean driverAvailable = user.getRole() == UserRole.DRIVER;
+        if (user.getRole() == UserRole.DRIVER) {
+            Driver driver = (Driver) user;
+            driver.setAvailable(true);
+            userRepository.save(driver);
+            driverAvailable = true;
+        }
 
         return new LoginResponse(
                 user.getId(),

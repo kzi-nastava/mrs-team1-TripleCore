@@ -11,6 +11,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -23,6 +24,15 @@ public interface ApiService {
 
     @POST("/api/auth/register")
     Call<RegisterResponse> register(@Body RegisterRequest request);
+
+    @POST("/api/auth/forgot-password")
+    Call<ResponseBody> forgotPassword(@Query("email") String email);
+
+    @POST("/api/auth/reset-password")
+    Call<ResponseBody> resetPassword(
+            @Query("userId") Long userId,
+            @Query("newPassword") String newPassword
+    );
 
     // Admin
 
@@ -39,12 +49,13 @@ public interface ApiService {
     @GET("/api/passengers/{id}/ride-history/{rideId}")
     Call<RideDetailsDTO> getPassengerRideDetails(@Path("id") Long passengerId, @Path("rideId") Long rideId);
 
-    @POST("/api/auth/forgot-password")
-    Call<ResponseBody> forgotPassword(@Query("email") String email);
-
-    @POST("/api/auth/reset-password")
-    Call<ResponseBody> resetPassword(
-            @Query("userId") Long userId,
-            @Query("newPassword") String newPassword
+    // Driver
+    @PATCH("/api/drivers/{id}/availability")
+    Call<ResponseBody> changeDriverAvailability(
+            @Path("id") Long driverId,
+            @Query("available") boolean available
     );
+
+    @GET("api/drivers/{id}/availability")
+    Call<ResponseBody> getDriverAvailability(@Path("id") Long driverId);
 }
