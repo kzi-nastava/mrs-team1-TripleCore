@@ -6,17 +6,20 @@
     <div class="row justify-content-center">
       <div class="col-md-9">
         
+        <input class="custom-input mb-3" placeholder="Vehicle brand" formControlName="brand">
         <input class="custom-input mb-3" placeholder="Vehicle model" formControlName="model">
-        
+      
+
+
         <select class="custom-input mb-3" formControlName="type">
-          <option value="" disabled selected>Vehicle type</option>
+          <option [ngValue]="null" disabled selected>Vehicle type</option>
           <option *ngFor="let vehicleType of vehicleTypes" [value]="vehicleType">
             {{ vehicleType }}
           </option>
         </select>
 
         <input class="custom-input mb-3" placeholder="Licence plate number" formControlName="licensePlate">
-        <input class="custom-input mb-4" placeholder="Number of seats" formControlName="seats">
+        <input type="number" class="custom-input mb-4" placeholder="Number of seats" formControlName="seats">
 
         <hr class="divider mb-4">
 
