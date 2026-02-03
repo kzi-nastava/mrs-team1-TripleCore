@@ -7,11 +7,13 @@ import model.LoginResponse;
 import model.RegisterRequest;
 import model.RegisterResponse;
 import model.RideDetailsDTO;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
@@ -37,4 +39,12 @@ public interface ApiService {
     @GET("/api/passengers/{id}/ride-history/{rideId}")
     Call<RideDetailsDTO> getPassengerRideDetails(@Path("id") Long passengerId, @Path("rideId") Long rideId);
 
+    @POST("/api/auth/forgot-password")
+    Call<ResponseBody> forgotPassword(@Query("email") String email);
+
+    @POST("/api/auth/reset-password")
+    Call<ResponseBody> resetPassword(
+            @Query("userId") Long userId,
+            @Query("newPassword") String newPassword
+    );
 }
