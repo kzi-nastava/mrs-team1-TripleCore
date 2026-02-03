@@ -5,6 +5,7 @@ import model.LoginResponse;
 import model.RegisterRequest;
 import model.RegisterResponse;
 import network.RetrofitClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -31,5 +32,21 @@ public class AuthService {
 
         RetrofitClient
                 .getApiService().register(request).enqueue(callback);
+    }
+
+    public void forgotPassword(String email, Callback<ResponseBody> callback) {
+        RetrofitClient
+                .getApiService()
+                .forgotPassword(email)
+                .enqueue(callback);
+    }
+
+    public void resetPassword(Long userId,
+                              String newPassword,
+                              Callback<ResponseBody> callback) {
+        RetrofitClient
+                .getApiService()
+                .resetPassword(userId, newPassword)
+                .enqueue(callback);
     }
 }

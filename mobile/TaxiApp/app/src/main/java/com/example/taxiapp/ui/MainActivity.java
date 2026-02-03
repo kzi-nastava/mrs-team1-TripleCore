@@ -113,8 +113,6 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new LoginFragment();
         } else if (id == R.id.nav_register && !isLoggedIn) {
             fragmentToLoad = new RegisterFragment();
-        } else if (id == R.id.reset_password && !isLoggedIn) {
-            fragmentToLoad = new ResetPasswordFragment();
         }
 
         // DRIVER
