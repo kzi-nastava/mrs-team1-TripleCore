@@ -23,23 +23,17 @@ export class DriverFormComponent {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       address: ['', Validators.required],
-      phone: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern(/\+?[0-9]{10,15}/)]],
       email: ['', [Validators.required, Validators.email]],
-      password : ['', Validators.required],
-      confirmPassword : ['', Validators.required]
   });
   }
 
-  passwordsMatch(): boolean {
-    return (
-      this.form.get('password')?.value ===
-      this.form.get('confirmPassword')?.value
-    );
-  }
 
   onNext(){
-    if (this.form.valid && this.passwordsMatch()) {
+    if (this.form.valid) {
       this.next.emit(this.form.value);
+    } else {
+      alert('Please fill in all required fields correctly!');
     }
   }
 

@@ -81,43 +81,43 @@ public class AdminController {
         panicService.markAsResolved(id);
     }
 
-    @PostMapping("/registerDriver")
-    public ResponseEntity<?> registerDriver(@Valid @RequestBody RegisterDriverRequest request) {
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            return ResponseEntity.badRequest().body("Passwords do not match");
-        }
-
-        if (emailExists(request.getEmail())) {
-            return ResponseEntity.badRequest().body("Email already registered");
-        }
-
-        RegisterDriverResponse response = getRegisterDriverResponse(request);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    private static RegisterDriverResponse getRegisterDriverResponse(RegisterDriverRequest request) {
-        Long newUserId = 200L;
-
-        return new RegisterDriverResponse(
-                newUserId,
-                request.getEmail(),
-                request.getFirstName(),
-                request.getLastName(),
-                request.getAddress(),
-                request.getPhoneNumber(),
-                "default-avatar.png",
-                UserRole.DRIVER,
-                false,
-                "Registration successful! Driver can check his email for activation link",
-                request.getVehicleModel(),
-                request.getVehicleType(),
-                request.getPlateNum(),
-                request.getSeatNum(),
-                request.isBabySafe(),
-                request.isPetSafe()
-        );
-    }
+//    @PostMapping("/registerDriver")
+//    public ResponseEntity<?> registerDriver(@Valid @RequestBody RegisterDriverRequest request) {
+//        if (!request.getPassword().equals(request.getConfirmPassword())) {
+//            return ResponseEntity.badRequest().body("Passwords do not match");
+//        }
+//
+//        if (emailExists(request.getEmail())) {
+//            return ResponseEntity.badRequest().body("Email already registered");
+//        }
+//
+//        RegisterDriverResponse response = getRegisterDriverResponse(request);
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+//    }
+//
+//    private static RegisterDriverResponse getRegisterDriverResponse(RegisterDriverRequest request) {
+//        Long newUserId = 200L;
+//
+//        return new RegisterDriverResponse(
+//                newUserId,
+//                request.getEmail(),
+//                request.getFirstName(),
+//                request.getLastName(),
+//                request.getAddress(),
+//                request.getPhoneNumber(),
+//                "default-avatar.png",
+//                UserRole.DRIVER,
+//                false,
+//                "Registration successful! Driver can check his email for activation link",
+//                request.getVehicleModel(),
+//                request.getVehicleType(),
+//                request.getPlateNum(),
+//                request.getSeatNum(),
+//                request.isBabySafe(),
+//                request.isPetSafe()
+//        );
+//    }
 
 
     private boolean emailExists(String email) {

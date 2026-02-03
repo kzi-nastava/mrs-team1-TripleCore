@@ -46,4 +46,37 @@ public class AccountActivationServiceImpl implements AccountActivationService {
             return false;
         }
     }
+
+    public boolean canActivate(Long userId){
+        User user = userRepository.findById(userId).orElse(null);
+
+        if(user == null) {
+            return false;
+        }
+
+        if(user.isAccountActivated()){
+            return false;
+        }
+
+        long hoursPassed = Duration.between(user.getCreatedAt(), LocalDateTime.now()).toHours();
+
+        return hoursPassed <= 24;
+
+    }
+
+    public boolean activateUserWithPassword(Long userId, String password){
+
+        if (!canActivate(userId)) {
+            return false;
+        }
+
+        User user = userRepository.findById(userId).orElseThrow();
+
+        user.setPassword(password);
+        user.setAccountActivated(true);
+
+        userRepository.save(user);
+        return true;
+    }
+
 }

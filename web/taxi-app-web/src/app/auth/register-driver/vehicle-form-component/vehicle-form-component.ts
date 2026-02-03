@@ -2,6 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
+export enum VehicleType {
+  STANDARD = 'STANDARD',
+  LUXURY = 'LUXURY',
+  VAN = 'VAN'
+}
+
+
 @Component({
   selector: 'app-vehicle-form-component',
   imports: [CommonModule, ReactiveFormsModule],
@@ -16,21 +23,22 @@ export class VehicleFormComponent {
     form! : FormGroup;
 
 
-    vehicleTypes: string[] = [
-      'Standard',
-      'Luxury',
-      'Van'
-    
-  ];
+
+vehicleTypes = [
+  VehicleType.STANDARD,
+  VehicleType.LUXURY,
+  VehicleType.VAN
+];
 
   constructor(private fb: FormBuilder) { }
 
   ngOnInit(){
     this.form = this.fb.group({
     model: ['', Validators.required],
-    type: ['', Validators.required],
+    brand: ['', Validators.required],
+    type: [null, Validators.required],
     licensePlate: ['', Validators.required],
-    seats: ['', Validators.required],
+    seats: ['', [Validators.required, Validators.min(1)]],
     babyTransport: [false],
     petsTransport: [false]
   });
@@ -38,6 +46,8 @@ export class VehicleFormComponent {
   onRegister(){
     if (this.form.valid) {
       this.register.emit(this.form.value);
+    }else {
+      alert('Please fill in all required fields correctly!');
     }
   }
 

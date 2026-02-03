@@ -6,6 +6,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.VehicleType;
 public class RegisterDriverResponse  extends  RegisterResponse{
     private String vehicleModel;
     private VehicleType vehicleType;
+    private String brand;
     private String plateNum;
     private int seatNum;
     private boolean babySafe;
@@ -14,12 +15,13 @@ public class RegisterDriverResponse  extends  RegisterResponse{
     public RegisterDriverResponse(Long id, String email, String firstName,
                                   String lastName, String address, String phoneNumber,
                                   String profilePicture, UserRole role, boolean activated, String message,
-                                  String vehicleModel, VehicleType vehicleType,
+                                  String vehicleModel, VehicleType vehicleType, String brand,
                                   String plateNum, int seatNum,
                                   boolean babySafe, boolean petSafe) {
         super(id, email, firstName, lastName, address, phoneNumber, profilePicture,  role, activated, message);
         this.vehicleModel = vehicleModel;
         this.vehicleType = vehicleType;
+        this.brand = brand;
         this.plateNum = plateNum;
         this.seatNum = seatNum;
         this.babySafe = babySafe;
@@ -28,6 +30,7 @@ public class RegisterDriverResponse  extends  RegisterResponse{
 
     public String getVehicleModel() { return vehicleModel; }
     public VehicleType getVehicleType() { return vehicleType; }
+    public String getBrand() { return brand; }
     public String getPlateNum() { return plateNum; }
     public int getSeatNum() { return seatNum; }
     public boolean isBabySafe() { return babySafe; }
