@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
 
         // LOGOUT
         else if (id == R.id.nav_logout) {
-            // if role is driver - cant logout while active
             clearUserState();
             setupMenu();
             fragmentToLoad = new GuestHomeFragment();

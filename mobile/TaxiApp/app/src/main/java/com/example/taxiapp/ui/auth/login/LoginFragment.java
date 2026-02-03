@@ -1,7 +1,5 @@
 package com.example.taxiapp.ui.auth.login;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +26,7 @@ public class LoginFragment extends Fragment {
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
+    private AuthService authService;
 
     public LoginFragment() {}
 
@@ -35,6 +34,8 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        authService = AuthService.getInstance();
 
         etEmail = view.findViewById(R.id.etEmail);
         etPassword = view.findViewById(R.id.etPassword);
@@ -59,65 +60,71 @@ public class LoginFragment extends Fragment {
         String password = etPassword.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(getActivity(), "Please enter email and password", Toast.LENGTH_SHORT).show();
+            showToast("Please enter email and password");
             return;
         }
 
-        AuthService.getInstance().login(email, password, new Callback<LoginResponse>() {
+        btnLogin.setEnabled(false);
+
+        authService.login(email, password, new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                btnLogin.setEnabled(true);
+                btnLogin.setText("Login");
+
                 if (!isAdded()) return;
 
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
 
-                    SharedPreferences prefs = requireActivity()
-                            .getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
-                    prefs.edit()
-                            .putBoolean("isLoggedIn", true)
-                            .putString("userType", loginResponse.getRole().name())
-                            .putString("userEmail", loginResponse.getEmail())
-                            .putString("userFirstName", loginResponse.getFirstName())
-                            .putString("userLastName", loginResponse.getLastName())
-                            .putLong("userId", loginResponse.getId())
-                            .apply();
+                    // Save session
+                    authService.saveLoginSession(requireContext(), loginResponse);
 
-                    getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getActivity(),
-                                loginResponse.getRole() + " login successful!",
-                                Toast.LENGTH_SHORT).show();
+                    showToast(loginResponse.getRole() + " login successful!");
 
-                        if (getActivity() instanceof MainActivity) {
-                            MainActivity main = (MainActivity) getActivity();
-                            if (UserRole.ADMIN.equals(loginResponse.getRole())) {
-                                main.onAdminLoginSuccess();
-                            } else if (UserRole.DRIVER.equals(loginResponse.getRole())) {
-                                main.onDriverLoginSuccess();
-                            } else if (UserRole.PASSENGER.equals(loginResponse.getRole())) {
-                                main.onPassengerLoginSuccess();
-                            }
-                        }
-                    });
+                    // Navigate based on role
+                    navigateBasedOnRole(loginResponse);
 
                     clearFields();
 
                 } else {
-                    getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getActivity(), "Invalid credentials", Toast.LENGTH_SHORT).show();
-                        clearFields();
-                    });
+                    showToast("Invalid credentials");
+                    clearFields();
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
+                btnLogin.setEnabled(true);
+                btnLogin.setText("Login");
+
                 if (!isAdded()) return;
-                getActivity().runOnUiThread(() ->
-                        Toast.makeText(getActivity(), "Login failed: " + t.getMessage(),
-                                Toast.LENGTH_SHORT).show()
-                );
+                showToast("Login failed: " + t.getMessage());
             }
         });
+    }
+
+    private void navigateBasedOnRole(LoginResponse loginResponse) {
+        if (getActivity() instanceof MainActivity) {
+            MainActivity main = (MainActivity) getActivity();
+            UserRole role = loginResponse.getRole();
+
+            if (UserRole.ADMIN.equals(role)) {
+                main.onAdminLoginSuccess();
+            } else if (UserRole.DRIVER.equals(role)) {
+                main.onDriverLoginSuccess();
+            } else if (UserRole.PASSENGER.equals(role)) {
+                main.onPassengerLoginSuccess();
+            }
+        }
+    }
+
+    private void showToast(String message) {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() ->
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show()
+            );
+        }
     }
 
     private void clearFields() {

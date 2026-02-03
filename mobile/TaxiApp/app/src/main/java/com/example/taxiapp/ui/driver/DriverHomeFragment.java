@@ -19,6 +19,7 @@ import com.example.taxiapp.ui.map.MapFragment;
 
 public class DriverHomeFragment extends Fragment {
     private DriverHomeViewModel viewModel;
+    private Button btnStatus;
 
     public DriverHomeFragment() {}
 
@@ -36,6 +37,19 @@ public class DriverHomeFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(DriverHomeViewModel.class);
 
+        if (!viewModel.initialize(requireContext())) {
+            Toast.makeText(requireContext(), "Access denied - Driver only", Toast.LENGTH_SHORT).show();
+
+            requireActivity().getOnBackPressedDispatcher().onBackPressed();
+            return;
+        }
+
+        setupMapFragment();
+        setupUI(view);
+        setupObservers();
+    }
+
+    private void setupMapFragment() {
         MapFragment mapFragment = (MapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map_container);
 
@@ -46,27 +60,42 @@ public class DriverHomeFragment extends Fragment {
                     .replace(R.id.map_container, mapFragment)
                     .commit();
         }
+    }
 
-        Button btnStatus = view.findViewById(R.id.btn_go_inactive);
-
-        viewModel.getIsActive().observe(getViewLifecycleOwner(), isActive -> {
-            updateStatusButton(btnStatus, isActive);
-        });
+    private void setupUI(View view) {
+        btnStatus = view.findViewById(R.id.btn_go_inactive);
 
         btnStatus.setOnClickListener(v -> {
+            btnStatus.setEnabled(false);
+            btnStatus.setText("Updating...");
+
             viewModel.toggleActive();
-            Boolean current = viewModel.getIsActive().getValue();
-            Toast.makeText(getContext(),
-                    current != null && current ? "You are now active" : "You are now inactive",
-                    Toast.LENGTH_SHORT).show();
+
         });
     }
 
-    private void updateStatusButton(Button button, boolean isActive) {
+    private void setupObservers() {
+        viewModel.getIsActive().observe(getViewLifecycleOwner(), isActive -> {
+            if (btnStatus != null) {
+                updateStatusButton(isActive);
+                btnStatus.setEnabled(true);
+            }
+        });
+
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void updateStatusButton(boolean isActive) {
         if (isActive) {
-            button.setText("Go Inactive");
-            button.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.btn_active_red));
-            button.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white));
+            btnStatus.setText("Go Inactive");
+            btnStatus.setBackgroundTintList(
+                    ContextCompat.getColorStateList(requireContext(), R.color.btn_active_red));
+            btnStatus.setTextColor(
+                    ContextCompat.getColor(requireContext(), android.R.color.white));
 
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity())
@@ -74,10 +103,12 @@ public class DriverHomeFragment extends Fragment {
             }
 
         } else {
-            button.setText("Go Active");
-            button.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), android.R.color.white));
-            button.setTextColor(ContextCompat.getColor(requireContext(), R.color.btn_active_red));
-            button.setBackgroundResource(R.drawable.border_red_btn);
+            btnStatus.setText("Go Active");
+            btnStatus.setBackgroundTintList(
+                    ContextCompat.getColorStateList(requireContext(), android.R.color.white));
+            btnStatus.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.btn_active_red));
+            btnStatus.setBackgroundResource(R.drawable.border_red_btn);
 
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity())

@@ -44,6 +44,16 @@ public class DriverController {
         }
     }
 
+    @GetMapping("/{id}/availability")
+    public ResponseEntity<Boolean> getDriverAvailability(@PathVariable("id") Long driverId) {
+        try {
+            boolean isAvailable = driverAvailabilityService.isDriverAvailable(driverId);
+            return ResponseEntity.ok(isAvailable);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(false);
+        }
+    }
 
     @GetMapping("/{id}/next-ride")
     public ResponseEntity<?> getNextRide(@PathVariable("id") Long id){
