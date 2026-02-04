@@ -22,6 +22,9 @@ public class Notification {
     @JoinColumn(name = "recipient_id")
     private User recipient;
 
+    // This should tell the frontend or mobile app what to open
+    // for example "ride-tracking:3" tells the frontend to open active ride tracking for ride 3
+    // or "review:5" means link them to the review form for finished ride 5
     private String link;
 
     private String message;

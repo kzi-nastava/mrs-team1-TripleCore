@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Notification;
 
 @Repository
-public interface NotificationRepository extends JpaRepository<Long, Notification> {
-    
+public interface NotificationRepository extends JpaRepository<Notification, Long> {
+
 }
