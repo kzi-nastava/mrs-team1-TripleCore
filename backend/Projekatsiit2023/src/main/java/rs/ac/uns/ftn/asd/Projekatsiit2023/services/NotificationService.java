@@ -1,8 +1,10 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 
+import org.aspectj.weaver.ast.Not;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.notification.NotificationResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Notification;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Passenger;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
@@ -31,6 +33,7 @@ public class NotificationService {
         notification.setRecipient(passenger);
         notification.setLink(String.format("ride-tracking:%d", ride.getId()));
         notification.setSeen(false);
+        notification.setTitle("Ride started");
         notification.setMessage(
                 String.format("Hello %s,\nYour ride from %s to %s just started!\nYou can track it here by clicking the link.\n",
                         passenger.getFirstName(),
@@ -47,6 +50,7 @@ public class NotificationService {
         notification.setRecipient(passenger);
         notification.setLink(String.format("review:%d", ride.getId()));
         notification.setSeen(false);
+        notification.setTitle("Ride finished");
         notification.setMessage(
                 String.format("Hello %s,\nYour ride from %s to %s just finished!\nYou can rate it by clicking the link.\n",
                         passenger.getFirstName(),
@@ -64,7 +68,7 @@ public class NotificationService {
         message.setFrom(fromEmail);
         message.setTo(ride.getOrderer().getEmail());
         message.setSubject("Ride started");
-        message.setText(String.format("Hello %s,\nYour ride from %s to %s has just started!\nYou can track it by clicking the link.\n%s",
+        message.setText(String.format("Hello %s,\nYour ride from %s to %s just started!\nYou can track it by clicking the link.\n%s",
                 passenger.getFirstName(),
                 ride.getRoute().getStartLocation().getAddress(),
                 ride.getRoute().getEndLocation().getAddress(),
@@ -79,7 +83,7 @@ public class NotificationService {
         message.setFrom(fromEmail);
         message.setTo(ride.getOrderer().getEmail());
         message.setSubject("Ride finished");
-        message.setText(String.format("Hello %s,\nYour ride from %s to %s has just finished!\nYou can rate it by logging in and checking out My Rides.\n%s",
+        message.setText(String.format("Hello %s,\nYour ride from %s to %s just finished!\nYou can rate it by logging in and checking out My Rides.\n%s",
                 passenger.getFirstName(),
                 ride.getRoute().getStartLocation().getAddress(),
                 ride.getRoute().getEndLocation().getAddress(),
@@ -114,5 +118,23 @@ public class NotificationService {
             createFinishRideNotification(passenger, ride);
             sendFinishRideEmail(passenger, ride);
         }
+    }
+
+    public List<NotificationResponse> getAllPassengerNotifications(Long passengerId){
+        List<Notification> notifications = notificationRepository.findByRecipientId(passengerId);
+        List<NotificationResponse> responses = new ArrayList<>();
+
+        for (Notification notification : notifications){
+            NotificationResponse response = new NotificationResponse();
+            response.setId(notification.getId());
+            response.setRecipientId(notification.getRecipient().getId());
+            response.setTitle(notification.getTitle());
+            response.setMessage(notification.getMessage());
+            response.setLink(notification.getLink());
+            response.setSeen(notification.isSeen());
+            response.setTime(notification.getTime());
+            responses.add(response);
+        }
+        return responses;
     }
 }

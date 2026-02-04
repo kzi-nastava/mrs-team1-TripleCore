@@ -27,6 +27,8 @@ public class Notification {
     // or "review:5" means link them to the review form for finished ride 5
     private String link;
 
+    private String title;
+
     private String message;
 
     private LocalDateTime time;

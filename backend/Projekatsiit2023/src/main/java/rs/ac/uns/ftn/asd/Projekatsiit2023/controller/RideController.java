@@ -121,10 +121,10 @@ public class  RideController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
     @PostMapping("/{id}/test-notifications")
     public ResponseEntity<?> testNotifications(@PathVariable("id") Long id){
         Ride ride = rideService.getRideById(id);
-//        notificationService.rideFinishNotifyPassengers(ride);
         notificationService.rideFinishNotifyPassengers(ride);
         return ResponseEntity.ok("Email sent");
     }
@@ -244,17 +244,4 @@ public class  RideController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
         }
     }
-
-    @PostMapping("/create-mock")
-    public ResponseEntity<?> createMockRides() {
-        try {
-            rideService.createMockRides();
-            return ResponseEntity.ok("Mock rides created");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error creating mock rides: " + e.getMessage());
-        }
-    }
-
-
 }
