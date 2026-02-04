@@ -124,8 +124,9 @@ public class  RideController {
     @PostMapping("/{id}/test-notifications")
     public ResponseEntity<?> testNotifications(@PathVariable("id") Long id){
         Ride ride = rideService.getRideById(id);
+//        notificationService.rideFinishNotifyPassengers(ride);
         notificationService.rideFinishNotifyPassengers(ride);
-        return ResponseEntity.ok("Notifications made");
+        return ResponseEntity.ok("Email sent");
     }
 
     public boolean getRandomBoolean() {

@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Notification;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Passenger;
@@ -14,10 +16,14 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final JavaMailSender mailSender;
+    private final String fromEmail = "taxiapp@example.com";
 
     public NotificationService(
-            NotificationRepository notificationRepository){
+            NotificationRepository notificationRepository,
+            JavaMailSender mailSender){
         this.notificationRepository = notificationRepository;
+        this.mailSender = mailSender;
     }
 
     private Notification createStartRideNotification(Passenger passenger, Ride ride){
@@ -52,8 +58,35 @@ public class NotificationService {
         return notification;
     }
 
-    private void sendStartRideEmail(Passenger passenger, Ride ride){}
-    private void sendFinishRideEmail(Passenger passenger, Ride ride){}
+    private void sendStartRideEmail(Passenger passenger, Ride ride){
+        String link = "http://localhost:4200/active-ride-tracking/36";
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(ride.getOrderer().getEmail());
+        message.setSubject("Ride started");
+        message.setText(String.format("Hello %s,\nYour ride from %s to %s has just started!\nYou can track it by clicking the link.\n%s",
+                passenger.getFirstName(),
+                ride.getRoute().getStartLocation().getAddress(),
+                ride.getRoute().getEndLocation().getAddress(),
+                link));
+
+        mailSender.send(message);
+    }
+
+    private void sendFinishRideEmail(Passenger passenger, Ride ride){
+        String link = "http://localhost:4200/login";
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(ride.getOrderer().getEmail());
+        message.setSubject("Ride finished");
+        message.setText(String.format("Hello %s,\nYour ride from %s to %s has just finished!\nYou can rate it by logging in and checking out My Rides.\n%s",
+                passenger.getFirstName(),
+                ride.getRoute().getStartLocation().getAddress(),
+                ride.getRoute().getEndLocation().getAddress(),
+                link));
+
+        mailSender.send(message);
+    }
 
     public void rideStartNotifyPassengers(Ride ride){
         List<Passenger> passengers = new ArrayList<>();
@@ -65,6 +98,7 @@ public class NotificationService {
 
         for (Passenger passenger : passengers){
             createStartRideNotification(passenger, ride);
+            sendStartRideEmail(passenger, ride);
         }
     }
 
@@ -78,8 +112,7 @@ public class NotificationService {
 
         for (Passenger passenger : passengers){
             createFinishRideNotification(passenger, ride);
+            sendFinishRideEmail(passenger, ride);
         }
     }
-
-
 }
