@@ -1,1 +1,24 @@
-<p>notifications-page works!</p>
+<div class="notifications-container">
+
+  <div *ngIf="!notifications || notifications.length === 0" class="no-notifications">
+    No notifications yet...
+  </div>
+
+  <div *ngIf="notifications.length > 0">
+    
+    <div class="notification-card" *ngFor="let notification of notifications">
+      <button class="btn-card" [class.unseen]="!notification.seen">
+      <div class="header">
+      <span class="title">{{ notification.title }}</span>
+      <span class="time">{{ notification.time | date:'short' }}</span>
+      </div>
+
+      <div class="message">
+      {{ notification.message }}
+      </div>
+    </button>
+    </div>
+  </div>
+
+</div>
+
