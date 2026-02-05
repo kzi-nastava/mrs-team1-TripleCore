@@ -36,7 +36,4 @@
     <img src="icons/icons8-chat-48.png" class="nav-item-icon">
   </a>
 </app-navbar>
-
-<app-map></app-map>
-
-<app-order-ride-registered-user *ngIf="canOrderRide" [initialData]="favoriteRouteData"  (rideOrderedEvent)="handleRideOrdered()"></app-order-ride-registered-user>
+<app-notifications-page [notifications]="notifications"></app-notifications-page>

@@ -19,10 +19,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.CancelerType;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.User;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideCancelService;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideStopService;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RouteService;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,15 +34,18 @@ public class  RideController {
     private final RouteService routeService;
     private final RideCancelService rideCancelService;
     private final RideStopService rideStopService;
+    private final NotificationService notificationService;
 
     public RideController(RideService rideService,
                           RouteService routeService,
                           RideCancelService rideCancelService,
-                          RideStopService rideStopService){
+                          RideStopService rideStopService,
+                          NotificationService notificationService){
         this.rideService = rideService;
         this.routeService = routeService;
         this.rideCancelService = rideCancelService;
         this.rideStopService = rideStopService;
+        this.notificationService = notificationService;
     }
 
     @PostMapping("/estimate")
@@ -115,10 +115,18 @@ public class  RideController {
         try{
             Ride ride = rideService.getRideById(id);
             rideService.finishRide(ride.getId());
+            notificationService.rideFinishNotifyPassengers(ride);
             return ResponseEntity.ok("Finish ride endpoint reached");
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @PostMapping("/{id}/test-notifications")
+    public ResponseEntity<?> testNotifications(@PathVariable("id") Long id){
+        Ride ride = rideService.getRideById(id);
+        notificationService.rideFinishNotifyPassengers(ride);
+        return ResponseEntity.ok("Email sent");
     }
 
     public boolean getRandomBoolean() {
@@ -236,17 +244,4 @@ public class  RideController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
         }
     }
-
-    @PostMapping("/create-mock")
-    public ResponseEntity<?> createMockRides() {
-        try {
-            rideService.createMockRides();
-            return ResponseEntity.ok("Mock rides created");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error creating mock rides: " + e.getMessage());
-        }
-    }
-
-
 }

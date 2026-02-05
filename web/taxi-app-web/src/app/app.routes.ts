@@ -29,6 +29,7 @@ import { PassengerRideDetailsComponent } from './passenger/passenger-ride-detail
 import { ChangeProfileRequestComponent } from './change-profile-request/change-profile-request';
 import { DriverProfileChangeReviewComponent } from './driver-profile-change-review/driver-profile-change-review';
 import { PassengerReviewsComponent } from './passenger/passenger-reviews/passenger-reviews';
+import { PassengerNotificationsComponent } from './passenger/passenger-notifications/passenger-notifications';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -64,5 +65,6 @@ export const appRoutes: Routes = [
   { path: 'active-ride-tracking/:rideId', component: ActiveRideTrackingComponent },
   { path: 'test', component: TestComponent},
   { path: 'passenger-reviews', component: PassengerReviewsComponent },
+  { path: 'passenger-notifications', component: PassengerNotificationsComponent },
   { path: '**', redirectTo: '' },
 ];

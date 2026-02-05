@@ -3,6 +3,7 @@ import { NavbarComponent } from '../../shared/navbar/navbar';
 import { ReviewsPageComponent } from '../../reviews-page/reviews-page';
 import { ReviewDTO } from '../../models/review-dto';
 import { ReviewService } from '../../services/review-service/review-service';
+import { LogoutService } from '../../services/auth-service/logout-service';
 
 @Component({
   selector: 'app-passenger-reviews',
@@ -12,7 +13,10 @@ import { ReviewService } from '../../services/review-service/review-service';
   styleUrl: './passenger-reviews.css',
 })
 export class PassengerReviewsComponent {
-  constructor(private reviewService: ReviewService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private reviewService: ReviewService, 
+    private cdr: ChangeDetectorRef,
+    private logoutService: LogoutService) {}
 
   passengerId: number = localStorage.getItem('userId') ? parseInt(localStorage.getItem('userId')!) : 0;
   reviews: ReviewDTO[] = [];
@@ -34,5 +38,9 @@ export class PassengerReviewsComponent {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  onLogoutClick() {
+    this.logoutService.logoutWithBackend();
   }
 }
