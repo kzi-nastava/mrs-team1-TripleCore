@@ -5,20 +5,33 @@
   </div>
 
   <div *ngIf="notifications.length > 0">
-    
     <div class="notification-card" *ngFor="let notification of notifications">
-      <button class="btn-card" [class.unseen]="!notification.seen">
-      <div class="header">
-      <span class="title">{{ notification.title }}</span>
-      <span class="time">{{ notification.time | date:'short' }}</span>
-      </div>
-
-      <div class="message">
-      {{ notification.message }}
-      </div>
-    </button>
+      <button class="btn-card" [class.unseen]="!notification.seen" (click)="openChild(notification)">
+        <div class="img-container">
+          <img 
+            [src]="notification.seen 
+              ? 'icons/notification-check.png' 
+              : 'icons/notification-bell.gif'"
+            alt="notification status"
+            class="notification-icon">
+        </div>
+        <div class="text-container">
+          <div class="header">
+          <span class="title">{{ notification.title }}</span>
+          <span class="time">{{ notification.time | date:'short' }}</span>
+        </div>
+        <div class="message">
+          {{ notification.message }}
+        </div>
+        </div>
+      </button>
     </div>
   </div>
 
-</div>
+  <app-notification-popup
+    *ngIf="isChildOpen"
+    [notification]="selectedNotification"
+    (close)="closeChild()">
+  </app-notification-popup>
 
+</div>

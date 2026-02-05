@@ -58,4 +58,16 @@
     padding: 16px;
     padding-left: 25px;
     padding-right: 25px;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.img-container{
+  width: auto;
+  margin-right: 20px;
+}
+
+.text-container{
+  flex: 1;
 }

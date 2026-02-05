@@ -1,1 +1,17 @@
-<p>notification-popup works!</p>
+<div class="overlay">
+  <mat-card class="notification-card">
+    <button class="close-btn" (click)="closeSelf()">×</button>
+    <h2 class="title">{{ notification.title }}</h2>
+
+    <mat-card-content>
+        <p>{{ notification.message }}</p>
+        <a
+            [routerLink]="link"
+            class="action-link"
+        >
+            Follow link...
+        </a>
+    </mat-card-content>
+  </mat-card>
+</div>
+
