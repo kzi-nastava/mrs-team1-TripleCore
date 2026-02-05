@@ -30,6 +30,13 @@ export class NotificationsPageComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['notifications']) {
+      
+      this.notifications.sort((a, b) => {
+        const dateA = new Date(a.time).getTime();
+        const dateB = new Date(b.time).getTime();
+
+        return dateB - dateA; 
+      });
       console.log('Notifications updated:', this.notifications);
     }
   }

@@ -3,6 +3,7 @@ import { NavbarComponent } from '../../shared/navbar/navbar';
 import { NotificationsPageComponent } from '../../notifications/notifications-page/notifications-page';
 import { NotificationResponse } from '../../models/notification-response';
 import { NotificationService } from '../../services/notification-service';
+import { LogoutService } from '../../services/auth-service/logout-service';
 
 
 @Component({
@@ -17,7 +18,8 @@ export class PassengerNotificationsComponent implements OnInit {
 
   constructor (
     private notificationService: NotificationService,
-    private cdr: ChangeDetectorRef) {}
+    private cdr: ChangeDetectorRef,
+    private logoutService: LogoutService) {}
 
   ngOnInit(): void {
   const passengerId = Number(localStorage.getItem('userId'));
@@ -39,5 +41,8 @@ export class PassengerNotificationsComponent implements OnInit {
     
 }
 
+  onLogoutClick() {
+      this.logoutService.logoutWithBackend();
+  }
 
 }
