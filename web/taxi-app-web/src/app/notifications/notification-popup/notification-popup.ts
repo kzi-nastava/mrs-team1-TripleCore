@@ -26,17 +26,17 @@ export class NotificationPopupComponent implements OnInit{
 
   closeSelfAndMarkSeen(): void {
     this.close.emit();
-    if (!this.notification.seen) {
-      this.notificationService.markNotificationSeen(this.notification.id).subscribe({
-        next: (res) => {
-          console.log(res);          // "Notification set to seen."
-          this.cdr.detectChanges(); 
-        },
-        error: (err) => {
-          console.error('Failed to mark seen', err);
-        }
-      });
-    }
+    
+    this.notificationService.markNotificationSeen(this.notification.id).subscribe({
+      next: (res) => {
+        console.log(res);          // "Notification set to seen."
+        this.cdr.detectChanges(); 
+      },
+      error: (err) => {
+        console.error('Failed to mark seen', err);
+      }
+    });
+    
   }
 
   ngOnInit(): void {
