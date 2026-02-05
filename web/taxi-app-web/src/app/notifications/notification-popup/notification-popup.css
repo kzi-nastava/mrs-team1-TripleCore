@@ -25,7 +25,7 @@
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 
-    width: 400px;
+    min-width: 400px;
     height: auto;
 
     display: flex;
@@ -48,4 +48,13 @@
 
 .title{
     margin: 15px;
+}
+
+a{
+  font-size: 22;
+  color: #600EA8;
+}
+
+pre {
+  font-family: 'Istok Web', sans-serif;
 }

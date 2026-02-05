@@ -4,11 +4,12 @@ import { MatCard } from '@angular/material/card';
 import { MatCardContent } from '@angular/material/card';
 import { ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-notification-popup',
   standalone: true,
-  imports: [MatCard, MatCardContent, RouterLink],
+  imports: [MatCard, MatCardContent, RouterLink, CommonModule],
   templateUrl: './notification-popup.html',
   styleUrl: './notification-popup.css',
 })
@@ -30,7 +31,9 @@ export class NotificationPopupComponent implements OnInit{
       if (parts[0] == 'ride-tracking'){
         this.link = ['/active-ride-tracking', parts[1]];
       } else if (parts[0] == 'review'){
-        this.link = ['passenger/passenger-my-rides']
+        this.link = ['passenger', 'passenger-my-rides']
+      } else{
+        this.link = [];
       }
     }
     this.cdr.detectChanges();

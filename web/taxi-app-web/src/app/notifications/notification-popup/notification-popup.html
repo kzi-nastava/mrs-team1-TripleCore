@@ -4,10 +4,10 @@
     <h2 class="title">{{ notification.title }}</h2>
 
     <mat-card-content>
-        <p>{{ notification.message }}</p>
+        <pre>{{ notification.message }}</pre>
         <a
+            *ngIf="link.length > 0"
             [routerLink]="link"
-            class="action-link"
         >
             Follow link...
         </a>
