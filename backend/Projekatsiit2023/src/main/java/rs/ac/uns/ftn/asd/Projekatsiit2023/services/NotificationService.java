@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.aspectj.weaver.ast.Not;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -136,5 +137,15 @@ public class NotificationService {
             responses.add(response);
         }
         return responses;
+    }
+
+    public void markNotificationSeen(Long notificationId){
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(()-> new EntityNotFoundException(
+                        String.format("Notification with id %d not found", notificationId)
+                ));
+
+        notification.setSeen(true);
+        notificationRepository.save(notification);
     }
 }

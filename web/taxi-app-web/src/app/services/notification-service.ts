@@ -18,5 +18,7 @@ export class NotificationService {
     )
   }
 
-//   markNotificationSeen(notificationId: number): 
+  markNotificationSeen(id: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/mark-seen`, null, { responseType: 'text' });
+  }
 }

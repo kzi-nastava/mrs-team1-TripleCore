@@ -5,6 +5,7 @@ import { MatCardContent } from '@angular/material/card';
 import { ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../../services/notification-service';
 
 @Component({
   selector: 'app-notification-popup',
@@ -17,12 +18,25 @@ export class NotificationPopupComponent implements OnInit{
   @Input() notification!: NotificationResponse;
   link: any[] = [];
 
-  constructor (private cdr: ChangeDetectorRef){}
+  constructor (
+    private cdr: ChangeDetectorRef,
+    private notificationService: NotificationService){}
 
   @Output() close = new EventEmitter<void>();
 
-  closeSelf(): void {
+  closeSelfAndMarkSeen(): void {
     this.close.emit();
+    if (!this.notification.seen) {
+      this.notificationService.markNotificationSeen(this.notification.id).subscribe({
+        next: (res) => {
+          console.log(res);          // "Notification set to seen."
+          this.cdr.detectChanges(); 
+        },
+        error: (err) => {
+          console.error('Failed to mark seen', err);
+        }
+      });
+    }
   }
 
   ngOnInit(): void {
@@ -36,7 +50,6 @@ export class NotificationPopupComponent implements OnInit{
         this.link = [];
       }
     }
-    this.cdr.detectChanges();
   }
 
 }

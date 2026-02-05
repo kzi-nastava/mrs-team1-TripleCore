@@ -25,6 +25,7 @@ export class NotificationsPageComponent implements OnChanges {
 
   closeChild(): void {
     this.isChildOpen = false;
+    this.selectedNotification.seen = true;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
