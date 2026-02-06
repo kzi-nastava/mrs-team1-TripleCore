@@ -1,65 +1,82 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.VehicleType;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Location;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class RideRequest {
 
-    @NotBlank(message = "Start location is required")
-    private String startLocation;
+    @NotNull(message = "Start location is required")
+    private Location startLocation;
 
-    @NotBlank(message = "End location is required")
-    private String endLocation;
+    @NotNull(message = "End location is required")
+    private Location endLocation;
 
-    private List<String> stops;
 
-    private List<String> linkedPassengersEmails;
+    private List<@NotNull(message = "Stop location cannot be null") Location> intermediateStops;
 
+
+    private List<@Email(message = "Linked passenger email must be valid") String> linkedPassengerEmails;
+
+    private boolean babyFriendly;
+    private boolean petFriendly;
+
+    @NotNull(message = "Vehicle type is required")
     private VehicleType vehicleType;
-    private boolean babyTransport;
-    private boolean petTransport;
 
-    @Positive(message = "Distance must be positive")
-    private double distanceInKm;
 
-    @FutureOrPresent(message = "Scheduled time must be in the future")
-    private LocalDateTime scheduledTime;
 
-    public String getStartLocation() {
+    private LocalDateTime startTime;
+
+    public Location getStartLocation() {
         return startLocation;
     }
-    public void setStartLocation(String startLocation) {
+
+    public void setStartLocation(Location startLocation) {
         this.startLocation = startLocation;
     }
 
-    public String getEndLocation() {
+    public Location getEndLocation() {
         return endLocation;
     }
 
-    public void setEndLocation(String endLocation) {
+    public void setEndLocation(Location endLocation) {
         this.endLocation = endLocation;
     }
 
-    public List<String> getStops() {
-        return stops;
+    public List<Location> getIntermediateStops() {
+        return intermediateStops;
     }
 
-    public void setStops(List<String> stops) {
-        this.stops = stops;
+    public void setIntermediateStops(List<Location> intermediateStops) {
+        this.intermediateStops = intermediateStops;
     }
 
-    public List<String> getLinkedPassengersEmails() {
-        return linkedPassengersEmails;
+    public List<String> getLinkedPassengerEmails() {
+        return linkedPassengerEmails;
     }
 
-    public void setLinkedPassengersEmails(List<String> linkedPassengersEmails) {
-        this.linkedPassengersEmails = linkedPassengersEmails;
+    public void setLinkedPassengerEmails(List<String> linkedPassengerEmails) {
+        this.linkedPassengerEmails = linkedPassengerEmails;
+    }
+
+    public boolean isBabyFriendly() {
+        return babyFriendly;
+    }
+
+    public void setBabyFriendly(boolean babyFriendly) {
+        this.babyFriendly = babyFriendly;
+    }
+
+    public boolean isPetFriendly() {
+        return petFriendly;
+    }
+
+    public void setPetFriendly(boolean petFriendly) {
+        this.petFriendly = petFriendly;
     }
 
     public VehicleType getVehicleType() {
@@ -70,37 +87,25 @@ public class RideRequest {
         this.vehicleType = vehicleType;
     }
 
-    public boolean isBabyTransport() {
-        return babyTransport;
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
-    public void setBabyTransport(boolean babyTransport) {
-        this.babyTransport = babyTransport;
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 
-    public boolean isPetTransport() {
-        return petTransport;
+    public String toString() {
+        return "RideRequest{" +
+                "startLocation=" + startLocation +
+                ", endLocation=" + endLocation +
+                ", intermediateStops=" + intermediateStops +
+                ", linkedPassengerEmails=" + linkedPassengerEmails +
+                ", babyFriendly=" + babyFriendly +
+                ", petFriendly=" + petFriendly +
+                ", vehicleType=" + vehicleType +
+                ", startTime=" + startTime +
+                '}';
     }
-
-    public void setPetTransport(boolean petTransport) {
-        this.petTransport = petTransport;
-    }
-
-    public double getDistanceInKm() {
-        return distanceInKm;
-    }
-
-    public void setDistanceInKm(double distanceInKm) {
-        this.distanceInKm = distanceInKm;
-    }
-
-    public LocalDateTime getScheduledTime() {
-        return scheduledTime;
-    }
-
-    public void setScheduledTime(LocalDateTime scheduledTime) {
-        this.scheduledTime = scheduledTime;
-    }
-
 
 }

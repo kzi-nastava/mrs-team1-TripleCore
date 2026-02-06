@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Driver;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Passenger;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 
 import java.util.List;
@@ -19,4 +20,5 @@ public interface RideRepository extends JpaRepository<Ride, Long> {
     List<Ride> findByDriverId(Long driverId);
     boolean existsByDriverAndStatus(Driver driver, RideStatus status);
     boolean existsByDriverIdAndStatus(Long driverId, RideStatus status);
+    boolean existsByOrdererAndStatusIn(Passenger orderer, List<RideStatus> statuses);
 }

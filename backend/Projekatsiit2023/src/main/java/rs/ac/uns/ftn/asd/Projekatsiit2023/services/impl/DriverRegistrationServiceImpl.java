@@ -5,13 +5,17 @@ import org.springframework.transaction.annotation.Transactional;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.RegisterDriverRequest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Driver;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Location;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.User;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Vehicle;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.UserRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.VehicleRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RouteService;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.VehicleService;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,11 +23,16 @@ public class DriverRegistrationServiceImpl {
     private final UserRepository userRepository;
     private final VehicleRepository vehicleRepository;
     private final EmailService emailService;
+    private final VehicleService vehicleService;
+    private final RouteService routeService;
 
-    public DriverRegistrationServiceImpl(UserRepository userRepository, VehicleRepository vehicleRepository, EmailService emailService){
+    public DriverRegistrationServiceImpl(UserRepository userRepository, VehicleRepository vehicleRepository,
+                                         EmailService emailService, VehicleService vehicleService, RouteService routeService) {
         this.userRepository = userRepository;
         this.vehicleRepository = vehicleRepository;
         this.emailService = emailService;
+        this.vehicleService = vehicleService;
+        this.routeService = routeService;
     }
 
     @Transactional
@@ -71,6 +80,27 @@ public class DriverRegistrationServiceImpl {
         driver.setVehicle(vehicle);
 
         User savedUser = userRepository.save(driver);
+
+        Location startLocation = routeService.getRandomNoviSadLocation();
+
+
+        vehicleService.addActiveVehicle(
+                vehicle,
+                startLocation,
+                null,
+                true,
+                null
+        );
+
+
+        List<Location> routePoints = List.of(
+                startLocation,
+                routeService.getRandomNoviSadLocation()
+        );
+
+
+        vehicleService.setRouteForActiveVehicle(vehicle.getId(), routePoints);
+
 
         String activationLink = generateActivationLink(savedUser.getId());
 
