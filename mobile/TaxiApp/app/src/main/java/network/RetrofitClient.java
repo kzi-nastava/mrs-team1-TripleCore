@@ -27,7 +27,8 @@ public class RetrofitClient {
                     .build();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://192.168.1.6:8080/")
+//                    .baseUrl("http://192.168.1.6:8080/") // Milica
+                    .baseUrl("http://192.168.1.21:8080/") // Danica
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build();

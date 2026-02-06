@@ -11,7 +11,14 @@ import android.view.ViewGroup;
 import com.example.taxiapp.R;
 import com.example.taxiapp.ui.shared.RideHistoryFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import model.RideDetailsDTO;
+
 public class DriverRideHistoryFragment extends Fragment {
+
+    private List<RideDetailsDTO> rideHistory = new ArrayList<>();
 
     public DriverRideHistoryFragment() {
     }
