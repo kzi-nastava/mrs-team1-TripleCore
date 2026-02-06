@@ -31,15 +31,14 @@ import model.LocationDTO;
 public class RideDetailsFragment extends Fragment {
 
     private RideDetailsDTO ride = createMockRide();
-
     private MapView mapFragment;
-    private GeoPoint startPoint = new GeoPoint(45.2671, 19.8335);
-    private GeoPoint endPoint = new GeoPoint(45.2542, 19.8601);
-
     private double savedLat = Double.NaN;
     private double savedLon = Double.NaN;
     private double savedZoom = Double.NaN;
 
+    public RideDetailsFragment(RideDetailsDTO rideDetails){
+        this.ride = rideDetails;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
