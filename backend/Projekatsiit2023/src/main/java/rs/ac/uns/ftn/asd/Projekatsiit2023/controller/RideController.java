@@ -23,6 +23,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.models.User;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Vehicle;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.VehicleRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,17 +40,20 @@ public class  RideController {
     private final RideStopService rideStopService;
     private final VehicleService vehicleService;
     private final VehicleRepository vehicleRepository;
+    private final NotificationService notificationService;
 
     public RideController(RideService rideService,
                           RouteService routeService,
                           RideCancelService rideCancelService,
-                          RideStopService rideStopService, VehicleService vehicleService, VehicleRepository vehicleRepository) {
+                          RideStopService rideStopService, VehicleService vehicleService, VehicleRepository vehicleRepository,
+                          NotificationService notificationService){
         this.rideService = rideService;
         this.routeService = routeService;
         this.rideCancelService = rideCancelService;
         this.rideStopService = rideStopService;
         this.vehicleService = vehicleService;
         this.vehicleRepository = vehicleRepository;
+        this.notificationService = notificationService;
     }
 
     @PostMapping("/estimate")
@@ -119,16 +123,23 @@ public class  RideController {
         try{
             Ride ride = rideService.getRideById(id);
             rideService.finishRide(ride.getId());
+            notificationService.rideFinishNotifyPassengers(ride);
             return ResponseEntity.ok("Finish ride endpoint reached");
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
+    @PostMapping("/{id}/test-notifications")
+    public ResponseEntity<?> testNotifications(@PathVariable("id") Long id){
+        Ride ride = rideService.getRideById(id);
+        notificationService.rideFinishNotifyPassengers(ride);
+        return ResponseEntity.ok("Email sent");
+    }
+
     public boolean getRandomBoolean() {
         return ThreadLocalRandom.current().nextBoolean();
     }
-
 
     @PostMapping
     public ResponseEntity<RideResponse> orderRide(
@@ -155,6 +166,7 @@ public class  RideController {
             return ResponseEntity.status(500).build();
         }
     }
+
 
 //    @PostMapping("/favorites")
 //    public ResponseEntity<FavoriteRouteResponse> addFavoriteRoute(
@@ -209,17 +221,4 @@ public class  RideController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
         }
     }
-
-    @PostMapping("/create-mock")
-    public ResponseEntity<?> createMockRides() {
-        try {
-            rideService.createMockRides();
-            return ResponseEntity.ok("Mock rides created");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error creating mock rides: " + e.getMessage());
-        }
-    }
-
-
 }
