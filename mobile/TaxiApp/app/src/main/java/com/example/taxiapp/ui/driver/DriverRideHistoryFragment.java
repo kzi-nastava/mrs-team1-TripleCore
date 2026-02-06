@@ -1,151 +1,118 @@
 package com.example.taxiapp.ui.driver;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
 import com.example.taxiapp.ui.shared.RideHistoryFragment;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.LocationDTO;
-import model.ReviewDTO;
 import model.RideDetailsDTO;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.AuthService;
+import service.DriverService;
 
 public class DriverRideHistoryFragment extends Fragment {
 
-    private List<RideDetailsDTO> rideHistory = createMockRides();
+    private List<RideDetailsDTO> rideHistory = new ArrayList<>();
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_driver_ride_history, container, false);
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
+        View view = inflater.inflate(
+                R.layout.fragment_driver_ride_history,
+                container,
+                false
+        );
 
-        if (savedInstanceState == null) {
-            getChildFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new RideHistoryFragment(rideHistory))
-                    .commit();
-        }
+        loadRideHistoryFromBackend();
 
         return view;
     }
 
-    private List<RideDetailsDTO> createMockRides() {
-        List<RideDetailsDTO> rides = new ArrayList<>();
+    private void loadRideHistoryFromBackend() {
+        Long driverId = AuthService.getInstance().getLoggedInUserId(requireContext());
 
-        // ===== RIDE 1 =====
-        RideDetailsDTO ride1 = new RideDetailsDTO();
-        ride1.id = 1L;
+        DriverService driverService = DriverService.getInstance();
+        driverService.getDriverRideHistory(driverId, new Callback<ResponseBody>() {
 
-        ride1.ordererName = "Danica Komatović";
-        ride1.linkedPassengers = List.of("Petar Petrović", "Milica Ilić");
+            @Override
+            public void onResponse(
+                    @NonNull Call<ResponseBody> call,
+                    @NonNull Response<ResponseBody> response
+            ) {
+                if (!isAdded()) return;
 
-        ride1.driverName = "Marko Marković";
-        ride1.vehicle = "Toyota Corolla (NS-123-AB)";
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String json = response.body().string();
 
-        ride1.startLocation = new LocationDTO();
-        ride1.startLocation.latitude = 45.2671;
-        ride1.startLocation.longitude = 19.8335;
-        ride1.startLocation.address = "Bulevar Oslobođenja 1, Novi Sad";
+                        Gson gson = new Gson();
+                        Type listType = new TypeToken<List<RideDetailsDTO>>() {}.getType();
+                        rideHistory = gson.fromJson(json, listType);
 
-        ride1.endLocation = new LocationDTO();
-        ride1.endLocation.latitude = 45.2550;
-        ride1.endLocation.longitude = 19.8450;
-        ride1.endLocation.address = "Narodnog fronta 12, Novi Sad";
+                        openRideHistoryFragment();
 
-        LocationDTO stop1 = new LocationDTO();
-        stop1.latitude = 45.2600;
-        stop1.longitude = 19.8400;
-        stop1.address = "Futoška 10, Novi Sad";
-        ride1.routeStops = List.of(stop1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(
+                                getContext(),
+                                "Error parsing data",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                } else {
+                    Toast.makeText(
+                            getContext(),
+                            "Failed loading ride history",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
 
-        ride1.startTime = "2026-01-12T14:30";
-        ride1.endTime = "2026-01-12T14:55";
+            @Override
+            public void onFailure(
+                    @NonNull Call<ResponseBody> call,
+                    @NonNull Throwable t
+            ) {
+                if (!isAdded()) return;
 
-        ride1.price = 650.0;
-        ride1.status = "FINISHED";
-
-        ReviewDTO r1 = new ReviewDTO();
-        r1.passengerName = "Petar Petrović";
-        r1.driverRating = 5;
-        r1.vehicleRating = 4;
-        r1.comment = "Vožnja je bila prijatna i brza.";
-
-        ride1.reviews = List.of(r1);
-
-        rides.add(ride1);
-
-        // ===== RIDE 2 =====
-        RideDetailsDTO ride2 = new RideDetailsDTO();
-        ride2.id = 2L;
-
-        ride2.ordererName = "Ana Jovanović";
-        ride2.linkedPassengers = List.of();
-
-        ride2.driverName = "Nikola Ilić";
-        ride2.vehicle = "Škoda Octavia (BG-456-CD)";
-
-        ride2.startLocation = new LocationDTO();
-        ride2.startLocation.latitude = 45.2512;
-        ride2.startLocation.longitude = 19.8369;
-        ride2.startLocation.address = "Zmaj Jovina 5, Novi Sad";
-
-        ride2.endLocation = new LocationDTO();
-        ride2.endLocation.latitude = 45.2401;
-        ride2.endLocation.longitude = 19.8223;
-        ride2.endLocation.address = "Bulevar Evrope 44, Novi Sad";
-
-        ride2.routeStops = List.of();
-
-        ride2.startTime = "2026-01-13T09:10";
-        ride2.endTime = "2026-01-13T09:32";
-
-        ride2.price = 420.0;
-        ride2.status = "FINISHED";
-
-        ride2.reviews = List.of(); // nema recenzija
-
-        rides.add(ride2);
-
-        // ===== RIDE 3 =====
-        RideDetailsDTO ride3 = new RideDetailsDTO();
-        ride3.id = 3L;
-
-        ride3.ordererName = "Milan Stojanović";
-        ride3.linkedPassengers = List.of("Ivana Stojanović");
-
-        ride3.driverName = "Jovan Petrović";
-        ride3.vehicle = "VW Passat (NS-789-EF)";
-
-        ride3.startLocation = new LocationDTO();
-        ride3.startLocation.latitude = 45.2608;
-        ride3.startLocation.longitude = 19.8512;
-        ride3.startLocation.address = "Liman 3, Novi Sad";
-
-        ride3.endLocation = new LocationDTO();
-        ride3.endLocation.latitude = 45.2739;
-        ride3.endLocation.longitude = 19.8201;
-        ride3.endLocation.address = "Detelinara, Novi Sad";
-
-        ride3.routeStops = List.of();
-
-        ride3.startTime = "2026-01-14T18:45";
-        ride3.endTime = "2026-01-14T19:05";
-
-        ride3.price = 510.0;
-        ride3.status = "CANCELLED";
-        ride3.cancelledBy = "DRIVER";
-
-        rides.add(ride3);
-
-        return rides;
+                Toast.makeText(
+                        getContext(),
+                        "Failed server communication",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
     }
 
+    private void openRideHistoryFragment() {
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(
+                        R.id.fragment_container,
+                        new RideHistoryFragment(rideHistory)
+                )
+                .commit();
+    }
 }

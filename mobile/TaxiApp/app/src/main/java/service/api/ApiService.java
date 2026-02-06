@@ -58,4 +58,7 @@ public interface ApiService {
 
     @GET("api/drivers/{id}/availability")
     Call<ResponseBody> getDriverAvailability(@Path("id") Long driverId);
+
+    @GET("api/drivers/{id}/ride-history")
+    Call<ResponseBody> getDriverRideHistory(@Path("id") Long driverId);
 }
