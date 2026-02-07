@@ -2,6 +2,7 @@ package com.example.taxiapp.ui.map;
 import com.example.taxiapp.R;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.lights.LightsManager;
@@ -31,11 +32,8 @@ public class MapFragment extends Fragment {
 
     private MapView mapView;
     private List<ActiveVehicleLocationResponse> vehicleLocations = new ArrayList<>();
+    private List<Marker> vehicleMarkers = new ArrayList<>();
 
-    public MapFragment(){}
-    public MapFragment(List<ActiveVehicleLocationResponse> vehicleLocations){
-        this.vehicleLocations = vehicleLocations;
-    }
 
     @Nullable
     @Override
@@ -49,34 +47,7 @@ public class MapFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        mapView = view.findViewById(R.id.mapView);
-
-        mapView.setTileSource(TileSourceFactory.MAPNIK);
-        mapView.setMultiTouchControls(true);
-        GeoPoint startPoint = new GeoPoint( 45.25167, 19.83694);
-        MapController mapController = (MapController) mapView.getController();
-        mapController.setZoom(16.0);
-        mapController.setCenter(startPoint);
-
-        // Scaling the icon for vehicle display
-        Drawable taxiIcon = ContextCompat.getDrawable(requireContext(), R.drawable.taxi_no_shadow);
-        Bitmap bitmap = ((BitmapDrawable) taxiIcon).getBitmap();
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 32, 32, false);
-
-        for (ActiveVehicleLocationResponse vehicle : vehicleLocations) {
-            GeoPoint point = new GeoPoint(vehicle.latitude, vehicle.longitude);
-
-            Marker marker = new Marker(mapView);
-            marker.setPosition(point);
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            marker.setIcon(new BitmapDrawable(getResources(), scaledBitmap));
-            marker.setSubDescription(
-                    vehicle.available ? "Available" : "Unavailable"
-            );
-
-            mapView.getOverlays().add(marker);
-        }
-
+        renderMap(view);
         return view;
     }
 
@@ -94,5 +65,52 @@ public class MapFragment extends Fragment {
         if (mapView != null) {
             mapView.onPause();
         }
+    }
+
+    private void renderMap(View view){
+        mapView = view.findViewById(R.id.mapView);
+
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
+        mapView.setMultiTouchControls(true);
+        GeoPoint startPoint = new GeoPoint( 45.25167, 19.83694);
+        MapController mapController = (MapController) mapView.getController();
+        mapController.setZoom(16.0);
+        mapController.setCenter(startPoint);
+    }
+
+    public void updateVehicleLocations(List<ActiveVehicleLocationResponse> newLocations) {
+        this.vehicleLocations.clear();
+        this.vehicleLocations.addAll(newLocations);
+
+        if (mapView != null) {
+            renderMarkers();
+        }
+    }
+    private void renderMarkers(){
+        for (Marker marker : vehicleMarkers) {
+            mapView.getOverlays().remove(marker);
+        }
+        vehicleMarkers.clear();
+
+        // Scaling the icon for vehicle display
+        Drawable taxiIcon = ContextCompat.getDrawable(requireContext(), R.drawable.taxi_no_shadow);
+        Bitmap bitmap = ((BitmapDrawable) taxiIcon).getBitmap();
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 32, 32, false);
+
+        for (ActiveVehicleLocationResponse vehicle : vehicleLocations) {
+            GeoPoint point = new GeoPoint(vehicle.latitude, vehicle.longitude);
+
+            Marker marker = new Marker(mapView);
+            marker.setPosition(point);
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            marker.setIcon(new BitmapDrawable(getResources(), scaledBitmap));
+            marker.setTitle(
+                    vehicle.available ? "Available" : "Unavailable"
+            );
+
+            mapView.getOverlays().add(marker);
+            vehicleMarkers.add(marker);
+        }
+        mapView.invalidate();
     }
 }
