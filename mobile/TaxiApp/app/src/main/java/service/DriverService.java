@@ -31,4 +31,9 @@ public class DriverService {
         api.getDriverAvailability(driverId)
                 .enqueue(callback);
     }
+
+    public void getDriverRideHistory(Long driverId, Callback<ResponseBody> callback){
+        ApiService api = RetrofitClient.getApiService();
+        api.getDriverRideHistory(driverId).enqueue(callback);
+    }
 }

@@ -27,7 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import service.api.ApiService;
 
-public class PassengerRideDetailsFragment extends Fragment {
+public class  PassengerRideDetailsFragment extends Fragment {
 
     private static final String ARG_RIDE_ID = "ride_id";
     private int rideId;

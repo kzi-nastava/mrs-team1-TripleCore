@@ -19,6 +19,7 @@ import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
 import com.example.taxiapp.ui.auth.reset_password.ResetPasswordFragment;
 import com.example.taxiapp.ui.driver.DriverHomeFragment;
+import com.example.taxiapp.ui.driver.DriverRideHistoryFragment;
 import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         // DRIVER
         else if (id == R.id.nav_ride_history && "DRIVER".equals(userType)) {
-            fragmentToLoad = new RideHistoryFragment();
+            fragmentToLoad = new DriverRideHistoryFragment();
         } else if (id == R.id.nav_profile && "DRIVER".equals(userType)) {
             fragmentToLoad = new DriverAdditionalInfoFragment();
         }
