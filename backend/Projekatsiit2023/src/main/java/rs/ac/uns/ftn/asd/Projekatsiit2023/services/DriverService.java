@@ -3,17 +3,18 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.vehicle.ActiveRideVehicleDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.VehicleType;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Driver;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Vehicle;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.DriverRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.VehicleRepository;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -27,7 +28,7 @@ public class DriverService {
     public DriverService(
             DriverRepository dr,
             VehicleRepository vr,
-            RideService rs){
+            RideService rs) {
         this.driverRepository = dr;
         this.vehicleRepository = vr;
         this.rideService = rs;
