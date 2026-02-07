@@ -2,6 +2,7 @@ package service.api;
 
 import java.util.List;
 
+import model.ActiveVehicleLocationResponse;
 import model.LoginRequest;
 import model.LoginResponse;
 import model.RegisterRequest;
@@ -33,6 +34,11 @@ public interface ApiService {
             @Query("userId") Long userId,
             @Query("newPassword") String newPassword
     );
+
+    // Guest
+
+    @GET("api/vehicles/locations")
+    Call<List<ActiveVehicleLocationResponse>> getVehicleLocations();
 
     // Admin
 
