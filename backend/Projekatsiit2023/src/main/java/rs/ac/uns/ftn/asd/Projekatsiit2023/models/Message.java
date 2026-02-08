@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "messages")
 @Getter
 @Setter
+
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

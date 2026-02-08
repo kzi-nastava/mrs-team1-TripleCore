@@ -2,15 +2,11 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023.services;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ChatResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.chat.ChatResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.chat.MessageResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Chat;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Message;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Passenger;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.models.User;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.ChatRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.MessageRepository;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.PassengerRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.*;
 
 import javax.naming.directory.InvalidAttributesException;
 import java.time.LocalDateTime;
@@ -22,34 +18,24 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final PassengerRepository passengerRepository;
+    private final DriverRepository driverRepository;
+    private final AdminRepository adminRepository;
 
     public ChatService(
             ChatRepository chatRepository,
             MessageRepository messageRepository,
-            PassengerRepository passengerRepository
+            PassengerRepository passengerRepository,
+            DriverRepository driverRepository,
+            AdminRepository adminRepository
     ){
         this.chatRepository = chatRepository;
         this.messageRepository = messageRepository;
         this.passengerRepository = passengerRepository;
+        this.driverRepository = driverRepository;
+        this.adminRepository = adminRepository;
     }
 
-    public void saveMessage(User user, String text) throws InvalidAttributesException {
-
-        Chat chat;
-
-        // checks if the chat exists and if not creates it
-        // admin cannot be the one to create the chat
-        if (chatRepository.findByUserId(user.getId()).isEmpty()){
-            if (user.getRole().equals(UserRole.ADMIN)){
-                throw new InvalidAttributesException("Admin cannot create chats");
-            }
-
-            chat = new Chat();
-            chat.setUser(user);
-        } else {
-            chat = chatRepository.findByUserId(user.getId()).get();
-        }
-
+    private void saveMessageToChat(Chat chat, User user, String text) {
         Message message = new Message();
         message.setChat(chat);
         message.setSender(user);
@@ -61,8 +47,57 @@ public class ChatService {
 
         chatRepository.save(chat);
         messageRepository.save(message);
-
     }
+
+    private Chat createChat(User user) throws InvalidAttributesException {
+        if (user.getRole().equals(UserRole.ADMIN)){
+            throw new InvalidAttributesException("Admin cannot create a chat");
+        }
+
+        Chat chat = new Chat();
+        chat.setUser(user);
+
+        chatRepository.save(chat);
+        return chat;
+    }
+
+    public void saveUserMessage(Long userId, String text) throws InvalidAttributesException {
+        User user;
+        if (passengerRepository.findById(userId).isPresent())
+            user = passengerRepository.findById(userId).get();
+        else if (driverRepository.findById(userId).isPresent())
+            user = driverRepository.findById(userId).get();
+        else
+            throw new EntityNotFoundException("User not found");
+
+        Chat chat;
+
+        if (chatRepository.findByUserId(userId).isEmpty()){
+            chat = createChat(user);
+        } else {
+            chat = chatRepository.findByUserId(userId).get();
+        }
+
+        saveMessageToChat(chat, user, text);
+    }
+
+    public void saveAdminMessage(Long chatId, Long adminId, String text){
+        User user;
+        if (adminRepository.findById(adminId).isPresent())
+            user = adminRepository.findById(adminId).get();
+        else
+            throw new EntityNotFoundException("User not found");
+
+        Chat chat;
+        if (chatRepository.findById(chatId).isPresent())
+            chat = chatRepository.findById(chatId).get();
+        else{
+            throw new EntityNotFoundException("Chat not found");
+        }
+
+        saveMessageToChat(chat, user, text);
+    }
+
 
     public ChatResponse createChatResponse(Chat chat){
         List<Message> messages = messageRepository.findByChatId(chat.getId());
@@ -70,13 +105,21 @@ public class ChatService {
         ChatResponse response = new ChatResponse();
         response.chatId = chat.getId();
         response.userId = chat.getUser().getId();
-        response.messages = messages;
+        for (Message message : messages){
+            MessageResponse messageResponse = new MessageResponse();
+            messageResponse.id = message.getId();
+            messageResponse.senderId = message.getSender().getId();
+            messageResponse.senderRole = message.getSenderRole();
+            messageResponse.text = message.getText();
+            messageResponse.sentAt = message.getSentAt();
+            response.messages.add(messageResponse);
+        }
 
         return response;
     }
 
-    public ChatResponse getChatResponse(Long chatId){
-        Chat chat = chatRepository.findById(chatId).orElseThrow(
+    public ChatResponse getUserChatResponse(Long userId){
+        Chat chat = chatRepository.findByUserId(userId).orElseThrow(
                 () -> new EntityNotFoundException("Chat not found")
         );
 
@@ -91,12 +134,5 @@ public class ChatService {
         }
 
         return responses;
-    }
-
-    public void createTest() throws InvalidAttributesException {
-
-        Passenger passenger = passengerRepository.findById(2L).get();
-        saveMessage(passenger, "I am testing the feature");
-
     }
 }

@@ -1,15 +1,18 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.chat.SaveAdminMessageRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.request.chat.SaveUserMessageRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.chat.ChatResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.ChatService;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/chat")
+@RequestMapping("/api/chats")
 public class ChatController {
 
     private final ChatService chatService;
@@ -20,13 +23,45 @@ public class ChatController {
         this.chatService = chatService;
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<?> testSavingMessage(){
+    @PostMapping("/save-user-message")
+    public ResponseEntity<?> saveUserMessage(@Valid @RequestBody SaveUserMessageRequest request){
         try{
-            chatService.createTest();
-            return ResponseEntity.ok("Message saved");
+            chatService.saveUserMessage(request.senderId, request.text);
+            return ResponseEntity.ok("Message saved successfully");
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @PostMapping("/save-admin-message")
+    public ResponseEntity<?> saveAdminMessage(@Valid @RequestBody SaveAdminMessageRequest request){
+        try{
+            chatService.saveAdminMessage(request.chatId, request.senderId, request.text);
+            return ResponseEntity.ok("Message saved successfully");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<?> getUserChat(@PathVariable("id") Long id){
+        try{
+            ChatResponse response = chatService.getUserChatResponse(id);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllChats(){
+        try{
+            List<ChatResponse> response = chatService.getAllChatResponses();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
 }
