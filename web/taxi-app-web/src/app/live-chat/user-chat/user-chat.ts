@@ -40,6 +40,12 @@ export class UserChatComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading chat:', err);
+        this.chat = {
+          chatId: 0,
+          userId: this.currentUserId,
+          userName: '' ,
+          messages: []
+        };
       }
     });
   }

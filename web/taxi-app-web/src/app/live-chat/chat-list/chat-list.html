@@ -1,0 +1,34 @@
+<div class="chat-list-container">
+  <div *ngIf="!chats || chats.length === 0" class="no-chats">
+    No chats yet...
+  </div>
+  <div
+    class="chat-item"
+    *ngFor="let chat of chats"
+    (click)="selectChat(chat)"
+  >
+    <!-- AVATAR -->
+    <div class="avatar">
+      {{ chat.userName.charAt(0) }}
+    </div>
+
+    <!-- INFO -->
+    <div class="chat-info">
+      <div class="chat-header">
+        <span class="chat-name">{{ chat.userName }}</span>
+        <span class="chat-time">
+          {{ chat.messages?.length
+            ? (chat.messages[chat.messages.length - 1].sentAt | date:'HH:mm')
+            : '' }}
+        </span>
+      </div>
+
+      <div class="chat-preview">
+        {{ chat.messages?.length
+          ? chat.messages[chat.messages.length - 1].text
+          : 'No messages yet' }}
+      </div>
+    </div>
+  </div>
+</div>
+
