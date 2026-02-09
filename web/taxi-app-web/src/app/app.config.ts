@@ -135,6 +135,10 @@ const routes: Routes = [
     loadComponent: () => import('./passenger/passenger-notifications/passenger-notifications').then(m => m.PassengerNotificationsComponent)
   },
   {
+    path: 'admin-pricing',
+    loadComponent: () => import('./admin/admin-pricing/admin-pricing').then(m => m.AdminPricingComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
