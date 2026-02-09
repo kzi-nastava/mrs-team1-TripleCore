@@ -1,6 +1,3 @@
-
-
-
 .chat-card{
     z-index: 2000;
 
@@ -17,7 +14,6 @@
 
     display: flex;
     flex-direction: column;
-    
 }
 
 
@@ -34,7 +30,6 @@
   color: #555;
 }
 
-/* KONTEJNER ZA PORUKE */
 .messages-container {
   flex: 1;
   overflow-y: auto;
@@ -45,7 +40,6 @@
   background-color: #f9f3ff;
 }
 
-/* BUBBLE */
 .message-bubble {
   max-width: 70%;
   padding: 8px 12px;
@@ -69,12 +63,10 @@
   border: 1px solid #e0e0e0;
 }
 
-/* TEKST */
 .message-text {
   white-space: pre-wrap;
 }
 
-/* VREME */
 .message-time {
   font-size: 11px;
   color: #777;
@@ -82,7 +74,6 @@
   align-self: flex-end;
 }
 
-/* DONJI DEO */
 .chat-input {
   display: flex;
   gap: 8px;
@@ -115,13 +106,12 @@
 }
 
 .send-btn:not(:disabled):hover {
-  background-color: #4b0b88; /* tamnija boja na hover */
+  background-color: #4b0b88; 
 }
 
-/* Stil kada je dugme disabled */
 .send-btn:disabled {
-  background-color: #cccccc; /* svetlo siva */
-  color: #666666;            /* tekst sivo */
+  background-color: #cccccc; 
+  color: #666666;            
   box-shadow: none;
   cursor: auto;
 }
