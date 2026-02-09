@@ -26,9 +26,17 @@
     <button class="nav-link nav-btn" (click)="onLogoutClick()">Log out</button>
   </li>
 
-  <a class="nav-link img-and-link" routerLink="/home" matTooltip="Live Chat">
-    <img src="icons/icons8-chat-48.png" class="nav-item-icon">
-  </a>
+  <button 
+    class="nav-link img-and-link"  
+    matTooltip="Live Chat"
+    (click)="openChat()">
+      <img src="icons/icons8-chat-48.png" class="nav-item-icon">
+    </button>
+
+    <app-user-chat
+      *ngIf="chatOpened"
+      (close)="closeChat()">
+    </app-user-chat>
 </app-navbar>
 
 <div class="ride-history-container">

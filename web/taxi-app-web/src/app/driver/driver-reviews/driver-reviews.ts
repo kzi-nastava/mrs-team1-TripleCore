@@ -8,10 +8,11 @@ import { DriverAvailabilityService } from '../../services/driver-service/driver-
 import { LogoutService } from '../../services/auth-service/logout-service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
+import { UserChatComponent } from '../../live-chat/user-chat/user-chat';
 
 @Component({
   selector: 'app-driver-reviews',
-  imports: [NavbarComponent, ReviewsPageComponent, MatTooltipModule, RouterLink],
+  imports: [NavbarComponent, ReviewsPageComponent, MatTooltipModule, RouterLink, UserChatComponent],
   templateUrl: './driver-reviews.html',
   styleUrl: './driver-reviews.css',
 })

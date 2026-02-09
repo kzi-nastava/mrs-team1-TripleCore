@@ -22,6 +22,7 @@ import { RideDetailsResponse } from '../../models/ride-details-response';
 import { RideCancelRequest } from '../../models/ride-cancel-request';
 import { ReviewFormComponent } from '../../reviews/review-form/review-form';
 import { ActiveRideTrackingComponent } from '../../active-ride-tracking/active-ride-tracking';
+import { UserChatComponent } from '../../live-chat/user-chat/user-chat';
 
 @Component({
   selector: 'app-passenger-my-rides',
@@ -41,14 +42,22 @@ import { ActiveRideTrackingComponent } from '../../active-ride-tracking/active-r
     NavbarComponent,
     RouterLink,
     ReviewFormComponent,
-    ActiveRideTrackingComponent
+    ActiveRideTrackingComponent,
+    UserChatComponent
   ],
   providers: [DatePipe],
   templateUrl: './passenger-my-rides.html',
   styleUrls: ['./passenger-my-rides.css']
 })
 export class PassengerMyRidesComponent implements OnInit {
-  
+  chatOpened: boolean = false;
+  openChat(){
+    this.chatOpened = true;
+  }
+  closeChat(){
+    this.chatOpened = false;
+  }
+
   allRides: PassengerRide[] = [];
   filteredRides: PassengerRide[] = [];
   

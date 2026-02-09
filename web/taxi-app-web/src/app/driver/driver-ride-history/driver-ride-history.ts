@@ -9,11 +9,12 @@ import { DriverAvailabilityService } from '../../services/driver-service/driver-
 import { LogoutService } from '../../services/auth-service/logout-service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
+import { UserChatComponent } from '../../live-chat/user-chat/user-chat';
 
 @Component({
   selector: 'app-driver-ride-history',
   standalone: true,
-  imports: [NavbarComponent, RideHistoryTableComponent, RouterModule, MatTooltipModule, RouterLink],
+  imports: [NavbarComponent, RideHistoryTableComponent, RouterModule, MatTooltipModule, RouterLink, UserChatComponent],
   templateUrl: './driver-ride-history.html',
   styleUrls: ['./driver-ride-history.css'],
 })

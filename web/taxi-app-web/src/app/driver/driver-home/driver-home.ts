@@ -7,6 +7,7 @@ import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoutService } from '../../services/auth-service/logout-service';
 import { DriverAvailabilityService } from '../../services/driver-service/driver-availability-service';
 import { DriverStatusService } from '../../services/driver-service/driver-status-service';
+import { UserChatComponent } from '../../live-chat/user-chat/user-chat';
 
 @Component({
   selector: 'app-driver-home',
@@ -16,12 +17,21 @@ import { DriverStatusService } from '../../services/driver-service/driver-status
     MapComponent,
     NavbarComponent,
     MatTooltipModule,
-    RouterModule
+    RouterModule,
+    UserChatComponent
   ],
   templateUrl: './driver-home.html',
   styleUrls: ['./driver-home.css']
 })
 export class DriverHomeComponent implements OnInit {
+
+  chatOpened: boolean = false;
+  openChat(){
+    this.chatOpened = true;
+  }
+  closeChat(){
+    this.chatOpened = false;
+  }
 
   isActive: boolean = true;
   isLoading: boolean = false;

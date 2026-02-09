@@ -7,15 +7,24 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { OrderRideRegisteredUser } from '../order-ride-registered-user/order-ride-registered-user';
 import { LogoutService } from '../../services/auth-service/logout-service';
+import { UserChatComponent } from '../../live-chat/user-chat/user-chat';
 
 @Component({
   selector: 'app-passenger-home',
   standalone: true,
-  imports: [MapComponent, NavbarComponent, RouterModule, CommonModule, MatTooltipModule, OrderRideRegisteredUser],
+  imports: [MapComponent, NavbarComponent, RouterModule, CommonModule, MatTooltipModule, OrderRideRegisteredUser, UserChatComponent],
   templateUrl: './passenger-home.html',
   styleUrls: ['./passenger-home.css'],
 })
 export class PassengerHomeComponent {
+
+  chatOpened: boolean = false;
+  openChat(){
+    this.chatOpened = true;
+  }
+  closeChat(){
+    this.chatOpened = false;
+  }
 
   canOrderRide: boolean = true;
   favoriteRouteData: any = null;
