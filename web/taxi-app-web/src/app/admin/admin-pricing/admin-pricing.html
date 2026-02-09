@@ -1,7 +1,7 @@
 <div class="price-form-container">
   <h2>Change Price List</h2>
 
-  <form (ngSubmit)="submit()" #priceForm="ngForm">
+  <form>
 
     <div class="price-row">
       <label for="standard">Standard vehicle</label>
@@ -43,10 +43,14 @@
     </div>
 
     <div class="actions">
-      <button>
+      <button 
+      (click)="resetForm()">
         Reset
       </button>
-      <button type="submit" [disabled]="priceForm.invalid">
+      <button 
+      type="submit" 
+      [disabled]="!isFormValid()"
+      (click)="submitForm()">
         Save changes
       </button>
     </div>
