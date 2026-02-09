@@ -18,6 +18,8 @@ a {
 
 /* Navbar styles */
 .img-and-link{
+  border: none;
+  background: transparent;
   display: flex;
   flex-direction: row;
   align-items: center;

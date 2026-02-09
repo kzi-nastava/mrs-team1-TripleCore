@@ -9,14 +9,23 @@ import { DriverStatusService } from '../../services/driver-service/driver-status
 import { DriverAvailabilityService } from '../../services/driver-service/driver-availability-service';
 import { UserProfileService } from '../../services/user-info-service/user-info-service';
 import { DriverProfileResponse, VehicleType } from '../../models/driver-profile-response';
+import { UserChatComponent } from '../../live-chat/user-chat/user-chat';
 
 @Component({
   selector: 'app-driver-additional-info',
-  imports: [CommonModule, NavbarComponent, MatTooltipModule, RouterModule],
+  imports: [CommonModule, NavbarComponent, MatTooltipModule, RouterModule, UserChatComponent],
   templateUrl: './driver-additional-info.html',
   styleUrls: ['./driver-additional-info.css'],
 })
 export class DriverAdditionalInfoComponent implements OnInit {
+  chatOpened: boolean = false;
+  openChat(){
+    this.chatOpened = true;
+  }
+  closeChat(){
+    this.chatOpened = false;
+  }
+
   isActive: boolean = true;
   isLoading: boolean = false;
 

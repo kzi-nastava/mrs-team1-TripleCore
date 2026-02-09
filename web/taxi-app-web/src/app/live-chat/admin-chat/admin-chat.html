@@ -1,0 +1,27 @@
+<mat-card class="chat-card">
+  <button class="close-btn" (click)="closeSelf()">×</button>
+  <div class="header">
+    <button 
+    class="back-btn"
+    *ngIf="chatOpened"
+    (click)="closeChat()">
+      <img src="icons\back-arrow-purple.png" alt="back">
+    </button>
+    <h2 class="Title">
+      {{ chatOpened && selectedChat ? selectedChat.userName : 'Live Support' }}
+    </h2>
+  </div>
+
+  <app-chat-list
+  *ngIf="!chatOpened"
+  [chats]="chatList"
+  (chatSelected)="openChat($event)">
+  </app-chat-list>
+
+  <app-chat
+  *ngIf="chatOpened && selectedChat"
+  [chat]="selectedChat">
+  </app-chat>
+  
+</mat-card>
+

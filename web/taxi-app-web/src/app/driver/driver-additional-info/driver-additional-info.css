@@ -1,3 +1,8 @@
+app-navbar{
+    max-height: 100px;
+    position: relative;
+}
+
 .status-btn {
   position: fixed;
   bottom: 20px;

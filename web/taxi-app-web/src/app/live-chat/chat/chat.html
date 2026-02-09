@@ -1,0 +1,37 @@
+<div class="messages-container" #messagesContainer>
+<div
+    *ngFor="let msg of chat.messages"
+    class="message-bubble"
+    [ngClass]="{
+    'own-message': msg.senderId === currentUserId,
+    'other-message': msg.senderId !== currentUserId
+    }"
+>
+    <div class="message-text">{{ msg.text }}</div>
+    <div class="message-time">
+    {{ msg.sentAt | date: 'HH:mm' }}
+    </div>
+</div>
+</div>
+
+<div class="chat-input">
+<mat-form-field appearance="outline" class="input-field">
+    <input
+    matInput
+    placeholder="Enter Message..."
+    [(ngModel)]="newMessageText"
+    />
+</mat-form-field>
+
+<button 
+class="send-btn"
+(click)="sendMessage()"
+[disabled]="!newMessageText?.trim()">
+    Send
+</button>
+</div>
+
+
+    
+
+

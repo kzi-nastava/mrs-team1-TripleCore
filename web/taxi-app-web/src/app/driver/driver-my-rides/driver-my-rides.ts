@@ -21,6 +21,7 @@ import { RideStatus } from '../../models/ride-details-response';
 import { DriverService } from '../../services/driver-service';
 import { RideService } from '../../services/ride-service/ride-service';
 import { ActiveRideTrackingComponent } from '../../active-ride-tracking/active-ride-tracking';
+import { UserChatComponent } from '../../live-chat/user-chat/user-chat';
 
 @Component({
   selector: 'app-driver-my-rides',
@@ -39,13 +40,22 @@ import { ActiveRideTrackingComponent } from '../../active-ride-tracking/active-r
     FormsModule,
     NavbarComponent,
     RouterLink,
-    ActiveRideTrackingComponent
+    ActiveRideTrackingComponent,
+    UserChatComponent
   ],
   providers: [DatePipe],
   templateUrl: './driver-my-rides.html',
   styleUrls: ['./driver-my-rides.css']
 })
 export class DriverMyRidesComponent implements OnInit {
+  chatOpened: boolean = false;
+  openChat(){
+    this.chatOpened = true;
+  }
+  closeChat(){
+    this.chatOpened = false;
+  }
+
   allRides: FrontendRide[] = [];
   filteredRides: FrontendRide[] = [];
   

@@ -1,0 +1,34 @@
+.chat-card{
+    z-index: 2000;
+
+    position: absolute; 
+    top: 50%;        
+    right: 20px;     
+    align-self: center;
+    margin-left: auto;
+    margin-right: 10px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+
+    width: 400px;
+    height: 600px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  border-radius: none;
+  font-size: 40px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #555;
+}
