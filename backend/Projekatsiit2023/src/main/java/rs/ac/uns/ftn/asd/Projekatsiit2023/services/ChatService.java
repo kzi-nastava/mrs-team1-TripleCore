@@ -105,9 +105,9 @@ public class ChatService {
         ChatResponse response = new ChatResponse();
         response.chatId = chat.getId();
         response.userId = chat.getUser().getId();
+        response.userName = chat.getUser().getFirstName() + " " + chat.getUser().getLastName();
         for (Message message : messages){
             MessageResponse messageResponse = new MessageResponse();
-            messageResponse.id = message.getId();
             messageResponse.senderId = message.getSender().getId();
             messageResponse.senderRole = message.getSenderRole();
             messageResponse.text = message.getText();

@@ -1,5 +1,4 @@
-<p>test works!</p>
-
+<app-navbar></app-navbar>
 
 <button (click)="openChild()">Open component</button>
 
@@ -8,7 +7,7 @@
   (close)="closeChild()">
 </app-active-ride-tracking> -->
 
-<app-review-form
+<app-chat
   *ngIf="isChildOpen"
   (close)="closeChild()">
-</app-review-form>
+</app-chat>

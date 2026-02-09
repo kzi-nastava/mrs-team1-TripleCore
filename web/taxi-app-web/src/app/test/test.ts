@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { ActiveRideTrackingComponent } from '../active-ride-tracking/active-ride-tracking';
 import { CommonModule } from '@angular/common';
-import { ReviewFormComponent } from '../reviews/review-form/review-form';
+import { ChatComponent } from '../live-chat/chat/chat';
+import { NavbarComponent } from '../shared/navbar/navbar';
 
 @Component({
   selector: 'app-test',
-  imports: [ActiveRideTrackingComponent, CommonModule, ReviewFormComponent],
+  imports: [CommonModule, ChatComponent, NavbarComponent],
   templateUrl: './test.html',
   styleUrl: './test.css',
 })

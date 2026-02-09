@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LiveSupportComponent } from './live-support';
+import { ChatComponent } from './chat';
 
-describe('LiveSupport', () => {
-  let component: LiveSupportComponent;
-  let fixture: ComponentFixture<LiveSupportComponent>;
+describe('Chat', () => {
+  let component: ChatComponent;
+  let fixture: ComponentFixture<ChatComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LiveSupportComponent]
+      imports: [ChatComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(LiveSupportComponent);
+    fixture = TestBed.createComponent(ChatComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
