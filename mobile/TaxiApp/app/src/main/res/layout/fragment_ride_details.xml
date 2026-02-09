@@ -37,7 +37,7 @@
             android:text="Inconsistency Reports"/>
         <TextView
             style="@style/DetailsParagraph"
-            android:text="Unexpected stop"/>
+            android:id="@+id/tvRideDetailsInconsistencies"/>
         <View style="@style/HorizontalSeparator"/>
 
         <TextView
@@ -45,7 +45,7 @@
             android:text="Ride Ratings"/>
         <TextView
             style="@style/DetailsParagraph"
-            android:text="4.7"/>
+            android:id="@+id/tvRideDetailsRatings"/>
         <View style="@style/HorizontalSeparator"/>
 
         <TextView
@@ -53,7 +53,7 @@
             android:text="Ride Info"/>
         <TextView
             style="@style/DetailsParagraph"
-            android:text="Route: Bulevar Oslobođenja → Trg Republike\nStart time: 14:30\nEnd time: 15:05\nPrice: 600 RSD\nStatus: Completed"/>
+            android:id="@+id/tvRideDetailsInfo"/>
         <View style="@style/HorizontalSeparator"/>
 
         <TextView
@@ -61,7 +61,7 @@
             android:text="Driver"/>
         <TextView
             style="@style/DetailsParagraph"
-            android:text="Name: Marko Marković\nVehicle: Audi A3\nRating:    4.8"/>
+            android:id="@+id/tvRideDetailsDriver"/>
         <View style="@style/HorizontalSeparator"/>
 
         <TextView
@@ -69,7 +69,15 @@
             android:text="Passengers"/>
         <TextView
             style="@style/DetailsParagraph"
-            android:text="Ana Petrović, Ivana Ilić"/>
+            android:id="@+id/tvRideDetailsPassengers"/>
+        <View style="@style/HorizontalSeparator"/>
+
+        <TextView
+            style="@style/HeadingText"
+            android:text="Cancelled Info"/>
+        <TextView
+            style="@style/DetailsParagraph"
+            android:id="@+id/tvRideDetailsCancelled"/>
         <View style="@style/HorizontalSeparator"/>
 
         <TextView
@@ -77,7 +85,8 @@
             android:text="PANIC Info"/>
         <TextView
             style="@style/DetailsParagraph"
-            android:text="Triggered: Yes\nTriggered by: Passenger\nTime: 10:42"/>
+            android:id="@+id/tvRideDetailsPanic"/>
+        <View style="@style/HorizontalSeparator"/>
 
 
 

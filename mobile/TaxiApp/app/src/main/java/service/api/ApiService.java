@@ -5,6 +5,7 @@ import java.util.List;
 import model.DriverProfileChangeRequest;
 import model.DriverProfileChangeRequestResponse;
 import model.DriverProfileResponse;
+import model.ActiveVehicleLocationResponse;
 import model.LoginRequest;
 import model.LoginResponse;
 import model.RegisterRequest;
@@ -39,6 +40,11 @@ public interface ApiService {
             @Query("userId") Long userId,
             @Query("newPassword") String newPassword
     );
+
+    // Guest
+
+    @GET("api/vehicles/locations")
+    Call<List<ActiveVehicleLocationResponse>> getVehicleLocations();
 
     // Admin
 
@@ -95,4 +101,6 @@ public interface ApiService {
     @PUT("/api/admin/driver-profile-requests/{id}/reject")
     Call<String> rejectDriverRequest(@Path("id") Long requestId);
 
+    @GET("api/drivers/{id}/ride-history")
+    Call<ResponseBody> getDriverRideHistory(@Path("id") Long driverId);
 }

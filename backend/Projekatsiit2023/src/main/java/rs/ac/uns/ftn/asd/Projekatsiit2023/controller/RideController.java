@@ -110,12 +110,6 @@ public class  RideController {
         }
     }
 
-    private boolean isRideInProgress(Long id) {
-        return id == 2 || id == 4;
-    }
-
-
-
     @PostMapping ("/{id}/finish")
     public ResponseEntity<?> finishRide(
             @PathVariable("id") Long id){
