@@ -11,6 +11,9 @@ import { ChatResponse } from '../../models/chat-response';
 import { MessageResponse } from '../../models/chat-response';
 import { UserRole } from '../../models/chat-response';
 
+import { Input } from '@angular/core';
+import { ChatService } from '../../services/chat-service';
+
 @Component({
   selector: 'app-chat',
   standalone: true,
@@ -25,100 +28,74 @@ import { UserRole } from '../../models/chat-response';
   templateUrl: './chat.html',
   styleUrls: ['./chat.css'],
 })
-export class ChatComponent implements AfterViewInit{
+export class ChatComponent implements AfterViewInit {
 
-  @Output() close = new EventEmitter<void>();
+  @Input() chat!: ChatResponse;  
+  currentUserId = Number(localStorage.getItem('userId'));
+  currentUserRole = localStorage.getItem('role');
 
-  closeSelf(): void {
-    this.close.emit();
-  }
+  constructor(private chatService: ChatService) {}
 
-  currentUserId = 42;
   newMessageText = '';
 
-  chat: ChatResponse = {
-  chatId: 1,
-  userId: 42,
-  userName: 'Mia Milic',
-  messages: [
-    {
-      text: 'Zdravo, gde se trenutno nalazite?',
-      senderId: 42,
-      senderRole: UserRole.PASSENGER,
-      sentAt: '2026-02-08T18:30:00'
-    },
-    {
-      text: 'Na putu sam, stižem za 5 minuta.',
-      senderId: 7,
-      senderRole: UserRole.DRIVER,
-      sentAt: '2026-02-08T18:31:10'
-    },
-    {
-      text: 'U redu, čekam ispred zgrade.',
-      senderId: 42,
-      senderRole: UserRole.PASSENGER,
-      sentAt: '2026-02-08T18:31:45'
-    },
-    {
-      text: 'Vidim vas na mapi, parkiram se kod ulaza.',
-      senderId: 7,
-      senderRole: UserRole.DRIVER,
-      sentAt: '2026-02-08T18:33:05'
-    },
-    {
-      text: 'Super, nosim plavi kaput.',
-      senderId: 42,
-      senderRole: UserRole.PASSENGER,
-      sentAt: '2026-02-08T18:33:40'
-    },
-    {
-      text: 'Odlično, bela Toyota ispred zgrade.',
-      senderId: 7,
-      senderRole: UserRole.DRIVER,
-      sentAt: '2026-02-08T18:34:10'
-    },
-    {
-      text: 'Vidim vas, silazim sada.',
-      senderId: 42,
-      senderRole: UserRole.PASSENGER,
-      sentAt: '2026-02-08T18:34:45'
-    },
-    {
-      text: 'U redu, sačekajte pored ulaza.',
-      senderId: 7,
-      senderRole: UserRole.DRIVER,
-      sentAt: '2026-02-08T18:35:20'
-    }
-  ]
-};
+  @ViewChild('messagesContainer')
+  private messagesContainer!: ElementRef<HTMLDivElement>;
 
   ngAfterViewInit(): void {
     this.scrollToBottom();
   }
 
-  @ViewChild('messagesContainer')
-  private messagesContainer!: ElementRef<HTMLDivElement>;
-
   private scrollToBottom(): void {
-    const el = this.messagesContainer.nativeElement;
-    el.scrollTop = el.scrollHeight;
+    if (this.messagesContainer) {
+      const el = this.messagesContainer.nativeElement;
+      el.scrollTop = el.scrollHeight;
+    }
   }
 
-  sendMessage(): void{
-    const newMsg: MessageResponse = {
-    text: this.newMessageText,
-    senderId: this.currentUserId,
-    senderRole: UserRole.PASSENGER, // po potrebi promeni
-    sentAt: new Date().toISOString() // ISO string za LocalDateTime
-    };
+  sendMessage(): void {
+  if (!this.newMessageText?.trim()) return;
 
-    this.chat.messages.push(newMsg);
+  const text = this.newMessageText;
+  const senderId = this.currentUserId;
 
-    // Očisti input polje
-    this.newMessageText = '';
-
-    // Scroll na dno (ako koristiš scroll funkciju)
-    setTimeout(() => this.scrollToBottom());
+  if (this.currentUserRole === 'ADMIN') {
+    this.chatService.sendAdminMessage(this.chat.chatId, senderId, text)
+      .subscribe({
+        next: () => {
+          this.chat.messages.push({
+            text,
+            senderId,
+            senderRole: UserRole.ADMIN,
+            sentAt: new Date().toISOString()
+          });
+          this.newMessageText = '';
+          setTimeout(() => this.scrollToBottom());
+        },
+        error: (err) => {
+          console.error('Error sending admin message:', err);
+        }
+      });
+  } else {
+    this.chatService.sendUserMessage(senderId, text)
+      .subscribe({
+        next: () => {
+          this.chat.messages.push({
+            text,
+            senderId,
+            senderRole: this.currentUserRole == 'PASSENGER' ? UserRole.PASSENGER : UserRole.DRIVER, 
+            sentAt: new Date().toISOString()
+          });
+          this.newMessageText = '';
+          setTimeout(() => this.scrollToBottom());
+        },
+        error: (err) => {
+          console.error('Error sending user message:', err);
+        }
+      });
   }
+  setTimeout(() => this.scrollToBottom());
+}
 
+
+  
 }

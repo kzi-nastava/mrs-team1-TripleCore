@@ -19,18 +19,18 @@ interface SaveAdminMessageRequest {
 })
 export class ChatService {
 
-  private readonly baseUrl = '/api/chats';
+  private readonly baseUrl = 'http://localhost:8080/api/chats';
 
   constructor(private http: HttpClient) {}
 
   sendUserMessage(senderId: number, text: string): Observable<any> {
     const payload: SaveUserMessageRequest = { senderId, text };
-    return this.http.post(`${this.baseUrl}/save-user-message`, payload);
+    return this.http.post(`${this.baseUrl}/save-user-message`, payload, { responseType: 'text' });
   }
 
   sendAdminMessage(chatId: number, senderId: number, text: string): Observable<any> {
     const payload: SaveAdminMessageRequest = { chatId, senderId, text };
-    return this.http.post(`${this.baseUrl}/save-admin-message`, payload);
+    return this.http.post(`${this.baseUrl}/save-admin-message`, payload, { responseType: 'text' });
   }
 
   getUserChat(userId: number): Observable<ChatResponse> {

@@ -1,1 +1,6 @@
-<p>user-chat works!</p>
+<mat-card class="chat-card">
+  <button class="close-btn" (click)="closeSelf()">×</button>
+  <h2 class="Title">Live Support</h2>
+
+  <app-chat *ngIf="chat" [chat]="chat"></app-chat>
+</mat-card>

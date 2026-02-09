@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChatComponent } from '../live-chat/chat/chat';
 import { NavbarComponent } from '../shared/navbar/navbar';
+import { UserChatComponent } from '../live-chat/user-chat/user-chat';
 
 @Component({
   selector: 'app-test',
-  imports: [CommonModule, ChatComponent, NavbarComponent],
+  imports: [CommonModule, UserChatComponent, NavbarComponent],
   templateUrl: './test.html',
   styleUrl: './test.css',
 })

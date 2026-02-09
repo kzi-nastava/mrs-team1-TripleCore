@@ -1,35 +1,3 @@
-.chat-card{
-    z-index: 2000;
-
-    align-self: center;
-    margin-left: auto;
-    margin-right: 20px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-
-    width: 400px;
-    height: 600px;
-
-    display: flex;
-    flex-direction: column;
-}
-
-
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 12px;
-  background: transparent;
-  border: none;
-  border-radius: none;
-  font-size: 40px;
-  font-weight: 500;
-  cursor: pointer;
-  color: #555;
-}
-
 .messages-container {
   flex: 1;
   overflow-y: auto;
@@ -38,6 +6,7 @@
   flex-direction: column;
   gap: 8px;
   background-color: #f9f3ff;
+  height: 420px;   
 }
 
 .message-bubble {
