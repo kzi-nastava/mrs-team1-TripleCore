@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.taxiapp.R;
 import com.example.taxiapp.ui.admin.AdminHomeFragment;
 import com.example.taxiapp.ui.admin.AdminRideHistoryFragment;
+import com.example.taxiapp.ui.admin.DriversRequestsFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
 import com.example.taxiapp.ui.auth.reset_password.ResetPasswordFragment;
@@ -25,6 +26,7 @@ import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
 import com.example.taxiapp.ui.passenger.PassengerRideHistoryFragment;
+import com.example.taxiapp.ui.profile_info.ProfileFragment;
 import com.example.taxiapp.ui.shared.RideHistoryFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -126,11 +128,17 @@ public class MainActivity extends AppCompatActivity {
         // ADMIN
         else if (id == R.id.nav_admin_ride_history && "ADMIN".equals(userType)) {
             fragmentToLoad = new AdminRideHistoryFragment();
+        } else if (id == R.id.nav_profile && "ADMIN".equals(userType)) {
+            fragmentToLoad = new ProfileFragment();
+        } else if (id == R.id.nav_drivers_requests && "ADMIN".equals(userType)) {
+            fragmentToLoad = new DriversRequestsFragment();
         }
 
         // PASSENGER
         else if (id == R.id.nav_ride_history && "PASSENGER".equals(userType)) {
             fragmentToLoad = new PassengerRideHistoryFragment();
+        } else if (id == R.id.nav_profile && "PASSENGER".equals(userType)) {
+            fragmentToLoad = new ProfileFragment();
         }
 
         // LOGOUT

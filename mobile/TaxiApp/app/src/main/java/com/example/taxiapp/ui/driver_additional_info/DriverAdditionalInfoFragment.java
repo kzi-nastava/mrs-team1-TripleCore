@@ -1,21 +1,21 @@
 package com.example.taxiapp.ui.driver_additional_info;
 
-import android.app.Instrumentation;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.taxiapp.R;
-import com.example.taxiapp.ui.driver_profile.DriverProfileFragment;
-import android.content.Intent;
+import com.example.taxiapp.ui.profile_info.ProfileFragment;
+
+import service.ProfileService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +25,17 @@ import android.content.Intent;
 public class DriverAdditionalInfoFragment extends Fragment {
 
 
+    private TextView tvWorkingHours;
+
+    private TextView tvVehicleBrand;
+    private TextView tvVehicleModel;
+    private TextView tvVehicleType;
+    private TextView tvLicencePlate;
+    private TextView tvSeatNumber;
+    private TextView tvBabyTransport;
+    private TextView tvPetTransport;
+
+    private ProfileService profileService;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -80,7 +91,7 @@ public class DriverAdditionalInfoFragment extends Fragment {
         Button btnGoToProfile = view.findViewById(R.id.btnChangeInfo);
 
         btnGoToProfile.setOnClickListener(v -> {
-            Fragment fragment = new DriverProfileFragment();
+            Fragment fragment = new ProfileFragment();
 
             requireActivity()
                     .getSupportFragmentManager()
@@ -91,7 +102,59 @@ public class DriverAdditionalInfoFragment extends Fragment {
 
         });
 
+        tvWorkingHours = view.findViewById(R.id.tvWorkingHours);
+
+        tvVehicleBrand = view.findViewById(R.id.tvVehicleBrand);
+        tvVehicleModel = view.findViewById(R.id.tvVehicleModel);
+        tvVehicleType = view.findViewById(R.id.tvVehicleType);
+        tvLicencePlate = view.findViewById(R.id.tvLicencePlate);
+        tvSeatNumber = view.findViewById(R.id.tvSeatNumber);
+        tvBabyTransport = view.findViewById(R.id.tvBabyTransport);
+        tvPetTransport = view.findViewById(R.id.tvPetTransport);
+
+        profileService = ProfileService.getInstance();
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyAppPrefs", getActivity().MODE_PRIVATE);
+        Long userId = sharedPreferences.getLong("userId", -1);
+
+        if (userId != -1) {
+            loadDriverData(userId);
+        }else {
+            Log.e("DriverFragment", "No driver ID found in SharedPreferences");
+        }
+
+
+
+
         return view;
 
     }
+
+    private void loadDriverData(Long driverId) {
+        profileService.getDriverProfile(driverId, new retrofit2.Callback<model.DriverProfileResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<model.DriverProfileResponse> call, retrofit2.Response<model.DriverProfileResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    model.DriverProfileResponse driver = response.body();
+
+
+                    tvWorkingHours.setText("Working hours in last 24 hours: " + driver.getWorkingHoursToday() + " h");
+
+                    tvVehicleBrand.setText("Vehicle brand: " + driver.getVehicle().getBrand());
+                    tvVehicleModel.setText("Vehicle model: " + driver.getVehicle().getModel());
+                    tvVehicleType.setText("Vehicle type: " + driver.getVehicle().getType().toString());
+                    tvLicencePlate.setText("Licence plate number: " + driver.getVehicle().getPlateNumber());
+                    tvSeatNumber.setText("Number of seats: " + String.valueOf(driver.getVehicle().getSeatNumber()));
+                    tvBabyTransport.setText("Is vehicle baby friendly: " + (driver.getVehicle().isBabyFriendly() ? "Yes" : "No"));
+                    tvPetTransport.setText("Is vehicle pet friendly: " + (driver.getVehicle().isPetFriendly() ? "Yes" : "No"));
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<model.DriverProfileResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+
 }
