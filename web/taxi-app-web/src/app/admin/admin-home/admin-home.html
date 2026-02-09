@@ -24,7 +24,7 @@
     </a>
   </li>
 
-    <!-- Panic Notifications Component -->
+  <!-- Panic Notifications Component -->
     <app-panic-notifications
       [alerts]="panicAlerts"  
       [showDropdown]="showNotifications"
@@ -46,9 +46,17 @@
     </li>
 
     <!-- Chat -->
-    <a class="nav-link img-and-link" routerLink="/home" matTooltip="Live Chat">
+    <button 
+    class="nav-link img-and-link"  
+    matTooltip="Live Chat"
+    (click)="openChat()">
       <img src="icons/icons8-chat-48.png" class="nav-item-icon">
-    </a>
+    </button>
+
+    <app-admin-chat
+      *ngIf="chatOpened"
+      (close)="closeChat()">
+    </app-admin-chat>
 
     <!-- Sound Toggle -->
     <li class="nav-item">

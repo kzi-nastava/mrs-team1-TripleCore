@@ -10,16 +10,25 @@ import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 import { PanicNotificationsComponent } from '../panic/panic-notifications/panic-notifications';
 import { ChangeProfileRequestService, DriverProfileChangeRequest } from '../services/change-profile-request-service/change-profile-request-service';
 import { DriverProfileResponse } from '../models/driver-profile-response';
+import { AdminChatComponent } from '../live-chat/admin-chat/admin-chat';
 
 
 @Component({
   selector: 'app-change-profile-request',
   standalone: true,
-  imports: [NavbarComponent, RouterModule, CommonModule, MatTooltipModule, PanicNotificationsComponent],
+  imports: [NavbarComponent, RouterModule, CommonModule, MatTooltipModule, PanicNotificationsComponent, AdminChatComponent],
   templateUrl: './change-profile-request.html',
   styleUrl: './change-profile-request.css',
 })
 export class ChangeProfileRequestComponent implements OnInit {
+  chatOpened: boolean = false;
+  openChat(){
+    this.chatOpened = true;
+  }
+  closeChat(){
+    this.chatOpened = false;
+  }
+
   showNotifications = false;
   showResolvedAlerts = false;
   panicAlerts: PanicAlert[] = [];

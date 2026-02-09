@@ -10,6 +10,7 @@ import { NotificationSoundService } from '../../services/notification-sound-serv
 import { LogoutService } from '../../services/auth-service/logout-service';
 import { PanicAlert } from '../../models/panic-alert';
 import { AdminPanicService } from '../../services/admin-service/admin-panic-service';
+import { AdminChatComponent } from '../../live-chat/admin-chat/admin-chat';
 
 @Component({
   selector: 'app-admin-home',
@@ -20,12 +21,22 @@ import { AdminPanicService } from '../../services/admin-service/admin-panic-serv
     RouterModule,
     CommonModule,
     MatTooltipModule,
-    PanicNotificationsComponent
+    PanicNotificationsComponent,
+    AdminChatComponent
   ],
   templateUrl: './admin-home.html',
   styleUrls: ['./admin-home.css'],
 })
 export class AdminHomeComponent implements OnInit {
+
+  chatOpened: boolean = false;
+  openChat(){
+    this.chatOpened = true;
+  }
+  closeChat(){
+    this.chatOpened = false;
+  }
+
   showNotifications = false;
   showResolvedAlerts = false;
   panicAlerts: PanicAlert[] = [];
