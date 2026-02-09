@@ -12,5 +12,7 @@ public class AdminService {
         this.adminRepository = ar;
     }
 
-
+    public boolean isAdmin(Long id){
+        return adminRepository.findById(id).isPresent();
+    }
 }
