@@ -125,7 +125,12 @@ public class RideDetailsFragment extends Fragment {
         strBuilder.append(String.format("Start Time: %s\n", getTimeOnly(ride.startTime)));
         strBuilder.append(String.format("End Time: %s\n", getTimeOnly(ride.endTime)));
         strBuilder.append(String.format("Status: %s\n", ride.status));
-        strBuilder.append(String.format("Price: %s", ride.price));
+        try {
+            double priceValue = Double.parseDouble(String.valueOf(ride.price));
+            strBuilder.append(String.format("Price: %.2f RSD", priceValue));
+        } catch (NumberFormatException e) {
+            strBuilder.append(String.format("Price: %s RSD", ride.price));
+        }
         tvInfo.setText(strBuilder.toString());
 
         TextView tvDriver = view.findViewById(R.id.tvRideDetailsDriver);

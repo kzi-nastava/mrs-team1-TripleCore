@@ -36,14 +36,34 @@ import java.util.Locale;
 import helper.RideFilterHelper;
 import helper.ShakeDetector;
 import model.RideDetailsDTO;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.AdminService;
+import service.AuthService;
+import service.DriverService;
+import service.PassengerService;
 
 public class RideHistoryFragment extends Fragment {
 
+    private static final String ARG_ROLE_TYPE = "role_type";
+    private static final String ARG_USER_ID = "user_id";
     private static final String ARG_RIDE_HISTORY = "ride_history";
     private static final String ARG_SORT_DESC = "sort_desc";
+    private static final String ARG_LOADED = "loaded";
+
+    public enum RoleType {
+        DRIVER,
+        PASSENGER,
+        ADMIN
+    }
 
     private List<RideDetailsDTO> rideHistory = new ArrayList<>();
     private boolean sortDescending = true;
+    private boolean isDataLoaded = false;
+    private String currentRoleType;
+    private Long currentUserId;
 
     // ui elements
     private TextInputEditText etDateFrom;
@@ -58,6 +78,34 @@ public class RideHistoryFragment extends Fragment {
     private Sensor accelerometer;
     private ShakeDetector shakeDetector;
 
+    // Factory methods for creating fragment instances based on role
+    public static RideHistoryFragment newInstanceForDriver(Long userId) {
+        RideHistoryFragment fragment = new RideHistoryFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_ROLE_TYPE, RoleType.DRIVER.name());
+        args.putLong(ARG_USER_ID, userId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static RideHistoryFragment newInstanceForPassenger(Long userId) {
+        RideHistoryFragment fragment = new RideHistoryFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_ROLE_TYPE, RoleType.PASSENGER.name());
+        args.putLong(ARG_USER_ID, userId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static RideHistoryFragment newInstanceForAdmin(Long userId) {
+        RideHistoryFragment fragment = new RideHistoryFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_ROLE_TYPE, RoleType.ADMIN.name());
+        args.putLong(ARG_USER_ID, userId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public RideHistoryFragment() {
     }
 
@@ -66,16 +114,20 @@ public class RideHistoryFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            String json = getArguments().getString(ARG_RIDE_HISTORY);
+            currentRoleType = getArguments().getString(ARG_ROLE_TYPE);
+            currentUserId = getArguments().getLong(ARG_USER_ID, -1);
+        }
+
+        if (savedInstanceState != null) {
+            sortDescending = savedInstanceState.getBoolean(ARG_SORT_DESC, true);
+            isDataLoaded = savedInstanceState.getBoolean(ARG_LOADED, false);
+
+            String json = savedInstanceState.getString(ARG_RIDE_HISTORY);
             if (json != null) {
                 Gson gson = new Gson();
                 Type listType = new TypeToken<List<RideDetailsDTO>>() {}.getType();
                 rideHistory = gson.fromJson(json, listType);
             }
-        }
-
-        if (savedInstanceState != null) {
-            sortDescending = savedInstanceState.getBoolean(ARG_SORT_DESC, true);
         }
     }
 
@@ -83,6 +135,16 @@ public class RideHistoryFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(ARG_SORT_DESC, sortDescending);
+        outState.putBoolean(ARG_LOADED, isDataLoaded);
+
+        if (!rideHistory.isEmpty()) {
+            Gson gson = new Gson();
+            String json = gson.toJson(rideHistory);
+            outState.putString(ARG_RIDE_HISTORY, json);
+        }
+
+        outState.putString(ARG_ROLE_TYPE, currentRoleType);
+        outState.putLong(ARG_USER_ID, currentUserId);
     }
 
     @Override
@@ -97,8 +159,18 @@ public class RideHistoryFragment extends Fragment {
         initListeners(view);
         initSensors();
 
-        loadRideCards(rideHistory);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (!isDataLoaded) {
+            loadRideHistoryBasedOnRole();
+        } else if (!rideHistory.isEmpty()) {
+            loadRideCards(rideHistory);
+        }
     }
 
     @Override
@@ -162,8 +234,131 @@ public class RideHistoryFragment extends Fragment {
         shakeDetector = new ShakeDetector(this::applyFiltersAndSort);
     }
 
+    private void loadRideHistoryBasedOnRole() {
+        if (currentUserId == -1) {
+            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (currentRoleType == null) {
+            Toast.makeText(requireContext(), "Role not specified", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        switch (currentRoleType) {
+            case "DRIVER":
+                loadDriverRideHistory();
+                break;
+            case "PASSENGER":
+                loadPassengerRideHistory();
+                break;
+            case "ADMIN":
+                loadAdminRideHistory();
+                break;
+            default:
+                Toast.makeText(requireContext(), "Unknown role: " + currentRoleType, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadDriverRideHistory() {
+        DriverService driverService = DriverService.getInstance();
+        driverService.getDriverRideHistory(currentUserId, new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (!isAdded() || getActivity() == null) return;
+
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String json = response.body().string();
+                        Gson gson = new Gson();
+                        Type listType = new TypeToken<List<RideDetailsDTO>>() {}.getType();
+                        rideHistory = gson.fromJson(json, listType);
+                        isDataLoaded = true;
+
+                        requireActivity().runOnUiThread(() -> loadRideCards(rideHistory));
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(
+                                requireContext(),
+                                "Error parsing driver ride history",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                } else {
+                    Toast.makeText(
+                            requireContext(),
+                            "Failed loading driver ride history",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                if (!isAdded() || getActivity() == null) return;
+
+                Toast.makeText(
+                        requireContext(),
+                        "Failed server communication for driver",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
+    }
+
+    private void loadPassengerRideHistory() {
+        PassengerService.getInstance().getRideHistory(currentUserId, new Callback<List<RideDetailsDTO>>() {
+            @Override
+            public void onResponse(Call<List<RideDetailsDTO>> call, Response<List<RideDetailsDTO>> response) {
+                if (!isAdded() || getActivity() == null) return;
+
+                if (response.isSuccessful() && response.body() != null) {
+                    rideHistory = response.body();
+                    isDataLoaded = true;
+
+                    requireActivity().runOnUiThread(() -> loadRideCards(rideHistory));
+                } else {
+                    Toast.makeText(requireContext(), "Failed to fetch passenger rides", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RideDetailsDTO>> call, Throwable t) {
+                if (!isAdded() || getActivity() == null) return;
+
+                Toast.makeText(requireContext(), "Failed to fetch passenger rides: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadAdminRideHistory() {
+        AdminService.getInstance().getAllRides(new Callback<List<RideDetailsDTO>>() {
+            @Override
+            public void onResponse(Call<List<RideDetailsDTO>> call, Response<List<RideDetailsDTO>> response) {
+                if (!isAdded() || getActivity() == null) return;
+
+                if (response.isSuccessful() && response.body() != null) {
+                    rideHistory = response.body();
+                    isDataLoaded = true;
+
+                    requireActivity().runOnUiThread(() -> loadRideCards(rideHistory));
+                } else {
+                    Toast.makeText(requireContext(), "Failed to fetch admin rides", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RideDetailsDTO>> call, Throwable t) {
+                if (!isAdded() || getActivity() == null) return;
+
+                Toast.makeText(requireContext(), "Failed to fetch admin rides: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void loadRideCards(List<RideDetailsDTO> rides) {
-        if (cardsContainer == null) return;
+        if (cardsContainer == null || !isAdded()) return;
 
         cardsContainer.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(requireContext());
@@ -198,7 +393,15 @@ public class RideHistoryFragment extends Fragment {
         String end = ride.endTime != null ? ride.endTime : "N/A";
         tvDateTime.setText(start + " - " + end);
 
-        tvPrice.setText(ride.price + " RSD");
+        try {
+            double priceValue = Double.parseDouble(String.valueOf(ride.price));
+            String formattedPrice = String.format(Locale.getDefault(), "%.2f RSD", priceValue);
+            tvPrice.setText(formattedPrice);
+
+        } catch (NumberFormatException e) {
+            tvPrice.setText(ride.price + " RSD");
+        }
+
 
         if (ride.status != null) {
             tvStatus.setText(ride.status);
@@ -252,6 +455,8 @@ public class RideHistoryFragment extends Fragment {
         if (etTextFilter != null) etTextFilter.setText("");
         if (etDateFrom != null) etDateFrom.setText("");
         if (etDateTo != null) etDateTo.setText("");
+
+        loadRideCards(rideHistory);
     }
 
     private void showDatePicker(TextInputEditText dateInput) {
