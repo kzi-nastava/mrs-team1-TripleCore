@@ -1,18 +1,23 @@
 package com.example.taxiapp.ui.shared;
 
+import static android.view.View.VISIBLE;
 import static helper.DateTimeHelper.getTimeOnly;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import helper.RideActionHelper;
 import com.google.gson.Gson;
 
 import org.osmdroid.util.GeoPoint;
@@ -27,16 +32,31 @@ import helper.RouteHelper;
 import model.ReviewDTO;
 import model.RideDetailsDTO;
 import model.LocationDTO;
+import service.AuthService;
 
 public class RideDetailsFragment extends Fragment {
 
     private static final String ARG_RIDE_DETAILS = "ride_details";
 
     private RideDetailsDTO ride;
+    private String currentUserRole; // "DRIVER", "PASSENGER", "ADMIN"
+    private Long currentUserId;
+
+    // UI elements
     private MapView mapFragment;
+    private Button btnCancelRide;
+
     private double savedLat = Double.NaN;
     private double savedLon = Double.NaN;
     private double savedZoom = Double.NaN;
+
+    public static RideDetailsFragment newInstance(RideDetailsDTO rideDetails, String userRole) {
+        RideDetailsFragment fragment = new RideDetailsFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_RIDE_DETAILS, new Gson().toJson(rideDetails));
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public RideDetailsFragment() {
     }
@@ -53,6 +73,9 @@ public class RideDetailsFragment extends Fragment {
             }
         }
 
+        currentUserId = AuthService.getInstance().getLoggedInUserId(requireContext());
+        currentUserRole = AuthService.getInstance().getLoggedInUserRole(requireContext());
+
         // Restore map state
         if (savedInstanceState != null) {
             savedLat = savedInstanceState.getDouble("lat", Double.NaN);
@@ -66,33 +89,84 @@ public class RideDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ride_details, container, false);
 
+        // Init UI
         mapFragment = view.findViewById(R.id.mapView);
+        btnCancelRide = view.findViewById(R.id.btnCancelRide);
+
+        // Setup cancel button
+        btnCancelRide.setOnClickListener(v -> handleCancelRide());
+
+        // Show/hide cancel button based on role and ride status
+        setupCancelButtonVisibility();
 
         setMapViewAppearance(mapFragment);
         populateRideDetails(view);
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mapFragment != null) mapFragment.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mapFragment != null) mapFragment.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mapFragment != null) {
-            outState.putDouble("lat", mapFragment.getMapCenter().getLatitude());
-            outState.putDouble("lon", mapFragment.getMapCenter().getLongitude());
-            outState.putDouble("zoom", mapFragment.getZoomLevelDouble());
+    private void setupCancelButtonVisibility() {
+        if (ride == null || currentUserRole == null) {
+            btnCancelRide.setVisibility(View.GONE);
+            return;
         }
+
+        if ("ADMIN".equals(currentUserRole)) {
+            btnCancelRide.setVisibility(View.GONE);
+            return;
+        }
+
+        if ("PASSENGER".equals(currentUserRole) || "DRIVER".equals(currentUserRole)) {
+            boolean canCancel = canCancelRide();
+            btnCancelRide.setVisibility(canCancel ? VISIBLE : View.GONE);
+
+            if (canCancel) {
+                btnCancelRide.setText("Cancel Ride");
+            }
+        } else {
+            btnCancelRide.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean canCancelRide() {
+        if (ride == null || currentUserRole == null) return false;
+
+        String status = ride.status;
+        boolean isAccepted = "ACCEPTED".equals(status);
+        boolean isRequested = "REQUESTED".equals(status);
+        boolean isFinished = "FINISHED".equals(status);
+        boolean isCancelled = "CANCELLED".equals(status);
+        boolean isInProgress = "IN_PROGRESS".equals(status);
+
+        if (isFinished || isCancelled || isInProgress) {
+            return false;
+        }
+
+        return isRequested || isAccepted;
+    }
+
+    private void handleCancelRide() {
+        RideActionHelper.showCancelDialog(
+                requireContext(),
+                ride,
+                currentUserRole,
+                currentUserId,
+                new RideActionHelper.CancelRideCallback() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(requireContext(), "Ride cancelled successfully", Toast.LENGTH_SHORT).show();
+                        refreshRideDetails();
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+    }
+
+    private void refreshRideDetails() {
+        requireActivity().getSupportFragmentManager().popBackStack();
     }
 
     private void populateRideDetails(View view) {
@@ -265,5 +339,28 @@ public class RideDetailsFragment extends Fragment {
                 e.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mapFragment != null) mapFragment.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mapFragment != null) mapFragment.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mapFragment != null) {
+            outState.putDouble("lat", mapFragment.getMapCenter().getLatitude());
+            outState.putDouble("lon", mapFragment.getMapCenter().getLongitude());
+            outState.putDouble("zoom", mapFragment.getZoomLevelDouble());
+        }
+        outState.putString("user_role", currentUserRole);
     }
 }

@@ -10,6 +10,7 @@ import model.LoginRequest;
 import model.LoginResponse;
 import model.RegisterRequest;
 import model.RegisterResponse;
+import model.RideCancelRequest;
 import model.RideDetailsDTO;
 import model.UpdateUserProfileRequest;
 import model.UserProfileResponse;
@@ -70,6 +71,14 @@ public interface ApiService {
 
     @GET("api/drivers/{id}/availability")
     Call<ResponseBody> getDriverAvailability(@Path("id") Long driverId);
+
+    // Ride actions
+
+    @POST("/api/rides/{id}/cancel")
+    Call<ResponseBody> cancelRide(
+            @Path("id") Long rideId,
+            @Body RideCancelRequest request
+    );
 
     // Profile
     @GET("/api/profile/user")
