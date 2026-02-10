@@ -1,7 +1,7 @@
 package com.example.taxiapp.ui.shared;
 
-import android.app.DatePickerDialog;
-import android.content.Context;
+import static helper.KeyboardHelper.hideKeyboard;
+
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -9,30 +9,25 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
+import helper.DatePickerHelper;
+import helper.RideCardHelper;
 import helper.RideFilterHelper;
 import helper.ShakeDetector;
 import model.RideDetailsDTO;
@@ -41,7 +36,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import service.AdminService;
-import service.AuthService;
 import service.DriverService;
 import service.PassengerService;
 
@@ -210,20 +204,12 @@ public class RideHistoryFragment extends Fragment {
             return false;
         });
 
-        etDateFrom.setOnClickListener(v -> showDatePicker(etDateFrom));
-        etDateTo.setOnClickListener(v -> showDatePicker(etDateTo));
+        etDateFrom.setOnClickListener(v ->
+                DatePickerHelper.showDatePicker(requireContext(), etDateFrom));
+        etDateTo.setOnClickListener(v ->
+                DatePickerHelper.showDatePicker(requireContext(), etDateTo));
         btnClear.setOnClickListener(v -> clearInputs());
         btnApply.setOnClickListener(v -> applyFiltersAndSort());
-    }
-
-    private void hideKeyboard(View view) {
-        if (getActivity() != null) {
-            InputMethodManager imm =
-                    (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) {
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
-        }
     }
 
     private void initSensors() {
@@ -360,68 +346,12 @@ public class RideHistoryFragment extends Fragment {
     private void loadRideCards(List<RideDetailsDTO> rides) {
         if (cardsContainer == null || !isAdded()) return;
 
-        cardsContainer.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-
-        for (RideDetailsDTO ride : rides) {
-            MaterialCardView card = (MaterialCardView)
-                    inflater.inflate(R.layout.view_passenger_ride_card, cardsContainer, false);
-
-            bindRideData(card, ride);
-            card.setOnClickListener(v -> openRideDetails(ride));
-
-            cardsContainer.addView(card);
-        }
-    }
-
-    private void bindRideData(MaterialCardView card, RideDetailsDTO ride) {
-        TextView tvRoute = card.findViewById(R.id.tvPassengerRoute);
-        TextView tvStart = card.findViewById(R.id.tvPassengerStartAddress);
-        TextView tvEnd = card.findViewById(R.id.tvPassengerEndAddress);
-        TextView tvDateTime = card.findViewById(R.id.tvPassengerDateTime);
-        TextView tvPrice = card.findViewById(R.id.tvPassengerPrice);
-        TextView tvStatus = card.findViewById(R.id.tvPassengerStatus);
-        TextView tvPanic = card.findViewById(R.id.tvPassengerPanic);
-
-        if (ride.startLocation != null && ride.endLocation != null) {
-            tvRoute.setText(ride.startLocation.address + " → " + ride.endLocation.address);
-            tvStart.setText(ride.startLocation.address);
-            tvEnd.setText(ride.endLocation.address);
-        }
-
-        String start = ride.startTime != null ? ride.startTime : "N/A";
-        String end = ride.endTime != null ? ride.endTime : "N/A";
-        tvDateTime.setText(start + " - " + end);
-
-        try {
-            double priceValue = Double.parseDouble(String.valueOf(ride.price));
-            String formattedPrice = String.format(Locale.getDefault(), "%.2f RSD", priceValue);
-            tvPrice.setText(formattedPrice);
-
-        } catch (NumberFormatException e) {
-            tvPrice.setText(ride.price + " RSD");
-        }
-
-
-        if (ride.status != null) {
-            tvStatus.setText(ride.status);
-            tvStatus.setTextColor(getStatusColor(ride.status));
-        }
-
-        tvPanic.setVisibility(ride.panic ? View.VISIBLE : View.GONE);
-    }
-
-    private int getStatusColor(String status) {
-        switch (status) {
-            case "FINISHED":
-            case "IN_PROGRESS":
-            case "ACCEPTED":
-                return ContextCompat.getColor(requireContext(), R.color.green);
-            case "CANCELLED":
-                return ContextCompat.getColor(requireContext(), R.color.red);
-            default:
-                return ContextCompat.getColor(requireContext(), R.color.black);
-        }
+        RideCardHelper.loadRideCards(
+                cardsContainer,
+                rides,
+                LayoutInflater.from(requireContext()),
+                this::openRideDetails
+        );
     }
 
     private void applyFiltersAndSort() {
@@ -457,27 +387,6 @@ public class RideHistoryFragment extends Fragment {
         if (etDateTo != null) etDateTo.setText("");
 
         loadRideCards(rideHistory);
-    }
-
-    private void showDatePicker(TextInputEditText dateInput) {
-        Calendar calendar = Calendar.getInstance();
-
-        DatePickerDialog dialog = new DatePickerDialog(
-                requireContext(),
-                (view, year, month, day) -> {
-                    Calendar selected = Calendar.getInstance();
-                    selected.set(year, month, day);
-
-                    SimpleDateFormat sdf =
-                            new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                    dateInput.setText(sdf.format(selected.getTime()));
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
-
-        dialog.show();
     }
 
     private void openRideDetails(RideDetailsDTO rideDetails) {
