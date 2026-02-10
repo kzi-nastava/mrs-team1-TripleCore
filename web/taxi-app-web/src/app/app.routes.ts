@@ -30,6 +30,7 @@ import { ChangeProfileRequestComponent } from './change-profile-request/change-p
 import { DriverProfileChangeReviewComponent } from './driver-profile-change-review/driver-profile-change-review';
 import { PassengerReviewsComponent } from './passenger/passenger-reviews/passenger-reviews';
 import { PassengerNotificationsComponent } from './passenger/passenger-notifications/passenger-notifications';
+import { AdminPricingComponent } from './admin/admin-pricing/admin-pricing';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -66,5 +67,6 @@ export const appRoutes: Routes = [
   { path: 'test', component: TestComponent},
   { path: 'passenger-reviews', component: PassengerReviewsComponent },
   { path: 'passenger-notifications', component: PassengerNotificationsComponent },
+  { path: 'admin-pricing', component: AdminPricingComponent },
   { path: '**', redirectTo: '' },
 ];
