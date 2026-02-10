@@ -30,7 +30,41 @@ import service.DriverService;
 
 public class DriverRideHistoryFragment extends Fragment {
 
+    private static final String ARG_RIDE_HISTORY = "ride_history";
+    private static final String ARG_LOADED = "loaded";
+
     private List<RideDetailsDTO> rideHistory = new ArrayList<>();
+    private boolean isDataLoaded = false;
+
+    public DriverRideHistoryFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            String json = savedInstanceState.getString(ARG_RIDE_HISTORY);
+            if (json != null) {
+                Gson gson = new Gson();
+                Type listType = new TypeToken<List<RideDetailsDTO>>() {}.getType();
+                rideHistory = gson.fromJson(json, listType);
+                isDataLoaded = savedInstanceState.getBoolean(ARG_LOADED, false);
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (!rideHistory.isEmpty()) {
+            Gson gson = new Gson();
+            String json = gson.toJson(rideHistory);
+            outState.putString(ARG_RIDE_HISTORY, json);
+            outState.putBoolean(ARG_LOADED, isDataLoaded);
+        }
+    }
 
     @Nullable
     @Override
@@ -39,15 +73,22 @@ public class DriverRideHistoryFragment extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState
     ) {
-        View view = inflater.inflate(
+        return inflater.inflate(
                 R.layout.fragment_driver_ride_history,
                 container,
                 false
         );
+    }
 
-        loadRideHistoryFromBackend();
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        return view;
+        if (!isDataLoaded) {
+            loadRideHistoryFromBackend();
+        } else if (!rideHistory.isEmpty()) {
+            openRideHistoryFragment();
+        }
     }
 
     private void loadRideHistoryFromBackend() {
@@ -61,7 +102,7 @@ public class DriverRideHistoryFragment extends Fragment {
                     @NonNull Call<ResponseBody> call,
                     @NonNull Response<ResponseBody> response
             ) {
-                if (!isAdded()) return;
+                if (!isAdded() || getActivity() == null) return;
 
                 if (response.isSuccessful() && response.body() != null) {
                     try {
@@ -70,20 +111,21 @@ public class DriverRideHistoryFragment extends Fragment {
                         Gson gson = new Gson();
                         Type listType = new TypeToken<List<RideDetailsDTO>>() {}.getType();
                         rideHistory = gson.fromJson(json, listType);
+                        isDataLoaded = true;
 
                         openRideHistoryFragment();
 
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(
-                                getContext(),
+                                requireContext(),
                                 "Error parsing data",
                                 Toast.LENGTH_SHORT
                         ).show();
                     }
                 } else {
                     Toast.makeText(
-                            getContext(),
+                            requireContext(),
                             "Failed loading ride history",
                             Toast.LENGTH_SHORT
                     ).show();
@@ -95,10 +137,10 @@ public class DriverRideHistoryFragment extends Fragment {
                     @NonNull Call<ResponseBody> call,
                     @NonNull Throwable t
             ) {
-                if (!isAdded()) return;
+                if (!isAdded() || getActivity() == null) return;
 
                 Toast.makeText(
-                        getContext(),
+                        requireContext(),
                         "Failed server communication",
                         Toast.LENGTH_SHORT
                 ).show();
@@ -107,12 +149,18 @@ public class DriverRideHistoryFragment extends Fragment {
     }
 
     private void openRideHistoryFragment() {
+        if (!isAdded() || getActivity() == null) return;
+
+        Bundle args = new Bundle();
+        Gson gson = new Gson();
+        args.putString(ARG_RIDE_HISTORY, gson.toJson(rideHistory));
+
+        RideHistoryFragment fragment = new RideHistoryFragment();
+        fragment.setArguments(args);
+
         getChildFragmentManager()
                 .beginTransaction()
-                .replace(
-                        R.id.fragment_container,
-                        new RideHistoryFragment(rideHistory)
-                )
+                .replace(R.id.fragment_container, fragment)
                 .commit();
     }
 }

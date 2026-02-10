@@ -1,8 +1,7 @@
 package com.example.taxiapp.ui.shared;
 
-import static com.google.android.material.internal.ViewUtils.hideKeyboard;
-
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -10,18 +9,24 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,7 +39,9 @@ import model.RideDetailsDTO;
 
 public class RideHistoryFragment extends Fragment {
 
-    // data
+    private static final String ARG_RIDE_HISTORY = "ride_history";
+    private static final String ARG_SORT_DESC = "sort_desc";
+
     private List<RideDetailsDTO> rideHistory = new ArrayList<>();
     private boolean sortDescending = true;
 
@@ -51,12 +58,33 @@ public class RideHistoryFragment extends Fragment {
     private Sensor accelerometer;
     private ShakeDetector shakeDetector;
 
-    // constructor
-    public RideHistoryFragment(List<RideDetailsDTO> rideHistory) {
-        this.rideHistory = rideHistory;
+    public RideHistoryFragment() {
     }
 
-    // init
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            String json = getArguments().getString(ARG_RIDE_HISTORY);
+            if (json != null) {
+                Gson gson = new Gson();
+                Type listType = new TypeToken<List<RideDetailsDTO>>() {}.getType();
+                rideHistory = gson.fromJson(json, listType);
+            }
+        }
+
+        if (savedInstanceState != null) {
+            sortDescending = savedInstanceState.getBoolean(ARG_SORT_DESC, true);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(ARG_SORT_DESC, sortDescending);
+    }
+
     @Override
     public View onCreateView(
             LayoutInflater inflater,
@@ -71,6 +99,23 @@ public class RideHistoryFragment extends Fragment {
 
         loadRideCards(rideHistory);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (sensorManager != null) {
+            sensorManager.registerListener(shakeDetector, accelerometer,
+                    SensorManager.SENSOR_DELAY_UI);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(shakeDetector);
+        }
     }
 
     private void initViews(View view) {
@@ -99,6 +144,16 @@ public class RideHistoryFragment extends Fragment {
         btnApply.setOnClickListener(v -> applyFiltersAndSort());
     }
 
+    private void hideKeyboard(View view) {
+        if (getActivity() != null) {
+            InputMethodManager imm =
+                    (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+    }
+
     private void initSensors() {
         sensorManager = (SensorManager) requireContext()
                 .getSystemService(requireContext().SENSOR_SERVICE);
@@ -107,8 +162,9 @@ public class RideHistoryFragment extends Fragment {
         shakeDetector = new ShakeDetector(this::applyFiltersAndSort);
     }
 
-    // ui
     private void loadRideCards(List<RideDetailsDTO> rides) {
+        if (cardsContainer == null) return;
+
         cardsContainer.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(requireContext());
 
@@ -166,6 +222,8 @@ public class RideHistoryFragment extends Fragment {
     }
 
     private void applyFiltersAndSort() {
+        if (!isAdded() || getActivity() == null) return;
+
         String searchText = etTextFilter.getText().toString();
         String dateFrom = etDateFrom.getText().toString();
         String dateTo = etDateTo.getText().toString();
@@ -191,9 +249,9 @@ public class RideHistoryFragment extends Fragment {
     }
 
     private void clearInputs() {
-        etTextFilter.setText("");
-        etDateFrom.setText("");
-        etDateTo.setText("");
+        if (etTextFilter != null) etTextFilter.setText("");
+        if (etDateFrom != null) etDateFrom.setText("");
+        if (etDateTo != null) etDateTo.setText("");
     }
 
     private void showDatePicker(TextInputEditText dateInput) {
@@ -217,12 +275,20 @@ public class RideHistoryFragment extends Fragment {
         dialog.show();
     }
 
-    // navigation
     private void openRideDetails(RideDetailsDTO rideDetails) {
+        if (!isAdded() || getActivity() == null) return;
+
+        Bundle args = new Bundle();
+        Gson gson = new Gson();
+        args.putString("ride_details", gson.toJson(rideDetails));
+
+        RideDetailsFragment fragment = new RideDetailsFragment();
+        fragment.setArguments(args);
+
         requireActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main_container, new RideDetailsFragment(rideDetails))
+                .replace(R.id.main_container, fragment)
                 .addToBackStack(null)
                 .commit();
     }

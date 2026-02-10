@@ -2,24 +2,23 @@ package com.example.taxiapp.ui.shared;
 
 import static helper.DateTimeHelper.getTimeOnly;
 
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.taxiapp.R;
+import com.google.gson.Gson;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
-
-import com.example.taxiapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,29 +30,43 @@ import model.LocationDTO;
 
 public class RideDetailsFragment extends Fragment {
 
+    private static final String ARG_RIDE_DETAILS = "ride_details";
+
     private RideDetailsDTO ride;
     private MapView mapFragment;
     private double savedLat = Double.NaN;
     private double savedLon = Double.NaN;
     private double savedZoom = Double.NaN;
 
-    public RideDetailsFragment(RideDetailsDTO rideDetails){
-        this.ride = rideDetails;
+    public RideDetailsFragment() {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        View view = inflater.inflate(R.layout.fragment_ride_details, container, false);
+        if (getArguments() != null) {
+            String json = getArguments().getString(ARG_RIDE_DETAILS);
+            if (json != null) {
+                Gson gson = new Gson();
+                ride = gson.fromJson(json, RideDetailsDTO.class);
+            }
+        }
 
-        mapFragment = view.findViewById(R.id.mapView);
-
+        // Restore map state
         if (savedInstanceState != null) {
             savedLat = savedInstanceState.getDouble("lat", Double.NaN);
             savedLon = savedInstanceState.getDouble("lon", Double.NaN);
             savedZoom = savedInstanceState.getDouble("zoom", Double.NaN);
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_ride_details, container, false);
+
+        mapFragment = view.findViewById(R.id.mapView);
 
         setMapViewAppearance(mapFragment);
         populateRideDetails(view);
@@ -72,7 +85,6 @@ public class RideDetailsFragment extends Fragment {
         if (mapFragment != null) mapFragment.onPause();
     }
 
-    // when the device is rotated save the state of the map
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -83,7 +95,9 @@ public class RideDetailsFragment extends Fragment {
         }
     }
 
-    private void populateRideDetails(View view){
+    private void populateRideDetails(View view) {
+        if (ride == null) return;
+
         StringBuilder strBuilder;
 
         TextView tvInconsistencies = view.findViewById(R.id.tvRideDetailsInconsistencies);
@@ -98,6 +112,9 @@ public class RideDetailsFragment extends Fragment {
                 strBuilder.append(String.format("%s: %s\n", review.passengerName, review.comment));
                 strBuilder.append(String.format("Driver rating: %d\n", review.driverRating));
                 strBuilder.append(String.format("Vehicle rating: %d", review.vehicleRating));
+                if (ride.reviews.indexOf(review) < ride.reviews.size() - 1) {
+                    strBuilder.append("\n\n");
+                }
             }
         }
         tvRatings.setText(strBuilder.toString());
@@ -120,8 +137,14 @@ public class RideDetailsFragment extends Fragment {
         TextView tvPassengers = view.findViewById(R.id.tvRideDetailsPassengers);
         strBuilder = new StringBuilder();
         strBuilder.append(ride.ordererName).append("\n");
-        for (String passenger : ride.linkedPassengers) strBuilder.append(passenger).append("\n");
-        strBuilder.deleteCharAt(strBuilder.length() - 1);
+        if (ride.linkedPassengers != null) {
+            for (String passenger : ride.linkedPassengers) {
+                strBuilder.append(passenger).append("\n");
+            }
+        }
+        if (strBuilder.length() > 0) {
+            strBuilder.deleteCharAt(strBuilder.length() - 1);
+        }
         tvPassengers.setText(strBuilder.toString());
 
         TextView tvCancelled = view.findViewById(R.id.tvRideDetailsCancelled);
@@ -134,13 +157,13 @@ public class RideDetailsFragment extends Fragment {
         if (!ride.panic) strBuilder.append("-");
         else {
             strBuilder.append("Panic triggered by ").append(ride.panicTriggeredBy).append("\n");
-            strBuilder.append("Panic triggered at: ").append(ride.panicTriggeredAt).append("\n");
+            strBuilder.append("Panic triggered at: ").append(ride.panicTriggeredAt);
         }
         tvPanic.setText(strBuilder.toString());
     }
 
-
     private void setMapViewAppearance(MapView mapFragment) {
+        if (ride == null || ride.startLocation == null || ride.endLocation == null) return;
 
         mapFragment.setMultiTouchControls(true);
         mapFragment.setMinZoomLevel(10.0);
@@ -162,7 +185,9 @@ public class RideDetailsFragment extends Fragment {
     }
 
     private void renderMarkers(){
-        if (this.ride == null) return;
+        if (this.ride == null || mapFragment == null) return;
+
+        mapFragment.getOverlays().clear();
 
         // start marker
         Marker startMarker = new Marker(mapFragment);
@@ -191,34 +216,43 @@ public class RideDetailsFragment extends Fragment {
         mapFragment.getOverlays().add(endMarker);
 
         // stops markers
-        for (LocationDTO stop : ride.routeStops){
-            Marker marker = new Marker(mapFragment);
-            marker.setPosition(new GeoPoint(
-                    stop.latitude,
-                    stop.longitude
-            ));
-            marker.setTitle("End");
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            marker.setIcon(
-                    requireContext().getDrawable(R.drawable.location_blue)
-            );
-            mapFragment.getOverlays().add(marker);
+        if (ride.routeStops != null) {
+            for (LocationDTO stop : ride.routeStops){
+                Marker marker = new Marker(mapFragment);
+                marker.setPosition(new GeoPoint(
+                        stop.latitude,
+                        stop.longitude
+                ));
+                marker.setTitle("Stop");
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                marker.setIcon(
+                        requireContext().getDrawable(R.drawable.location_blue)
+                );
+                mapFragment.getOverlays().add(marker);
+            }
         }
     }
 
     private void renderRoute(){
+        if (ride == null || ride.startLocation == null || ride.endLocation == null) return;
+
         List<GeoPoint> points = new ArrayList<>();
         points.add(new GeoPoint(ride.startLocation.latitude, ride.startLocation.longitude));
-        for (LocationDTO stop : ride.routeStops){
-            points.add(new GeoPoint(stop.latitude, stop.longitude));
+        if (ride.routeStops != null) {
+            for (LocationDTO stop : ride.routeStops){
+                points.add(new GeoPoint(stop.latitude, stop.longitude));
+            }
         }
         points.add(new GeoPoint(ride.endLocation.latitude, ride.endLocation.longitude));
 
         RouteHelper.fetchRoutePolyline(points, new RouteHelper.RouteCallback() {
             @Override
             public void onRouteReady(Polyline polyline) {
-                mapFragment.getOverlays().add(0, polyline);
-                mapFragment.invalidate();
+                if (mapFragment != null && isAdded()) {
+                    mapFragment.getOverlays().removeIf(overlay -> overlay instanceof Polyline);
+                    mapFragment.getOverlays().add(0, polyline);
+                    mapFragment.invalidate();
+                }
             }
 
             @Override
