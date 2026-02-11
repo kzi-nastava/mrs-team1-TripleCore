@@ -49,6 +49,7 @@ public class RideDetailsFragment extends Fragment {
     private Long currentUserId;
 
     private MapView mapFragment;
+    private View view;
     private Button btnCancelRide;
     private Button btnStopRide;
     private Button btnReview;
@@ -106,7 +107,7 @@ public class RideDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_ride_details, container, false);
+        view = inflater.inflate(R.layout.fragment_ride_details, container, false);
 
         mapFragment = view.findViewById(R.id.mapView);
         btnCancelRide = view.findViewById(R.id.btnCancelRide);
@@ -254,7 +255,7 @@ public class RideDetailsFragment extends Fragment {
 
         ride.reviews.add(review);
         btnReview.setVisibility(View.GONE);
-//        populateRatings(view);
+        populateRatings(view);
 
         Toast.makeText(requireContext(),
                 "Review successfully added",
