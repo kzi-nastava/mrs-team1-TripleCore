@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.example.taxiapp.ui.review.ReviewFormFragment;
 import com.google.gson.Gson;
 
 import org.osmdroid.util.GeoPoint;
@@ -48,8 +49,10 @@ public class RideDetailsFragment extends Fragment {
     private Long currentUserId;
 
     private MapView mapFragment;
+    private View view;
     private Button btnCancelRide;
     private Button btnStopRide;
+    private Button btnReview;
 
     private double savedLat = Double.NaN;
     private double savedLon = Double.NaN;
@@ -82,23 +85,42 @@ public class RideDetailsFragment extends Fragment {
             savedLon = savedInstanceState.getDouble("lon", Double.NaN);
             savedZoom = savedInstanceState.getDouble("zoom", Double.NaN);
         }
+
+        // setting a fragment result listener for the new review
+        // so we don't need to fetch the whole ride from the backend for the review we created
+        getParentFragmentManager().setFragmentResultListener(
+                "reviewRequestKey",
+                this,
+                (requestKey, bundle) -> {
+
+                    ReviewDTO newReview =
+                            (ReviewDTO) bundle.getSerializable("newReview");
+
+                    if (newReview != null) {
+                        onNewReviewReceived(newReview);
+                    }
+                }
+        );
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_ride_details, container, false);
+        view = inflater.inflate(R.layout.fragment_ride_details, container, false);
 
         mapFragment = view.findViewById(R.id.mapView);
         btnCancelRide = view.findViewById(R.id.btnCancelRide);
         btnStopRide = view.findViewById(R.id.btnStopRide);
+        btnReview = view.findViewById(R.id.btnReview);
 
         btnCancelRide.setOnClickListener(v -> handleCancelRide());
         btnStopRide.setOnClickListener(v -> handleStopRide());
+        btnReview.setOnClickListener(v -> handleReview());
 
         setupCancelButtonVisibility();
         setupStopButtonVisibility();
+        setupReviewButtonVisibility();
 
         setMapViewAppearance(mapFragment);
         populateRideDetails(view);
@@ -175,6 +197,74 @@ public class RideDetailsFragment extends Fragment {
         }
     }
 
+    /* ===================== REVIEWS ===================== */
+
+    private void setupReviewButtonVisibility(){
+        if (ride == null || currentUserRole == null) {
+            btnStopRide.setVisibility(View.GONE);
+            return;
+        }
+
+        boolean show = "PASSENGER".equals(currentUserRole) &&
+                "FINISHED".equals(ride.status) &&
+                ride.reviews.stream()
+                        .noneMatch(r -> currentUserId.equals(r.passengerId));
+        btnReview.setVisibility(show ? VISIBLE : View.GONE);
+    }
+
+    private void populateRatings(View view) {
+
+        TextView tvRatings = view.findViewById(R.id.tvRideDetailsRatings);
+
+        if (ride.reviews == null || ride.reviews.isEmpty()) {
+            tvRatings.setText("No ratings yet.");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (ReviewDTO r : ride.reviews) {
+            sb.append("Passenger: ").append(r.passengerName).append("\n")
+                    .append("Driver rating: ").append(r.driverRating).append("\n")
+                    .append("Vehicle rating: ").append(r.vehicleRating).append("\n")
+                    .append("Comment: ").append(r.comment).append("\n\n");
+        }
+
+        tvRatings.setText(sb.toString().trim());
+    }
+
+
+    private void handleReview() {
+
+        ReviewFormFragment reviewFragment =
+                ReviewFormFragment.newInstance(ride);
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, reviewFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+
+    private void onNewReviewReceived(ReviewDTO review) {
+
+        if (ride.reviews == null) {
+            ride.reviews = new ArrayList<>();
+        }
+
+        ride.reviews.add(review);
+        btnReview.setVisibility(View.GONE);
+        populateRatings(view);
+
+        Toast.makeText(requireContext(),
+                "Review successfully added",
+                Toast.LENGTH_SHORT).show();
+
+    }
+
+
+
     private void showStopDialogWithLocation() {
         StopRideHelper.showStopDialog(
                 requireContext(),
@@ -216,6 +306,31 @@ public class RideDetailsFragment extends Fragment {
     private void populateRideDetails(View view) {
         if (ride == null) return;
 
+        TextView tvInconsistencies = view.findViewById(R.id.tvRideDetailsInconsistencies);
+        if (ride.inconsistencies != null && !ride.inconsistencies.isEmpty()) {
+            tvInconsistencies.setText(ride.inconsistencies);
+        } else {
+            tvInconsistencies.setText("No inconsistencies");
+        }
+
+        TextView tvCancelled = view.findViewById(R.id.tvRideDetailsCancelled);
+        if (ride.cancelledBy != null && !ride.cancelledBy.isEmpty()) {
+            tvCancelled.setText(ride.cancelledBy);
+        } else {
+            tvCancelled.setText("Ride not cancelled");
+        }
+
+        TextView tvPanic = view.findViewById(R.id.tvRideDetailsPanic);
+        if (ride.panic) {
+            String panicInfo = "Triggered by: " +
+                    (ride.panicTriggeredBy != null ? ride.panicTriggeredBy : "Unknown") +
+                    "\nAt: " +
+                    (ride.panicTriggeredAt != null ? getTimeOnly(ride.panicTriggeredAt) : "Unknown time");
+            tvPanic.setText(panicInfo);
+        } else {
+            tvPanic.setText("Panic not triggered");
+        }
+
         TextView tvInfo = view.findViewById(R.id.tvRideDetailsInfo);
         tvInfo.setText(
                 "Route: " + ride.startLocation.address + " → " + ride.endLocation.address + "\n" +
@@ -234,6 +349,7 @@ public class RideDetailsFragment extends Fragment {
             for (String p : ride.linkedPassengers) sb.append(p).append("\n");
         }
         tvPassengers.setText(sb.toString().trim());
+        populateRatings(view);
     }
 
     /* ===================== MAP ===================== */

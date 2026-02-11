@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Leave a review"
+            style="@style/HeadingText"
+            android:textSize="25sp"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="28dp"/>
+
+        <!-- Driver Rating -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rate driver"
+            android:textSize="18sp"
+            android:paddingBottom="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/driverStars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="28dp">
+        </LinearLayout>
+
+        <!-- Vehicle Rating -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rate vehicle"
+            android:textSize="18sp"
+            android:paddingBottom="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/vehicleStars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="28dp">
+        </LinearLayout>
+
+        <!-- Comment -->
+        <EditText
+            android:id="@+id/commentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:hint="Comment"
+            android:gravity="top"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:inputType="textMultiLine"
+            android:scrollbars="vertical"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/cancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:textColor="#600EA8"
+                android:backgroundTint="#F5EBFF"
+                android:layout_marginEnd="12dp"/>
+
+            <Button
+                android:id="@+id/submitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Submit"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#600EA8"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
