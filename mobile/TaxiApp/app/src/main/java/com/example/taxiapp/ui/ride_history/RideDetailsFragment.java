@@ -211,6 +211,28 @@ public class RideDetailsFragment extends Fragment {
         btnReview.setVisibility(show ? VISIBLE : View.GONE);
     }
 
+    private void populateRatings(View view) {
+
+        TextView tvRatings = view.findViewById(R.id.tvRideDetailsRatings);
+
+        if (ride.reviews == null || ride.reviews.isEmpty()) {
+            tvRatings.setText("No ratings yet.");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (ReviewDTO r : ride.reviews) {
+            sb.append("Passenger: ").append(r.passengerName).append("\n")
+                    .append("Driver rating: ").append(r.driverRating).append("\n")
+                    .append("Vehicle rating: ").append(r.vehicleRating).append("\n")
+                    .append("Comment: ").append(r.comment).append("\n\n");
+        }
+
+        tvRatings.setText(sb.toString().trim());
+    }
+
+
     private void handleReview() {
 
         ReviewFormFragment reviewFragment =
@@ -232,6 +254,7 @@ public class RideDetailsFragment extends Fragment {
 
         ride.reviews.add(review);
         btnReview.setVisibility(View.GONE);
+//        populateRatings(view);
 
         Toast.makeText(requireContext(),
                 "Review successfully added",
@@ -282,6 +305,31 @@ public class RideDetailsFragment extends Fragment {
     private void populateRideDetails(View view) {
         if (ride == null) return;
 
+        TextView tvInconsistencies = view.findViewById(R.id.tvRideDetailsInconsistencies);
+        if (ride.inconsistencies != null && !ride.inconsistencies.isEmpty()) {
+            tvInconsistencies.setText(ride.inconsistencies);
+        } else {
+            tvInconsistencies.setText("No inconsistencies");
+        }
+
+        TextView tvCancelled = view.findViewById(R.id.tvRideDetailsCancelled);
+        if (ride.cancelledBy != null && !ride.cancelledBy.isEmpty()) {
+            tvCancelled.setText(ride.cancelledBy);
+        } else {
+            tvCancelled.setText("Ride not cancelled");
+        }
+
+        TextView tvPanic = view.findViewById(R.id.tvRideDetailsPanic);
+        if (ride.panic) {
+            String panicInfo = "Triggered by: " +
+                    (ride.panicTriggeredBy != null ? ride.panicTriggeredBy : "Unknown") +
+                    "\nAt: " +
+                    (ride.panicTriggeredAt != null ? getTimeOnly(ride.panicTriggeredAt) : "Unknown time");
+            tvPanic.setText(panicInfo);
+        } else {
+            tvPanic.setText("Panic not triggered");
+        }
+
         TextView tvInfo = view.findViewById(R.id.tvRideDetailsInfo);
         tvInfo.setText(
                 "Route: " + ride.startLocation.address + " → " + ride.endLocation.address + "\n" +
@@ -300,6 +348,7 @@ public class RideDetailsFragment extends Fragment {
             for (String p : ride.linkedPassengers) sb.append(p).append("\n");
         }
         tvPassengers.setText(sb.toString().trim());
+        populateRatings(view);
     }
 
     /* ===================== MAP ===================== */
