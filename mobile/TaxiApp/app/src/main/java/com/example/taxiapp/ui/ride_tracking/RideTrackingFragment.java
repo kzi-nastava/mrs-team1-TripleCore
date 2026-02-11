@@ -1,10 +1,16 @@
 package com.example.taxiapp.ui.ride_tracking;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +33,10 @@ import helper.RouteHelper;
 import model.LocationDTO;
 import model.RideDetailsDTO;
 import model.RideTrackingInfo;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.VehicleService;
 
 
 public class RideTrackingFragment extends Fragment {
@@ -42,7 +52,12 @@ public class RideTrackingFragment extends Fragment {
 
     private RideDetailsDTO ride;
     private RideTrackingInfo trackingInfo = createMockTrackingInfo();
+    private Marker vehicleMarker;
+
     private String role = "DRIVER";// "DRIVER" ili "PASSENGER"
+
+    private static final long POLLING_INTERVAL = 3000; // 3 sekunde
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     public RideTrackingFragment(RideDetailsDTO rideDetails){
         ride = rideDetails;
@@ -78,6 +93,94 @@ public class RideTrackingFragment extends Fragment {
             outState.putDouble("zoom", mapFragment.getZoomLevelDouble());
         }
     }
+    private final Runnable pollingRunnable = new Runnable() {
+        @Override
+        public void run() {
+            fetchRideTrackingInfo();
+            handler.postDelayed(this, POLLING_INTERVAL);
+        }
+    };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        handler.post(pollingRunnable);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        handler.removeCallbacks(pollingRunnable);
+    }
+
+    private void fetchRideTrackingInfo() {
+
+        if (ride == null || ride.id == null) return;
+
+        VehicleService.getInstance()
+                .getRideTrackingInfo(ride.id, new Callback<RideTrackingInfo>() {
+
+                    @Override
+                    public void onResponse(Call<RideTrackingInfo> call,
+                                           Response<RideTrackingInfo> response) {
+
+                        if (!isAdded()) return;
+
+                        if (response.isSuccessful() && response.body() != null) {
+
+                            trackingInfo = response.body();
+
+                            bindTrackingInfo();
+                            updateVehicleMarker();
+
+                        } else {
+                            Log.e("RideTracking", "Error: " + response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RideTrackingInfo> call, Throwable t) {
+                        if (!isAdded()) return;
+                        Log.e("RideTracking", "Failed tracking info", t);
+                    }
+                });
+    }
+
+    private void updateVehicleMarker() {
+
+        if (trackingInfo == null || trackingInfo.vehicleLocation == null) return;
+
+        GeoPoint point = new GeoPoint(
+                trackingInfo.vehicleLocation.latitude,
+                trackingInfo.vehicleLocation.longitude
+        );
+
+        if (vehicleMarker == null) {
+
+            vehicleMarker = new Marker(mapFragment);
+            vehicleMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+
+            Drawable drawable = requireContext().getDrawable(R.drawable.taxi_no_shadow);
+            if (drawable != null) {
+
+                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 32, 32, true);
+
+                Drawable scaledDrawable =
+                        new BitmapDrawable(getResources(), scaledBitmap);
+
+                vehicleMarker.setIcon(scaledDrawable);
+            }
+
+            mapFragment.getOverlays().add(vehicleMarker);
+        }
+
+        vehicleMarker.setPosition(point);
+        mapFragment.invalidate();
+    }
+
+
+
 
     private void setupMap() {
         mapFragment.setMultiTouchControls(true);
