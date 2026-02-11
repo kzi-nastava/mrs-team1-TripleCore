@@ -93,13 +93,14 @@
             android:layout_weight="1" />
 
         <!-- CANCEL RIDE BUTTON -->
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCancelRide"
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:text="Cancel Ride"
             android:background="@drawable/button_cancel_ride"
-            android:textColor="@color/white"
+            android:backgroundTint="@null"
+            android:textColor="@android:color/white"
             android:textSize="13sp"
             android:visibility="gone"
             android:layout_marginTop="4dp"
@@ -107,13 +108,14 @@
             android:layout_marginBottom="20dp"/>
 
         <!-- STOP RIDE BUTTON -->
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnStopRide"
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:text="Stop Ride"
             android:background="@drawable/button_stop_ride"
-            android:textColor="@color/white"
+            android:backgroundTint="@null"
+            android:textColor="@android:color/white"
             android:textSize="13sp"
             android:visibility="gone"
             android:layout_marginTop="4dp"
