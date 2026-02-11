@@ -16,6 +16,15 @@ import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
 
+import model.CreateReviewRequest;
+import model.ReviewDTO;
+import model.RideDetailsDTO;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import service.AuthService;
+import service.ReviewService;
+
 public class ReviewFormFragment extends Fragment {
 
     private LinearLayout driverStarsLayout;
@@ -27,8 +36,30 @@ public class ReviewFormFragment extends Fragment {
     private int vehicleRating = 0;
     private final int MAX_STARS = 5;
 
+    private Long passengerId;
+    private String passengerFullName;
+
+    private RideDetailsDTO ride;
+
     public ReviewFormFragment() {
         // Required empty public constructor
+    }
+
+    public static ReviewFormFragment newInstance(RideDetailsDTO ride) {
+        ReviewFormFragment fragment = new ReviewFormFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("ride_key", ride);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            ride = (RideDetailsDTO) getArguments().getSerializable("ride_key");
+        }
     }
 
     @Nullable
@@ -56,16 +87,10 @@ public class ReviewFormFragment extends Fragment {
             Toast.makeText(getContext(), "Review canceled", Toast.LENGTH_SHORT).show();
         });
 
-        submitButton.setOnClickListener(v -> {
-            if (driverRating == 0 || vehicleRating == 0) {
-                Toast.makeText(getContext(), "Please rate both driver and vehicle", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            String comment = commentEditText.getText().toString().trim();
-            // Ovde pozovi API ili sačuvaj podatke
-            Toast.makeText(getContext(), "Submitted! Driver: " + driverRating +
-                    " Vehicle: " + vehicleRating + "\nComment: " + comment, Toast.LENGTH_LONG).show();
-        });
+        submitButton.setOnClickListener(v -> submitReview());
+
+        passengerId = AuthService.getInstance().getLoggedInUserId(requireContext());
+        passengerFullName = AuthService.getInstance().getUserFullName(requireContext());
 
         return view;
     }
@@ -107,4 +132,59 @@ public class ReviewFormFragment extends Fragment {
             }
         }
     }
+
+    private void submitReview() {
+
+        String comment = commentEditText.getText().toString().trim();
+
+        if (driverRating == 0 || vehicleRating == 0) {
+            Toast.makeText(getContext(), "Please rate both driver and vehicle", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        CreateReviewRequest request = new CreateReviewRequest();
+        request.rideId = ride.id;
+        request.passengerId = passengerId;
+        request.driverRating = driverRating;
+        request.vehicleRating = vehicleRating;
+        request.comment = comment;
+
+
+        ReviewService reviewService = new ReviewService();
+
+        reviewService.createReview(request, new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call,
+                                   retrofit2.Response<ResponseBody> response) {
+
+                if (response.isSuccessful()) {
+
+                    ReviewDTO reviewDTO = new ReviewDTO();
+                    reviewDTO.rideId = ride.id;
+                    reviewDTO.passengerId = passengerId;
+                    reviewDTO.passengerName = passengerFullName;
+                    reviewDTO.driverName = ride.driverName;
+                    reviewDTO.driverRating = driverRating;
+                    reviewDTO.vehicleRating = vehicleRating;
+                    reviewDTO.comment = comment;
+
+                    Bundle result = new Bundle();
+                    result.putSerializable("newReview", reviewDTO);
+
+                    getParentFragmentManager()
+                            .setFragmentResult("reviewRequestKey", result);
+
+                    getParentFragmentManager().popBackStack();
+                } else {
+                    Toast.makeText(getContext(), "Error creating review", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getContext(), "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

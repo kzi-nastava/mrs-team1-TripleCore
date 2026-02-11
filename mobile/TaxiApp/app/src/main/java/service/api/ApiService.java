@@ -2,6 +2,7 @@ package service.api;
 
 import java.util.List;
 
+import model.CreateReviewRequest;
 import model.DriverProfileChangeRequest;
 import model.DriverProfileChangeRequestResponse;
 import model.DriverProfileResponse;
@@ -10,6 +11,7 @@ import model.LoginRequest;
 import model.LoginResponse;
 import model.RegisterRequest;
 import model.RegisterResponse;
+import model.ReviewDTO;
 import model.RideCancelRequest;
 import model.RideDetailsDTO;
 import model.StopRideRequest;
@@ -129,5 +131,16 @@ public interface ApiService {
 
     @POST("/api/rides/{id}/finish")
     Call<String> finishRide(@Path("id") Long rideId);
+
+    // Reviews
+
+    @POST("api/reviews/create")
+    Call<ResponseBody> createReview(@Body CreateReviewRequest request);
+
+    @GET("api/reviews/passenger/{id}")
+    Call<List<ReviewDTO>> getPassengerReviews(@Path("id") Long passengerId);
+
+    @GET("api/reviews/driver/{id}")
+    Call<List<ReviewDTO>> getDriverReviews(@Path("id") Long driverId);
 
 }

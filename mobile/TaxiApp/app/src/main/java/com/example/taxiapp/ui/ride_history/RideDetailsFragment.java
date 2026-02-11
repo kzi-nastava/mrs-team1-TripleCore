@@ -84,6 +84,22 @@ public class RideDetailsFragment extends Fragment {
             savedLon = savedInstanceState.getDouble("lon", Double.NaN);
             savedZoom = savedInstanceState.getDouble("zoom", Double.NaN);
         }
+
+        // setting a fragment result listener for the new review
+        // so we don't need to fetch the whole ride from the backend for the review we created
+        getParentFragmentManager().setFragmentResultListener(
+                "reviewRequestKey",
+                this,
+                (requestKey, bundle) -> {
+
+                    ReviewDTO newReview =
+                            (ReviewDTO) bundle.getSerializable("newReview");
+
+                    if (newReview != null) {
+                        onNewReviewReceived(newReview);
+                    }
+                }
+        );
     }
 
     @Override
@@ -196,7 +212,9 @@ public class RideDetailsFragment extends Fragment {
     }
 
     private void handleReview() {
-        ReviewFormFragment reviewFragment = new ReviewFormFragment();
+
+        ReviewFormFragment reviewFragment =
+                ReviewFormFragment.newInstance(ride);
 
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
@@ -204,6 +222,23 @@ public class RideDetailsFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
+
+
+    private void onNewReviewReceived(ReviewDTO review) {
+
+        if (ride.reviews == null) {
+            ride.reviews = new ArrayList<>();
+        }
+
+        ride.reviews.add(review);
+        btnReview.setVisibility(View.GONE);
+
+        Toast.makeText(requireContext(),
+                "Review successfully added",
+                Toast.LENGTH_SHORT).show();
+
+    }
+
 
 
     private void showStopDialogWithLocation() {
