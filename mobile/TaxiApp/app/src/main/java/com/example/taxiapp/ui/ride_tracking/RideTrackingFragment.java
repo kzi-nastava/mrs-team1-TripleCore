@@ -1,5 +1,7 @@
 package com.example.taxiapp.ui.ride_tracking;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,8 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
@@ -29,12 +33,15 @@ import java.util.List;
 import java.util.Locale;
 
 import helper.RouteHelper;
+import helper.StopRideHelper;
 import model.LocationDTO;
 import model.RideDetailsDTO;
 import model.RideTrackingInfo;
+import model.StopRideResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import service.AuthService;
 import service.RideService;
 import service.VehicleService;
 
@@ -51,12 +58,12 @@ public class RideTrackingFragment extends Fragment {
     private double savedLon = Double.NaN;
     private double savedZoom = Double.NaN;
 
-    private String role = "DRIVER"; //
+    private String role;
 
     private static final long POLLING_INTERVAL = 3000; // 3 sec
     private final Handler handler = new Handler(Looper.getMainLooper());
     private static final String ARG_RIDE = "arg_ride";
-
+    private static final int REQUEST_CODE_LOCATION = 100;
 
     public static RideTrackingFragment newInstance(RideDetailsDTO rideDetails) {
         RideTrackingFragment fragment = new RideTrackingFragment();
@@ -74,6 +81,9 @@ public class RideTrackingFragment extends Fragment {
         if (getArguments() != null) {
             ride = (RideDetailsDTO) getArguments().getSerializable(ARG_RIDE);
         }
+
+        role = AuthService.getInstance().getLoggedInUserRole(requireContext());
+        Log.d("RideTracking", "User role: " + role);
 
         View view = inflater.inflate(R.layout.fragment_ride_tracking, container, false);
 
@@ -93,9 +103,6 @@ public class RideTrackingFragment extends Fragment {
             outState.putDouble("lon", mapFragment.getMapCenter().getLongitude());
             outState.putDouble("zoom", mapFragment.getZoomLevelDouble());
         }
-        if (getArguments() != null) {
-            ride = (RideDetailsDTO) getArguments().getSerializable(ARG_RIDE);
-        }
     }
 
     @Override
@@ -110,6 +117,18 @@ public class RideTrackingFragment extends Fragment {
         handler.removeCallbacks(pollingRunnable);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mapFragment != null) mapFragment.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mapFragment != null) mapFragment.onPause();
+    }
+
     // UI
     private void initUI(View view) {
         mapFragment = view.findViewById(R.id.ride_tracking_map_view);
@@ -122,6 +141,8 @@ public class RideTrackingFragment extends Fragment {
 
     // map setup
     private void setupMap() {
+        if (ride == null) return;
+
         mapFragment.setMultiTouchControls(true);
         mapFragment.setMinZoomLevel(10.0);
         mapFragment.setMaxZoomLevel(19.0);
@@ -152,8 +173,10 @@ public class RideTrackingFragment extends Fragment {
         addMarker(ride.endLocation.latitude, ride.endLocation.longitude, R.drawable.location_green, "End");
 
         // Stops Markers
-        for (LocationDTO stop : ride.routeStops) {
-            addMarker(stop.latitude, stop.longitude, R.drawable.location_blue, "Stop");
+        if (ride.routeStops != null) {
+            for (LocationDTO stop : ride.routeStops) {
+                addMarker(stop.latitude, stop.longitude, R.drawable.location_blue, "Stop");
+            }
         }
     }
 
@@ -167,18 +190,26 @@ public class RideTrackingFragment extends Fragment {
     }
 
     private void renderRoute() {
+        if (ride == null) return;
+
         List<GeoPoint> points = new ArrayList<>();
         points.add(new GeoPoint(ride.startLocation.latitude, ride.startLocation.longitude));
-        for (LocationDTO stop : ride.routeStops) {
-            points.add(new GeoPoint(stop.latitude, stop.longitude));
+
+        if (ride.routeStops != null) {
+            for (LocationDTO stop : ride.routeStops) {
+                points.add(new GeoPoint(stop.latitude, stop.longitude));
+            }
         }
+
         points.add(new GeoPoint(ride.endLocation.latitude, ride.endLocation.longitude));
 
         RouteHelper.fetchRoutePolyline(points, new RouteHelper.RouteCallback() {
             @Override
             public void onRouteReady(Polyline polyline) {
-                mapFragment.getOverlays().add(0, polyline);
-                mapFragment.invalidate();
+                if (mapFragment != null) {
+                    mapFragment.getOverlays().add(0, polyline);
+                    mapFragment.invalidate();
+                }
             }
 
             @Override
@@ -281,21 +312,40 @@ public class RideTrackingFragment extends Fragment {
         tvTrackingInfo.setText(text);
     }
 
-    // actions
+    /* ===================== ACTIONS ===================== */
+
     private void setupActions() {
+        btnFinishRide.setVisibility(View.GONE);
+        btnStopRide.setVisibility(View.GONE);
+        btnPanic.setVisibility(View.GONE);
+
+        // DRIVER
         if ("DRIVER".equals(role)) {
+            // Finish Ride
             btnFinishRide.setVisibility(View.VISIBLE);
             btnFinishRide.setOnClickListener(v -> finishRide());
 
+            // Stop Ride
             btnStopRide.setBackgroundColor(Color.parseColor("#F25027"));
             btnStopRide.setVisibility(View.VISIBLE);
-            btnStopRide.setOnClickListener(v -> stopRide());
-        }
+            btnStopRide.setOnClickListener(v -> handleStopRide());
 
-        if ("PASSENGER".equals(role)) {
+            // Panic
             btnPanic.setBackgroundColor(Color.RED);
             btnPanic.setVisibility(View.VISIBLE);
             btnPanic.setOnClickListener(v -> panic());
+        }
+
+        // PASSENGER
+        else if ("PASSENGER".equals(role)) {
+            btnPanic.setBackgroundColor(Color.RED);
+            btnPanic.setVisibility(View.VISIBLE);
+            btnPanic.setOnClickListener(v -> panic());
+        }
+
+        // ADMIN
+        else if ("ADMIN".equals(role)) {
+            Log.d("RideTracking", "Admin mode - no action buttons");
         }
     }
 
@@ -327,11 +377,64 @@ public class RideTrackingFragment extends Fragment {
         });
     }
 
-    private void stopRide() {
-        // TODO: implement stop ride logic
+    /* ===================== STOP RIDE ===================== */
+
+    private void handleStopRide() {
+        if (ActivityCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_CODE_LOCATION
+            );
+        } else {
+            showStopDialogWithLocation();
+        }
+    }
+
+    private void showStopDialogWithLocation() {
+        StopRideHelper.showStopDialog(
+                requireContext(),
+                ride,
+                new StopRideHelper.StopRideCallback() {
+                    @Override
+                    public void onSuccess(StopRideResponse response) {
+                        Toast.makeText(requireContext(),
+                                "Ride stopped successfully",
+                                Toast.LENGTH_SHORT).show();
+                        refresh();
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CODE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showStopDialogWithLocation();
+            } else {
+                Toast.makeText(requireContext(),
+                        "Location permission is required to stop the ride",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void panic() {
         // TODO: implement panic logic
+        Toast.makeText(requireContext(), "PANIC button pressed", Toast.LENGTH_SHORT).show();
+    }
+
+    private void refresh() {
+        requireActivity().getSupportFragmentManager().popBackStack();
     }
 }

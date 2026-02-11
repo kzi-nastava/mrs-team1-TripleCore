@@ -400,19 +400,19 @@ public class RideHistoryFragment extends Fragment {
     private void openRideDetails(RideDetailsDTO rideDetails) {
         if (!isAdded() || getActivity() == null) return;
 
-        Bundle args = new Bundle();
-        Gson gson = new Gson();
-        args.putString("ride_details", gson.toJson(rideDetails));
+        if ("IN_PROGRESS".equals(rideDetails.status)) {
+            openRideTracking(rideDetails);
+        }
+        else {
+            RideDetailsFragment fragment = RideDetailsFragment.newInstance(rideDetails, currentRoleType);
 
-        RideDetailsFragment fragment = new RideDetailsFragment();
-        fragment.setArguments(args);
-
-        requireActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_container, fragment)
-                .addToBackStack(null)
-                .commit();
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     private void openRideTracking(RideDetailsDTO rideDetails) {

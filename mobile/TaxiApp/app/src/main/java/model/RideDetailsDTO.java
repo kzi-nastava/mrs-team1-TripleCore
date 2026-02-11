@@ -37,4 +37,8 @@ public class RideDetailsDTO implements Serializable {
     public List<ReviewDTO> reviews;
     public String inconsistencies;
 
+    public transient Double savedLat;
+    public transient Double savedLon;
+    public transient Double savedZoom;
+
 }

@@ -107,7 +107,7 @@
             android:layout_marginHorizontal="8dp"
             android:layout_marginBottom="20dp"/>
 
-        <!-- STOP RIDE BUTTON -->
+        <!-- STOP RIDE BUTTON
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnStopRide"
             android:layout_width="match_parent"
@@ -120,7 +120,7 @@
             android:visibility="gone"
             android:layout_marginTop="4dp"
             android:layout_marginHorizontal="8dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"/> -->
 
     </LinearLayout>
 </ScrollView>

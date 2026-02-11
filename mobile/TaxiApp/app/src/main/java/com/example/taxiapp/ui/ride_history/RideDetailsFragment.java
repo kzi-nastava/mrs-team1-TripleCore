@@ -4,8 +4,6 @@ import static android.view.View.VISIBLE;
 import static helper.DateTimeHelper.getTimeOnly;
 
 import android.os.Bundle;
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
@@ -31,36 +28,31 @@ import java.util.List;
 
 import helper.CancelRideHelper;
 import helper.RouteHelper;
-import helper.StopRideHelper;
-import model.ReviewDTO;
 import model.RideDetailsDTO;
 import model.LocationDTO;
-import model.StopRideResponse;
 import service.AuthService;
 
 public class RideDetailsFragment extends Fragment {
 
     private static final String ARG_RIDE_DETAILS = "ride_details";
-    private static final int REQUEST_CODE_LOCATION = 100;
 
     private RideDetailsDTO ride;
-    private String currentUserRole; // DRIVER, PASSENGER, ADMIN
+    private String currentUserRole;
     private Long currentUserId;
 
     private MapView mapFragment;
     private Button btnCancelRide;
-    private Button btnStopRide;
 
-    private double savedLat = Double.NaN;
-    private double savedLon = Double.NaN;
-    private double savedZoom = Double.NaN;
+    private Double savedLat = null;
+    private Double savedLon = null;
+    private Double savedZoom = null;
 
     public RideDetailsFragment() {}
 
     public static RideDetailsFragment newInstance(RideDetailsDTO rideDetails, String userRole) {
         RideDetailsFragment fragment = new RideDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_RIDE_DETAILS, new Gson().toJson(rideDetails));
+        args.putSerializable(ARG_RIDE_DETAILS, rideDetails);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,17 +62,22 @@ public class RideDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            String json = getArguments().getString(ARG_RIDE_DETAILS);
-            if (json != null) ride = new Gson().fromJson(json, RideDetailsDTO.class);
+            ride = (RideDetailsDTO) getArguments().getSerializable(ARG_RIDE_DETAILS);
         }
 
         currentUserId = AuthService.getInstance().getLoggedInUserId(requireContext());
         currentUserRole = AuthService.getInstance().getLoggedInUserRole(requireContext());
 
         if (savedInstanceState != null) {
-            savedLat = savedInstanceState.getDouble("lat", Double.NaN);
-            savedLon = savedInstanceState.getDouble("lon", Double.NaN);
-            savedZoom = savedInstanceState.getDouble("zoom", Double.NaN);
+            if (savedInstanceState.containsKey("lat")) {
+                savedLat = savedInstanceState.getDouble("lat");
+            }
+            if (savedInstanceState.containsKey("lon")) {
+                savedLon = savedInstanceState.getDouble("lon");
+            }
+            if (savedInstanceState.containsKey("zoom")) {
+                savedZoom = savedInstanceState.getDouble("zoom");
+            }
         }
     }
 
@@ -92,14 +89,10 @@ public class RideDetailsFragment extends Fragment {
 
         mapFragment = view.findViewById(R.id.mapView);
         btnCancelRide = view.findViewById(R.id.btnCancelRide);
-        btnStopRide = view.findViewById(R.id.btnStopRide);
 
         btnCancelRide.setOnClickListener(v -> handleCancelRide());
-        btnStopRide.setOnClickListener(v -> handleStopRide());
 
         setupCancelButtonVisibility();
-        setupStopButtonVisibility();
-
         setMapViewAppearance(mapFragment);
         populateRideDetails(view);
 
@@ -149,68 +142,6 @@ public class RideDetailsFragment extends Fragment {
                     }
                 }
         );
-    }
-
-    /* ===================== STOP RIDE ===================== */
-
-    private void setupStopButtonVisibility() {
-        if (ride == null || currentUserRole == null) {
-            btnStopRide.setVisibility(View.GONE);
-            return;
-        }
-
-        boolean show = "DRIVER".equals(currentUserRole) && "IN_PROGRESS".equals(ride.status);
-        btnStopRide.setVisibility(show ? VISIBLE : View.GONE);
-    }
-
-    private void handleStopRide() {
-        if (ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_CODE_LOCATION
-            );
-        } else {
-            showStopDialogWithLocation();
-        }
-    }
-
-    private void showStopDialogWithLocation() {
-        StopRideHelper.showStopDialog(
-                requireContext(),
-                ride,
-                new StopRideHelper.StopRideCallback() {
-                    @Override
-                    public void onSuccess(StopRideResponse response) {
-                        Toast.makeText(requireContext(),
-                                "Ride stopped successfully",
-                                Toast.LENGTH_SHORT).show();
-                        refresh();
-                    }
-
-                    @Override
-                    public void onFailure(String error) {
-                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == REQUEST_CODE_LOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                showStopDialogWithLocation();
-            } else {
-                Toast.makeText(requireContext(),
-                        "Location permission is required to stop the ride",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     private void populateRideDetails(View view) {
@@ -317,9 +248,14 @@ public class RideDetailsFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mapFragment != null) {
-            outState.putDouble("lat", mapFragment.getMapCenter().getLatitude());
-            outState.putDouble("lon", mapFragment.getMapCenter().getLongitude());
-            outState.putDouble("zoom", mapFragment.getZoomLevelDouble());
+            org.osmdroid.api.IGeoPoint center = mapFragment.getMapCenter();
+            double zoom = mapFragment.getZoomLevelDouble();
+
+            if (center != null) {
+                outState.putDouble("lat", center.getLatitude());
+                outState.putDouble("lon", center.getLongitude());
+            }
+            outState.putDouble("zoom", zoom);
         }
     }
 
