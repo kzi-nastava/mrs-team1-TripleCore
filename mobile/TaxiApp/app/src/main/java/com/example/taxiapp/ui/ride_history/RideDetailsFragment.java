@@ -50,6 +50,7 @@ public class RideDetailsFragment extends Fragment {
     private MapView mapFragment;
     private Button btnCancelRide;
     private Button btnStopRide;
+    private Button btnReview;
 
     private double savedLat = Double.NaN;
     private double savedLon = Double.NaN;
@@ -93,12 +94,15 @@ public class RideDetailsFragment extends Fragment {
         mapFragment = view.findViewById(R.id.mapView);
         btnCancelRide = view.findViewById(R.id.btnCancelRide);
         btnStopRide = view.findViewById(R.id.btnStopRide);
+        btnReview = view.findViewById(R.id.btnReview);
 
         btnCancelRide.setOnClickListener(v -> handleCancelRide());
         btnStopRide.setOnClickListener(v -> handleStopRide());
+        btnReview.setOnClickListener(v -> handleReview());
 
         setupCancelButtonVisibility();
         setupStopButtonVisibility();
+        setupReviewButtonVisibility();
 
         setMapViewAppearance(mapFragment);
         populateRideDetails(view);
@@ -173,6 +177,27 @@ public class RideDetailsFragment extends Fragment {
         } else {
             showStopDialogWithLocation();
         }
+    }
+
+    /* ===================== REVIEWS ===================== */
+
+    private void setupReviewButtonVisibility(){
+        if (ride == null || currentUserRole == null) {
+            btnStopRide.setVisibility(View.GONE);
+            return;
+        }
+
+        boolean show = "PASSENGER".equals(currentUserRole) && "FINISHED".equals(ride.status);
+        btnReview.setVisibility(show ? VISIBLE : View.GONE);
+    }
+
+    private void handleReview(){
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setMessage("Reviews to be implemented")
+                .setPositiveButton("OK", (dialog, which) -> {
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                })
+                .show();
     }
 
     private void showStopDialogWithLocation() {
