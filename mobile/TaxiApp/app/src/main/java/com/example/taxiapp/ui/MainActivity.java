@@ -2,9 +2,7 @@ package com.example.taxiapp.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
@@ -18,7 +16,6 @@ import com.example.taxiapp.ui.admin.AdminRideHistoryFragment;
 import com.example.taxiapp.ui.admin.DriversRequestsFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
-import com.example.taxiapp.ui.auth.reset_password.ResetPasswordFragment;
 import com.example.taxiapp.ui.driver.DriverHomeFragment;
 import com.example.taxiapp.ui.driver.DriverRideHistoryFragment;
 import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
@@ -27,7 +24,6 @@ import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
 import com.example.taxiapp.ui.passenger.PassengerRideHistoryFragment;
 import com.example.taxiapp.ui.profile_info.ProfileFragment;
-import com.example.taxiapp.ui.shared.RideHistoryFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {

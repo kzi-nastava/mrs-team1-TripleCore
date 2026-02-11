@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/tv_active_ride"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Active ride"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp"/>
+
+            <!-- Map -->
+            <FrameLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="300dp">
+
+                <org.osmdroid.views.MapView
+                    android:id="@+id/ride_tracking_map_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
+
+            <!-- Ride info -->
+            <TextView
+                android:id="@+id/tv_ride_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="12dp"
+                android:textSize="14sp"/>
+
+            <!-- Tracking info -->
+            <TextView
+                android:id="@+id/tv_tracking_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:textSize="14sp"/>
+
+            <!-- Actions -->
+            <Button
+                android:id="@+id/btn_ride_tracking_finish_ride"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Finish Ride"
+                android:layout_gravity="end"
+                android:visibility="gone"
+                android:layout_marginTop="12dp"/>
+
+            <Button
+                android:id="@+id/btn_ride_tracking_panic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PANIC"
+                android:layout_gravity="end"
+                android:visibility="gone"
+                android:layout_marginTop="12dp"/>
+
+        </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

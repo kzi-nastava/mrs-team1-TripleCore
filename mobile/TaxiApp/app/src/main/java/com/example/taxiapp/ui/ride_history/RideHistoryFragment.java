@@ -1,4 +1,4 @@
-package com.example.taxiapp.ui.shared;
+package com.example.taxiapp.ui.ride_history;
 
 import static com.google.android.material.internal.ViewUtils.hideKeyboard;
 
@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.example.taxiapp.ui.ride_tracking.RideTrackingFragment;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -117,7 +118,12 @@ public class RideHistoryFragment extends Fragment {
                     inflater.inflate(R.layout.view_passenger_ride_card, cardsContainer, false);
 
             bindRideData(card, ride);
-            card.setOnClickListener(v -> openRideDetails(ride));
+            if (ride.status.equals("IN_PROGRESS")){
+                card.setOnClickListener(v -> openRideTracking(ride));
+            } else{
+                card.setOnClickListener(v -> openRideDetails(ride));
+            }
+
 
             cardsContainer.addView(card);
         }
@@ -223,6 +229,15 @@ public class RideHistoryFragment extends Fragment {
                 .getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main_container, new RideDetailsFragment(rideDetails))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void openRideTracking(RideDetailsDTO rideDetails){
+        requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, new RideTrackingFragment(rideDetails))
                 .addToBackStack(null)
                 .commit();
     }

@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
-import com.example.taxiapp.ui.shared.RideHistoryFragment;
+import com.example.taxiapp.ui.ride_history.RideHistoryFragment;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

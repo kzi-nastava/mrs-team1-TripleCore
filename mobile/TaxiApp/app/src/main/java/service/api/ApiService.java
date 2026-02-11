@@ -11,6 +11,7 @@ import model.LoginResponse;
 import model.RegisterRequest;
 import model.RegisterResponse;
 import model.RideDetailsDTO;
+import model.RideTrackingInfo;
 import model.UpdateUserProfileRequest;
 import model.UserProfileResponse;
 import okhttp3.ResponseBody;
@@ -42,7 +43,6 @@ public interface ApiService {
     );
 
     // Guest
-
     @GET("api/vehicles/locations")
     Call<List<ActiveVehicleLocationResponse>> getVehicleLocations();
 
@@ -103,4 +103,8 @@ public interface ApiService {
 
     @GET("api/drivers/{id}/ride-history")
     Call<ResponseBody> getDriverRideHistory(@Path("id") Long driverId);
+
+    // Ride tracking
+    @GET("api/vehicles/active-ride/{id}")
+    Call<RideTrackingInfo> getRideTrackingInfo(@Path("id") Long rideId);
 }
