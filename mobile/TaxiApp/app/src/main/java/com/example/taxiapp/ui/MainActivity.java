@@ -21,7 +21,7 @@ import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
 import com.example.taxiapp.ui.profile_info.ProfileFragment;
-import com.example.taxiapp.ui.shared.RideHistoryFragment;
+import com.example.taxiapp.ui.ride_history.RideHistoryFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import service.AuthService;

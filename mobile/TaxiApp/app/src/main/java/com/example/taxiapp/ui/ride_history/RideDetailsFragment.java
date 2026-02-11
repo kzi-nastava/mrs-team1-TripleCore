@@ -1,16 +1,16 @@
-package com.example.taxiapp.ui.shared;
+package com.example.taxiapp.ui.ride_history;
 
 import static android.view.View.VISIBLE;
 import static helper.DateTimeHelper.getTimeOnly;
 
+import android.os.Bundle;
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,11 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import helper.CancelRideHelper;
-import helper.StopRideHelper;
 import helper.RouteHelper;
-import helper.LocationHelper;
-import model.LocationDTO;
+import helper.StopRideHelper;
+import model.ReviewDTO;
 import model.RideDetailsDTO;
+import model.LocationDTO;
 import model.StopRideResponse;
 import service.AuthService;
 
@@ -213,8 +213,6 @@ public class RideDetailsFragment extends Fragment {
         }
     }
 
-    /* ===================== DETAILS ===================== */
-
     private void populateRideDetails(View view) {
         if (ride == null) return;
 
@@ -244,6 +242,8 @@ public class RideDetailsFragment extends Fragment {
         if (ride == null) return;
 
         mapFragment.setMultiTouchControls(true);
+        mapFragment.setMinZoomLevel(10.0);
+        mapFragment.setMaxZoomLevel(19.0);
 
         GeoPoint center = new GeoPoint(
                 (ride.startLocation.latitude + ride.endLocation.latitude) / 2,

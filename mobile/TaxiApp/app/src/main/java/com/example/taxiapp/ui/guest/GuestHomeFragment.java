@@ -82,17 +82,26 @@ public class GuestHomeFragment extends Fragment {
                     public void onResponse(Call<List<ActiveVehicleLocationResponse>> call,
                                            Response<List<ActiveVehicleLocationResponse>> response) {
 
+                        Log.d("API", "CODE: " + response.code());
+
                         if (!isAdded()) return;
 
                         if (response.isSuccessful() && response.body() != null) {
+
+                            Log.d("API", "BODY SIZE: " + response.body().size());
+
                             vehicleLocations.clear();
                             vehicleLocations.addAll(response.body());
 
                             if (mapFragment != null) {
                                 mapFragment.updateVehicleLocations(vehicleLocations);
                             }
+
+                        } else {
+                            Log.e("API", "ERROR BODY: " + response.errorBody());
                         }
                     }
+
 
                     @Override
                     public void onFailure(Call<List<ActiveVehicleLocationResponse>> call, Throwable t) {

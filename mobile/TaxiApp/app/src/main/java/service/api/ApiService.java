@@ -14,6 +14,7 @@ import model.RideCancelRequest;
 import model.RideDetailsDTO;
 import model.StopRideRequest;
 import model.StopRideResponse;
+import model.RideTrackingInfo;
 import model.UpdateUserProfileRequest;
 import model.UserProfileResponse;
 import okhttp3.ResponseBody;
@@ -121,4 +122,12 @@ public interface ApiService {
 
     @GET("api/drivers/{id}/ride-history")
     Call<ResponseBody> getDriverRideHistory(@Path("id") Long driverId);
+
+    // Ride tracking
+    @GET("api/vehicles/active-ride/{id}")
+    Call<RideTrackingInfo> getRideTrackingInfo(@Path("id") Long rideId);
+
+    @POST("/api/rides/{id}/finish")
+    Call<String> finishRide(@Path("id") Long rideId);
+
 }

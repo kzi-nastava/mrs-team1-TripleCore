@@ -1,7 +1,8 @@
-package com.example.taxiapp.ui.shared;
+package com.example.taxiapp.ui.ride_history;
 
 import static helper.KeyboardHelper.hideKeyboard;
 
+import android.app.DatePickerDialog;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,13 +20,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.example.taxiapp.ui.ride_tracking.RideTrackingFragment;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import helper.DatePickerHelper;
 import helper.RideCardHelper;
@@ -153,6 +159,7 @@ public class RideHistoryFragment extends Fragment {
         initListeners(view);
         initSensors();
 
+        loadRideCards(rideHistory);
         return view;
     }
 
@@ -389,6 +396,7 @@ public class RideHistoryFragment extends Fragment {
         loadRideCards(rideHistory);
     }
 
+    // navigation
     private void openRideDetails(RideDetailsDTO rideDetails) {
         if (!isAdded() || getActivity() == null) return;
 
@@ -406,4 +414,14 @@ public class RideHistoryFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
+
+    private void openRideTracking(RideDetailsDTO rideDetails) {
+        requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, RideTrackingFragment.newInstance(rideDetails))
+                .addToBackStack(null)
+                .commit();
+    }
+
 }
