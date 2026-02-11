@@ -29,10 +29,11 @@ import org.osmdroid.views.overlay.Polyline;
 import java.util.ArrayList;
 import java.util.List;
 
-import helper.RideActionHelper;
+import helper.CancelRideHelper;
+import helper.StopRideHelper;
 import helper.RouteHelper;
+import helper.LocationHelper;
 import model.LocationDTO;
-import model.ReviewDTO;
 import model.RideDetailsDTO;
 import model.StopRideResponse;
 import service.AuthService;
@@ -54,8 +55,7 @@ public class RideDetailsFragment extends Fragment {
     private double savedLon = Double.NaN;
     private double savedZoom = Double.NaN;
 
-    public RideDetailsFragment() {
-    }
+    public RideDetailsFragment() {}
 
     public static RideDetailsFragment newInstance(RideDetailsDTO rideDetails, String userRole) {
         RideDetailsFragment fragment = new RideDetailsFragment();
@@ -129,12 +129,12 @@ public class RideDetailsFragment extends Fragment {
     }
 
     private void handleCancelRide() {
-        RideActionHelper.showCancelDialog(
+        CancelRideHelper.showCancelDialog(
                 requireContext(),
                 ride,
                 currentUserRole,
                 currentUserId,
-                new RideActionHelper.CancelRideCallback() {
+                new CancelRideHelper.CancelRideCallback() {
                     @Override
                     public void onSuccess() {
                         Toast.makeText(requireContext(),
@@ -176,10 +176,10 @@ public class RideDetailsFragment extends Fragment {
     }
 
     private void showStopDialogWithLocation() {
-        RideActionHelper.showStopDialog(
+        StopRideHelper.showStopDialog(
                 requireContext(),
                 ride,
-                new RideActionHelper.StopRideCallback() {
+                new StopRideHelper.StopRideCallback() {
                     @Override
                     public void onSuccess(StopRideResponse response) {
                         Toast.makeText(requireContext(),
