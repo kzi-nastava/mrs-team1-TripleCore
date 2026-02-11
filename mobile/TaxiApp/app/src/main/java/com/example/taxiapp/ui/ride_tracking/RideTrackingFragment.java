@@ -51,22 +51,34 @@ public class RideTrackingFragment extends Fragment {
     private Button btnPanic;
 
     private RideDetailsDTO ride;
-    private RideTrackingInfo trackingInfo = createMockTrackingInfo();
+    private RideTrackingInfo trackingInfo;
     private Marker vehicleMarker;
 
     private String role = "DRIVER";// "DRIVER" ili "PASSENGER"
 
     private static final long POLLING_INTERVAL = 3000; // 3 sekunde
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private static final String ARG_RIDE = "arg_ride";
 
-    public RideTrackingFragment(RideDetailsDTO rideDetails){
-        ride = rideDetails;
+    public static RideTrackingFragment newInstance(RideDetailsDTO rideDetails) {
+        RideTrackingFragment fragment = new RideTrackingFragment();
+
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_RIDE, rideDetails);
+        // ili putParcelable ako implementira Parcelable
+
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+
+        if (getArguments() != null) {
+            ride = (RideDetailsDTO) getArguments().getSerializable(ARG_RIDE);
+        }
 
         View view = inflater.inflate(R.layout.fragment_ride_tracking, container, false);
 
@@ -78,7 +90,6 @@ public class RideTrackingFragment extends Fragment {
 
         setupMap();
         bindRideData();
-        bindTrackingInfo();
         setupActions();
 
         return view;
@@ -91,6 +102,9 @@ public class RideTrackingFragment extends Fragment {
             outState.putDouble("lat", mapFragment.getMapCenter().getLatitude());
             outState.putDouble("lon", mapFragment.getMapCenter().getLongitude());
             outState.putDouble("zoom", mapFragment.getZoomLevelDouble());
+        }
+        if (getArguments() != null) {
+            ride = (RideDetailsDTO) getArguments().getSerializable(ARG_RIDE);
         }
     }
     private final Runnable pollingRunnable = new Runnable() {
@@ -327,22 +341,7 @@ public class RideTrackingFragment extends Fragment {
     }
 
 
-    private RideTrackingInfo createMockTrackingInfo() {
-        RideTrackingInfo info = new RideTrackingInfo();
 
-        info.rideId = 1L;
-        info.vehicleId = 99L;
-
-        info.vehicleLocation = new LocationDTO();
-        info.vehicleLocation.latitude = 44.7990;
-        info.vehicleLocation.longitude = 20.4600;
-        info.vehicleLocation.address = "Bulevar kralja Aleksandra";
-
-        info.estimatedDistance = 8200; // metri
-        info.estimatedTime = 780L;     // sekunde (~13 min)
-
-        return info;
-    }
 
 
 }

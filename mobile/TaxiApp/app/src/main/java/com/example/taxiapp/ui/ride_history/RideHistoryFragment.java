@@ -233,12 +233,13 @@ public class RideHistoryFragment extends Fragment {
                 .commit();
     }
 
-    private void openRideTracking(RideDetailsDTO rideDetails){
+    private void openRideTracking(RideDetailsDTO rideDetails) {
         requireActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main_container, new RideTrackingFragment(rideDetails))
+                .replace(R.id.main_container, RideTrackingFragment.newInstance(rideDetails))
                 .addToBackStack(null)
                 .commit();
     }
+
 }
