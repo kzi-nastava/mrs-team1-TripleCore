@@ -333,7 +333,17 @@ public class RideTrackingFragment extends Fragment {
     }
 
     private void finishRide() {
-        // poziv backend API-ja
+
+        if (!isAdded()) return;
+
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setMessage("Ride finished successfully")
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
+    private void stopRide(){
+
     }
 
     private void panic(){

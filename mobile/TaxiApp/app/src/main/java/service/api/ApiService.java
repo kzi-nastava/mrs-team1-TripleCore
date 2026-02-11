@@ -107,4 +107,8 @@ public interface ApiService {
     // Ride tracking
     @GET("api/vehicles/active-ride/{id}")
     Call<RideTrackingInfo> getRideTrackingInfo(@Path("id") Long rideId);
+
+    @POST("/api/rides/{id}/finish")
+    Call<String> finishRide(@Path("id") Long rideId);
+
 }
