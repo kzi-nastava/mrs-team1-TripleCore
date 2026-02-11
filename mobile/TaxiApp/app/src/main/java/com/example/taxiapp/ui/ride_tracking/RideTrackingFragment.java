@@ -1,6 +1,7 @@
 package com.example.taxiapp.ui.ride_tracking;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import model.RideTrackingInfo;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import service.RideService;
 import service.VehicleService;
 
 
@@ -48,6 +50,7 @@ public class RideTrackingFragment extends Fragment {
 
     private TextView tvRideInfo, tvTrackingInfo;
     private Button btnFinishRide;
+    private Button btnStopRide;
     private Button btnPanic;
 
     private RideDetailsDTO ride;
@@ -86,6 +89,7 @@ public class RideTrackingFragment extends Fragment {
         tvRideInfo = view.findViewById(R.id.tv_ride_info);
         tvTrackingInfo = view.findViewById(R.id.tv_tracking_info);
         btnFinishRide = view.findViewById(R.id.btn_ride_tracking_finish_ride);
+        btnStopRide = view.findViewById(R.id.btn_ride_tracking_stop_ride);
         btnPanic = view.findViewById(R.id.btn_ride_tracking_panic);
 
         setupMap();
@@ -325,22 +329,47 @@ public class RideTrackingFragment extends Fragment {
         if ("DRIVER".equals(role)) {
             btnFinishRide.setVisibility(View.VISIBLE);
             btnFinishRide.setOnClickListener(v -> finishRide());
+
+            btnStopRide.setBackgroundColor(Color.parseColor("#F25027"));
+            btnStopRide.setVisibility(View.VISIBLE);
+            btnStopRide.setOnClickListener(v -> stopRide());
         }
         if ("PASSENGER".equals(role)) {
-            btnFinishRide.setVisibility(View.VISIBLE);
-            btnFinishRide.setOnClickListener(v -> panic());
+            btnPanic.setBackgroundColor(Color.RED);
+            btnPanic.setVisibility(View.VISIBLE);
+            btnPanic.setOnClickListener(v -> panic());
         }
     }
 
     private void finishRide() {
+        if (ride == null || !isAdded()) return;
 
-        if (!isAdded()) return;
+        RideService.getInstance().finishRide(ride.id, new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (!isAdded()) return;
+                
+                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                        .setMessage("Ride finished successfully")
+                        .setPositiveButton("OK", (dialog, which) -> {
+                            requireActivity().getSupportFragmentManager().popBackStack();
+                        })
+                        .show();
 
-        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                .setMessage("Ride finished successfully")
-                .setPositiveButton("OK", null)
-                .show();
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                if (!isAdded()) return;
+
+                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                        .setMessage("Network error: " + t.getMessage())
+                        .setPositiveButton("OK", null)
+                        .show();
+            }
+        });
     }
+
 
     private void stopRide(){
 

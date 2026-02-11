@@ -64,6 +64,15 @@
                 android:layout_marginTop="12dp"/>
 
             <Button
+                android:id="@+id/btn_ride_tracking_stop_ride"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop Ride"
+                android:layout_gravity="end"
+                android:visibility="gone"
+                android:layout_marginTop="12dp"/>
+
+            <Button
                 android:id="@+id/btn_ride_tracking_panic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

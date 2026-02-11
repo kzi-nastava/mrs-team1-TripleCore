@@ -10,7 +10,7 @@ public class RideService {
     private final ApiService api;
 
     private RideService() {
-        api = RetrofitClient.getApiService(); // tvoj Retrofit singleton
+        api = RetrofitClient.getApiService();
     }
 
     public static RideService getInstance() {
