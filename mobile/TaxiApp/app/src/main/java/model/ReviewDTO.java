@@ -1,6 +1,8 @@
 package model;
 
-public class ReviewDTO {
+import java.io.Serializable;
+
+public class ReviewDTO implements Serializable {
 
     public Long rideId;
     public Long passengerId;

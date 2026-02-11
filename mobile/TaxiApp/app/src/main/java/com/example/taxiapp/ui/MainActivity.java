@@ -21,6 +21,7 @@ import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
 import com.example.taxiapp.ui.profile_info.ProfileFragment;
+import com.example.taxiapp.ui.review.ReviewsFragment;
 import com.example.taxiapp.ui.ride_history.RideHistoryFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -120,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = RideHistoryFragment.newInstanceForDriver(userId);
         } else if (id == R.id.nav_profile && "DRIVER".equals(userType)) {
             fragmentToLoad = new DriverAdditionalInfoFragment();
+        } else if (id == R.id.nav_reviews && "DRIVER".equals(userType)) {
+            fragmentToLoad = new ReviewsFragment();
         }
 
         // ADMIN
@@ -138,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = RideHistoryFragment.newInstanceForPassenger(userId);
         } else if (id == R.id.nav_profile && "PASSENGER".equals(userType)) {
             fragmentToLoad = new ProfileFragment();
+        } else if (id == R.id.nav_reviews && "PASSENGER".equals(userType)) {
+            fragmentToLoad = new ReviewsFragment();
         }
 
         // LOGOUT
