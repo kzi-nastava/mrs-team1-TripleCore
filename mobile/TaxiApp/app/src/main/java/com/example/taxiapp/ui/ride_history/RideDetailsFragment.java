@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
+import com.example.taxiapp.ui.review.ReviewFormFragment;
 import com.google.gson.Gson;
 
 import org.osmdroid.util.GeoPoint;
@@ -187,18 +188,23 @@ public class RideDetailsFragment extends Fragment {
             return;
         }
 
-        boolean show = "PASSENGER".equals(currentUserRole) && "FINISHED".equals(ride.status);
+        boolean show = "PASSENGER".equals(currentUserRole) &&
+                "FINISHED".equals(ride.status) &&
+                ride.reviews.stream()
+                        .noneMatch(r -> currentUserId.equals(r.passengerId));
         btnReview.setVisibility(show ? VISIBLE : View.GONE);
     }
 
-    private void handleReview(){
-        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                .setMessage("Reviews to be implemented")
-                .setPositiveButton("OK", (dialog, which) -> {
-                    requireActivity().getSupportFragmentManager().popBackStack();
-                })
-                .show();
+    private void handleReview() {
+        ReviewFormFragment reviewFragment = new ReviewFormFragment();
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, reviewFragment)
+                .addToBackStack(null)
+                .commit();
     }
+
 
     private void showStopDialogWithLocation() {
         StopRideHelper.showStopDialog(
