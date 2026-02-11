@@ -12,6 +12,8 @@ import model.RegisterRequest;
 import model.RegisterResponse;
 import model.RideCancelRequest;
 import model.RideDetailsDTO;
+import model.StopRideRequest;
+import model.StopRideResponse;
 import model.UpdateUserProfileRequest;
 import model.UserProfileResponse;
 import okhttp3.ResponseBody;
@@ -79,6 +81,13 @@ public interface ApiService {
             @Path("id") Long rideId,
             @Body RideCancelRequest request
     );
+
+    @POST("api/rides/{id}/stop")
+    Call<StopRideResponse> stopRide(
+            @Path("id") Long rideId,
+            @Body StopRideRequest request
+    );
+
 
     // Profile
     @GET("/api/profile/user")

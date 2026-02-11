@@ -1,6 +1,8 @@
 package service;
 
 import model.RideCancelRequest;
+import model.StopRideRequest;
+import model.StopRideResponse;
 import network.RetrofitClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -26,6 +28,16 @@ public class RideService {
         RideCancelRequest request = new RideCancelRequest(reason, cancelerType);
 
         api.cancelRide(rideId, request)
+                .enqueue(callback);
+    }
+
+    public void stopRide(Long rideId,
+                         StopRideRequest request,
+                         Callback<StopRideResponse> callback) {
+
+        ApiService api = RetrofitClient.getApiService();
+
+        api.stopRide(rideId, request)
                 .enqueue(callback);
     }
 
