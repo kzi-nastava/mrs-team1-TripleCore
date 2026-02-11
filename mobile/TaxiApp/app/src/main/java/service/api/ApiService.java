@@ -10,7 +10,10 @@ import model.LoginRequest;
 import model.LoginResponse;
 import model.RegisterRequest;
 import model.RegisterResponse;
+import model.RideCancelRequest;
 import model.RideDetailsDTO;
+import model.StopRideRequest;
+import model.StopRideResponse;
 import model.RideTrackingInfo;
 import model.UpdateUserProfileRequest;
 import model.UserProfileResponse;
@@ -43,6 +46,7 @@ public interface ApiService {
     );
 
     // Guest
+
     @GET("api/vehicles/locations")
     Call<List<ActiveVehicleLocationResponse>> getVehicleLocations();
 
@@ -70,6 +74,21 @@ public interface ApiService {
 
     @GET("api/drivers/{id}/availability")
     Call<ResponseBody> getDriverAvailability(@Path("id") Long driverId);
+
+    // Ride actions
+
+    @POST("/api/rides/{id}/cancel")
+    Call<ResponseBody> cancelRide(
+            @Path("id") Long rideId,
+            @Body RideCancelRequest request
+    );
+
+    @POST("api/rides/{id}/stop")
+    Call<StopRideResponse> stopRide(
+            @Path("id") Long rideId,
+            @Body StopRideRequest request
+    );
+
 
     // Profile
     @GET("/api/profile/user")
