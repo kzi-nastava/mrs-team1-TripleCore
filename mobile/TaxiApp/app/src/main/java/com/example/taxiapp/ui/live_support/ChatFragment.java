@@ -1,11 +1,9 @@
 package com.example.taxiapp.ui.live_support;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -14,16 +12,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.taxiapp.R;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import model.ChatResponse;
 import model.MessageResponse;
 import service.AuthService;
+import service.ChatService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatFragment extends Fragment {
 
@@ -55,6 +55,9 @@ public class ChatFragment extends Fragment {
         if (getArguments() != null) {
             chatResponse = (ChatResponse) getArguments().getSerializable(ARG_CHAT);
         }
+
+        currentUserId = AuthService.getInstance().getLoggedInUserId(requireContext());
+        currentUserRole = AuthService.getInstance().getLoggedInUserRole(requireContext());
     }
 
     @Override
@@ -62,8 +65,6 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
-        currentUserId = AuthService.getInstance().getLoggedInUserId(requireContext());
-        currentUserRole = AuthService.getInstance().getLoggedInUserRole(requireContext());
 
         recyclerView = view.findViewById(R.id.messagesRecyclerView);
         messageInput = view.findViewById(R.id.messageInput);
@@ -76,10 +77,11 @@ public class ChatFragment extends Fragment {
             adapter = new ChatAdapter(chatResponse.messages, currentUserId);
             recyclerView.setAdapter(adapter);
 
-            if ("ADMIN".equals(currentUserRole))
-                chatHeader.setText(chatResponse.userName);
-            else
+            if ("ADMIN".equals(currentUserRole)) {
+                chatHeader.setText(chatResponse.userName); // ime korisnika
+            } else {
                 chatHeader.setText("Live Support");
+            }
 
             recyclerView.scrollToPosition(chatResponse.messages.size() - 1);
         }
@@ -87,7 +89,6 @@ public class ChatFragment extends Fragment {
         messageInput.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void afterTextChanged(Editable s) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 sendButton.setEnabled(!s.toString().trim().isEmpty());
@@ -114,6 +115,38 @@ public class ChatFragment extends Fragment {
 
         messageInput.setText("");
 
-        // TODO: pozvati backend da se poruka sačuva
+        if ("ADMIN".equals(currentUserRole)) {
+            ChatService.getInstance()
+                    .saveAdminMessage(chatResponse.chatId, currentUserId, text)
+                    .enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (!response.isSuccessful()) {
+                                Toast.makeText(requireContext(), "Failed to send admin message", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+            ChatService.getInstance()
+                    .saveUserMessage(currentUserId, text)
+                    .enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (!response.isSuccessful()) {
+                                Toast.makeText(requireContext(), "Failed to send message", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
 }

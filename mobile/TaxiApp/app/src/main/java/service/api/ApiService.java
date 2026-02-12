@@ -15,6 +15,8 @@ import model.RegisterResponse;
 import model.ReviewDTO;
 import model.RideCancelRequest;
 import model.RideDetailsDTO;
+import model.SaveAdminMessageRequest;
+import model.SaveUserMessageRequest;
 import model.StopRideRequest;
 import model.StopRideResponse;
 import model.RideTrackingInfo;
@@ -145,6 +147,15 @@ public interface ApiService {
     Call<List<ReviewDTO>> getDriverReviews(@Path("id") Long driverId);
 
     // Chat
-    @GET("/all")
+    @GET("api/chats/all")
     Call<List<ChatResponse>> getChatList();
+
+    @POST("api/chats/save-user-message")
+    Call<Void> saveUserMessage(@Body SaveUserMessageRequest request);
+
+    @POST("api/chats/save-admin-message")
+    Call<Void> saveAdminMessage(@Body SaveAdminMessageRequest request);
+
+    @GET("api/chats/user/{id}")
+    Call<ChatResponse> getUserChat(@Path("id") Long userId);
 }

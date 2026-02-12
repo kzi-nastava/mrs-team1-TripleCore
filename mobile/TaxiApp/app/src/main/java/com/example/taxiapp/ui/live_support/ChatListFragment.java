@@ -50,7 +50,7 @@ public class ChatListFragment extends Fragment {
             // klik na chat → otvori ChatFragment
             getParentFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, ChatFragment.newInstance(chat))
+                    .replace(R.id.main_container, ChatFragment.newInstance(chat))
                     .addToBackStack(null)
                     .commit();
         });
