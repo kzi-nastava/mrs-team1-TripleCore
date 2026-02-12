@@ -72,8 +72,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void bind(MessageResponse message) {
             text.setText(message.text);
-            time.setText(message.sentAt.format(
-                    DateTimeFormatter.ofPattern("HH:mm")));
+            time.setText(message.sentAt);
         }
     }
 
@@ -88,8 +87,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void bind(MessageResponse message) {
             text.setText(message.text);
-            time.setText(message.sentAt.format(
-                    DateTimeFormatter.ofPattern("HH:mm")));
+            time.setText(message.sentAt);
         }
     }
 }

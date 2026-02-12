@@ -2,6 +2,7 @@ package service.api;
 
 import java.util.List;
 
+import model.ChatResponse;
 import model.CreateReviewRequest;
 import model.DriverProfileChangeRequest;
 import model.DriverProfileChangeRequestResponse;
@@ -144,4 +145,6 @@ public interface ApiService {
     Call<List<ReviewDTO>> getDriverReviews(@Path("id") Long driverId);
 
     // Chat
+    @GET("/all")
+    Call<List<ChatResponse>> getChatList();
 }
