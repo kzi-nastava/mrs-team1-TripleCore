@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.example.taxiapp.R;
 import com.example.taxiapp.ui.admin.AdminHomeFragment;
 import com.example.taxiapp.ui.admin.DriversRequestsFragment;
+import com.example.taxiapp.ui.admin.PricingFormFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
 import com.example.taxiapp.ui.live_support.AdminChatFragment;
@@ -140,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new DriversRequestsFragment();
         } else if (id == R.id.nav_admin_live_support && "ADMIN".equals(userType)) {
             fragmentToLoad = new AdminChatFragment();
+        } else if (id == R.id.nav_admin_pricing && "ADMIN".equals(userType)) {
+            fragmentToLoad = new PricingFormFragment();
         }
 
         // PASSENGER

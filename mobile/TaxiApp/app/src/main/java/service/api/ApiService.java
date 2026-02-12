@@ -2,6 +2,7 @@ package service.api;
 
 import java.util.List;
 
+import model.ChangePricesRequest;
 import model.ChatResponse;
 import model.CreateReviewRequest;
 import model.DriverProfileChangeRequest;
@@ -22,6 +23,7 @@ import model.StopRideResponse;
 import model.RideTrackingInfo;
 import model.UpdateUserProfileRequest;
 import model.UserProfileResponse;
+import model.VehiclePricesDTO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -158,4 +160,12 @@ public interface ApiService {
 
     @GET("api/chats/user/{id}")
     Call<ChatResponse> getUserChat(@Path("id") Long userId);
+
+    // Pricing
+
+    @GET("api/prices/get")
+    Call<VehiclePricesDTO> getPrices();
+
+    @POST("api/prices/change")
+    Call<ResponseBody> changePrices(@Body ChangePricesRequest request);
 }
