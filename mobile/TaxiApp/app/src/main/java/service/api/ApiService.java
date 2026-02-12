@@ -2,6 +2,7 @@ package service.api;
 
 import java.util.List;
 
+import model.CreateReviewRequest;
 import model.DriverProfileChangeRequest;
 import model.DriverProfileChangeRequestResponse;
 import model.DriverProfileResponse;
@@ -10,7 +11,12 @@ import model.LoginRequest;
 import model.LoginResponse;
 import model.RegisterRequest;
 import model.RegisterResponse;
+import model.ReviewDTO;
+import model.RideCancelRequest;
 import model.RideDetailsDTO;
+import model.StopRideRequest;
+import model.StopRideResponse;
+import model.RideTrackingInfo;
 import model.UpdateUserProfileRequest;
 import model.UserProfileResponse;
 import okhttp3.ResponseBody;
@@ -71,6 +77,21 @@ public interface ApiService {
     @GET("api/drivers/{id}/availability")
     Call<ResponseBody> getDriverAvailability(@Path("id") Long driverId);
 
+    // Ride actions
+
+    @POST("/api/rides/{id}/cancel")
+    Call<ResponseBody> cancelRide(
+            @Path("id") Long rideId,
+            @Body RideCancelRequest request
+    );
+
+    @POST("api/rides/{id}/stop")
+    Call<StopRideResponse> stopRide(
+            @Path("id") Long rideId,
+            @Body StopRideRequest request
+    );
+
+
     // Profile
     @GET("/api/profile/user")
     Call<UserProfileResponse> getUserProfile(@Query("userId") Long userId);
@@ -103,4 +124,23 @@ public interface ApiService {
 
     @GET("api/drivers/{id}/ride-history")
     Call<ResponseBody> getDriverRideHistory(@Path("id") Long driverId);
+
+    // Ride tracking
+    @GET("api/vehicles/active-ride/{id}")
+    Call<RideTrackingInfo> getRideTrackingInfo(@Path("id") Long rideId);
+
+    @POST("/api/rides/{id}/finish")
+    Call<String> finishRide(@Path("id") Long rideId);
+
+    // Reviews
+
+    @POST("api/reviews/create")
+    Call<ResponseBody> createReview(@Body CreateReviewRequest request);
+
+    @GET("api/reviews/passenger/{id}")
+    Call<List<ReviewDTO>> getPassengerReviews(@Path("id") Long passengerId);
+
+    @GET("api/reviews/driver/{id}")
+    Call<List<ReviewDTO>> getDriverReviews(@Path("id") Long driverId);
+
 }

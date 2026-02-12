@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class RideDetailsDTO {
+public class RideDetailsDTO implements Serializable {
 
     // passengers
     public Long id;
@@ -35,5 +36,9 @@ public class RideDetailsDTO {
     public String cancelledBy;
     public List<ReviewDTO> reviews;
     public String inconsistencies;
+
+    public transient Double savedLat;
+    public transient Double savedLon;
+    public transient Double savedZoom;
 
 }

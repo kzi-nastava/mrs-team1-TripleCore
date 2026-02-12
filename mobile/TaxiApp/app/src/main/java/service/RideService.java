@@ -1,0 +1,52 @@
+package service;
+
+import model.RideCancelRequest;
+import model.StopRideRequest;
+import model.StopRideResponse;
+import network.RetrofitClient;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import service.api.ApiService;
+
+public class RideService {
+
+    private static RideService instance;
+    private final ApiService api;
+
+    private RideService() {
+        api = RetrofitClient.getApiService();
+    }
+
+    public static RideService getInstance() {
+        if (instance == null) {
+            instance = new RideService();
+        }
+        return instance;
+    }
+
+    public void finishRide(Long rideId, Callback<String> callback) {
+        api.finishRide(rideId).enqueue(callback);
+    }
+
+    public void cancelRide(Long rideId, String cancelerType, String reason,
+                           Callback<ResponseBody> callback) {
+        ApiService api = RetrofitClient.getApiService();
+
+        RideCancelRequest request = new RideCancelRequest(reason, cancelerType);
+
+        api.cancelRide(rideId, request)
+                .enqueue(callback);
+    }
+
+    public void stopRide(Long rideId,
+                         StopRideRequest request,
+                         Callback<StopRideResponse> callback) {
+
+        ApiService api = RetrofitClient.getApiService();
+
+        api.stopRide(rideId, request)
+                .enqueue(callback);
+    }
+
+}

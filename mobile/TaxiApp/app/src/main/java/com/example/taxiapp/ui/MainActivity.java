@@ -2,9 +2,7 @@ package com.example.taxiapp.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
@@ -14,21 +12,20 @@ import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
 import com.example.taxiapp.ui.admin.AdminHomeFragment;
-import com.example.taxiapp.ui.admin.AdminRideHistoryFragment;
 import com.example.taxiapp.ui.admin.DriversRequestsFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
-import com.example.taxiapp.ui.auth.reset_password.ResetPasswordFragment;
 import com.example.taxiapp.ui.driver.DriverHomeFragment;
-import com.example.taxiapp.ui.driver.DriverRideHistoryFragment;
 import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
-import com.example.taxiapp.ui.passenger.PassengerRideHistoryFragment;
 import com.example.taxiapp.ui.profile_info.ProfileFragment;
-import com.example.taxiapp.ui.shared.RideHistoryFragment;
+import com.example.taxiapp.ui.review.ReviewsFragment;
+import com.example.taxiapp.ui.ride_history.RideHistoryFragment;
 import com.google.android.material.navigation.NavigationView;
+
+import service.AuthService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -120,14 +117,18 @@ public class MainActivity extends AppCompatActivity {
 
         // DRIVER
         else if (id == R.id.nav_ride_history && "DRIVER".equals(userType)) {
-            fragmentToLoad = new DriverRideHistoryFragment();
+            Long userId = AuthService.getInstance().getLoggedInUserId(this);
+            fragmentToLoad = RideHistoryFragment.newInstanceForDriver(userId);
         } else if (id == R.id.nav_profile && "DRIVER".equals(userType)) {
             fragmentToLoad = new DriverAdditionalInfoFragment();
+        } else if (id == R.id.nav_reviews && "DRIVER".equals(userType)) {
+            fragmentToLoad = new ReviewsFragment();
         }
 
         // ADMIN
         else if (id == R.id.nav_admin_ride_history && "ADMIN".equals(userType)) {
-            fragmentToLoad = new AdminRideHistoryFragment();
+            Long userId = AuthService.getInstance().getLoggedInUserId(this);
+            fragmentToLoad = RideHistoryFragment.newInstanceForAdmin(userId);
         } else if (id == R.id.nav_profile && "ADMIN".equals(userType)) {
             fragmentToLoad = new ProfileFragment();
         } else if (id == R.id.nav_drivers_requests && "ADMIN".equals(userType)) {
@@ -136,9 +137,12 @@ public class MainActivity extends AppCompatActivity {
 
         // PASSENGER
         else if (id == R.id.nav_ride_history && "PASSENGER".equals(userType)) {
-            fragmentToLoad = new PassengerRideHistoryFragment();
+            Long userId = AuthService.getInstance().getLoggedInUserId(this);
+            fragmentToLoad = RideHistoryFragment.newInstanceForPassenger(userId);
         } else if (id == R.id.nav_profile && "PASSENGER".equals(userType)) {
             fragmentToLoad = new ProfileFragment();
+        } else if (id == R.id.nav_reviews && "PASSENGER".equals(userType)) {
+            fragmentToLoad = new ReviewsFragment();
         }
 
         // LOGOUT
