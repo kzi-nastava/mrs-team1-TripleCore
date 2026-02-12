@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.taxiapp.R;
 import com.example.taxiapp.ui.live_support.ChatListFragment;
@@ -28,11 +29,19 @@ public class AdminChatFragment extends Fragment {
     }
 
     @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_admin_chat, container, false);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view,
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        loadChats();
+        if (savedInstanceState == null) {
+            loadChats();
+        }
     }
 
     private void loadChats() {
@@ -61,14 +70,23 @@ public class AdminChatFragment extends Fragment {
     }
 
     private void openChatListFragment(List<ChatResponse> chats) {
+        FragmentManager fm = requireActivity().getSupportFragmentManager();
+
+        // remove this fragment from backstack to prevent
+        // loading from backend every time you go back from the chat list
+        if (fm.getBackStackEntryCount() != 0) {
+            Fragment topFragment = fm.getFragments().get(fm.getFragments().size() - 1);
+            if (topFragment instanceof AdminChatFragment) {
+                fm.popBackStack();
+            }
+        }
 
         ChatListFragment fragment = ChatListFragment.newInstance(chats);
-
-        requireActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
+        fm.beginTransaction()
                 .replace(R.id.main_container, fragment)
                 .addToBackStack(null)
                 .commit();
     }
+
+
 }

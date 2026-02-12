@@ -21,6 +21,7 @@ import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragmen
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.live_support.ChatFragment;
+import com.example.taxiapp.ui.live_support.UserChatFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
 import com.example.taxiapp.ui.profile_info.ProfileFragment;
 import com.example.taxiapp.ui.review.ReviewsFragment;
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.nav_reviews && "DRIVER".equals(userType)) {
             fragmentToLoad = new ReviewsFragment();
         } else if (id == R.id.nav_user_live_support && "DRIVER".equals(userType)) {
-            fragmentToLoad = new ChatFragment();
+            fragmentToLoad = new UserChatFragment();
         }
 
         // ADMIN
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.nav_reviews && "PASSENGER".equals(userType)) {
             fragmentToLoad = new ReviewsFragment();
         } else if (id == R.id.nav_user_live_support && "PASSENGER".equals(userType)) {
-            fragmentToLoad = new ChatFragment();
+            fragmentToLoad = new UserChatFragment();
         }
 
         // LOGOUT

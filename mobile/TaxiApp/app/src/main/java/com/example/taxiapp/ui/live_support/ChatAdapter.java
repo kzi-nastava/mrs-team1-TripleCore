@@ -1,5 +1,7 @@
 package com.example.taxiapp.ui.live_support;
 
+import static helper.DateTimeHelper.getTimeOnly;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +74,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void bind(MessageResponse message) {
             text.setText(message.text);
-            time.setText(message.sentAt);
+            time.setText(getTimeOnly(message.sentAt));
         }
     }
 
@@ -87,7 +89,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void bind(MessageResponse message) {
             text.setText(message.text);
-            time.setText(message.sentAt);
+            time.setText(getTimeOnly(message.sentAt));
         }
     }
 }
