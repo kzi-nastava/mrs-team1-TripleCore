@@ -143,4 +143,5 @@ public interface ApiService {
     @GET("api/reviews/driver/{id}")
     Call<List<ReviewDTO>> getDriverReviews(@Path("id") Long driverId);
 
+    // Chat
 }
