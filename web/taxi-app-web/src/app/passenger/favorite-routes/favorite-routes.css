@@ -76,6 +76,10 @@
 
 .card-action {
   margin-top: auto;
+  display: flex;
+  justify-content: center; 
+  gap: 15px; 
+  flex-wrap: wrap; 
 }
 
 .btn-select-route {
@@ -90,6 +94,30 @@
   transition: background 0.2s;
 }
 
+.btn-select-route, .btn-remove-favorite {
+  padding: 8px 30px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  border: none;
+  transition: background 0.2s;
+}
+
+.btn-select-route {
+  background-color: #600EA8;
+  color: white;
+}
+
 .btn-select-route:hover {
   background-color: #4a0a82;
+}
+
+.btn-remove-favorite {
+  background-color: #D32F2F; /* crvena boja */
+  color: white;
+}
+
+.btn-remove-favorite:hover {
+  background-color: #9A1F1F; /* tamnija crvena za hover */
 }

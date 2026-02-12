@@ -6,4 +6,7 @@ import java.util.List;
 
 public interface FavoriteRouteService {
     List<FavoriteRouteResponse> getFavoriteRoutesByUserId(Long userId);
+    void addFavoriteRoute(Long passengerId, Long rideId);
+
+    public void removeFavoriteRoute(Long passengerId, Long routeId);
 }

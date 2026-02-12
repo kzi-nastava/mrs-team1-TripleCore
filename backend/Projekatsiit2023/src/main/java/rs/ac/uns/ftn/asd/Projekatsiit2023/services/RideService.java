@@ -325,7 +325,21 @@ public class RideService {
 
         routePoints.add(request.getEndLocation());
 
+        int totalDistance = 0;
 
+        for (int i = 0; i < routePoints.size() - 1; i++) {
+
+            Location from = routePoints.get(i);
+            Location to = routePoints.get(i + 1);
+
+            totalDistance += routeService
+                    .calculateDistanceBetweenTwoPoints(from, to);
+        }
+
+        final double AVERAGE_SPEED_M_S = 11.11;
+
+        long estimatedTimeSeconds =
+                Math.max(1, Math.round(totalDistance / AVERAGE_SPEED_M_S));
 
         Driver driver = findAvailableDriverWithFullPriority(request.getVehicleType(),
                 request.getStartLocation(), request.isBabyFriendly(), request.isPetFriendly(), startTime);
@@ -356,6 +370,9 @@ public class RideService {
         }
 
         route.setStops(stops);
+
+        route.setEstimatedDistanceMeters(totalDistance);
+        route.setEstimatedDurationSeconds(estimatedTimeSeconds);
 
         routeRepository.save(route);
 
