@@ -43,4 +43,10 @@ export class RideService {
   finishRide(rideId: number): Observable<string> {
     return this.http.post(`${this.apiUrl}/${rideId}/finish`, null, { responseType: 'text' });
   }
+
+  orderRide(request: any, userEmail: string): Observable<any> {
+  const headers = { 'X-User-Email': userEmail };  
+  return this.http.post<any>(`${this.apiUrl}`, request, { headers });
+}
+
 }

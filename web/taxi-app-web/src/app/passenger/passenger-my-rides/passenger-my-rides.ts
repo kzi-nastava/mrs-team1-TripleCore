@@ -23,6 +23,7 @@ import { RideCancelRequest } from '../../models/ride-cancel-request';
 import { ReviewFormComponent } from '../../reviews/review-form/review-form';
 import { ActiveRideTrackingComponent } from '../../active-ride-tracking/active-ride-tracking';
 import { UserChatComponent } from '../../live-chat/user-chat/user-chat';
+import { FavoriteRouteResponse } from '../../models/favorite-route-response';
 
 @Component({
   selector: 'app-passenger-my-rides',
@@ -365,4 +366,19 @@ export class PassengerMyRidesComponent implements OnInit {
   onLogoutClick() {
     this.logoutService.logoutWithBackend();
   }
+
+  addToFavorites(rideId: number) {
+  const passengerId = Number(localStorage.getItem('userId'));
+
+  this.passengerService.addToFavorites(passengerId, rideId)
+    .subscribe({
+      next: () => alert("Added to favorites"),
+      error: (err) => {
+        console.error('Error adding to favorites:', err);
+        alert('Failed to add to favorites. This ride might already be in your favorites.');
+
+      }
+    });
+  }
+
 }

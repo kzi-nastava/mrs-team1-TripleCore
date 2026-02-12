@@ -230,6 +230,16 @@
                 class="action-btn rate-btn">
           <mat-icon>star_rate</mat-icon>
         </button>
+
+                <!-- Add to Favorites -->
+        <button mat-icon-button
+                color="primary"
+                (click)="addToFavorites(ride.id)"
+                matTooltip="Add route to favorites"
+                class="action-btn favorite-btn">
+          <mat-icon>favorite</mat-icon>
+        </button>
+
         </div>
       </td>
     </ng-container>

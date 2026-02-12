@@ -2,8 +2,11 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023.services.impl;
 
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.FavoriteRouteResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.FavoriteRoute;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Route;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.FavoriteRouteRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.RideRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.RouteRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.FavoriteRouteService;
 
@@ -15,9 +18,12 @@ public class FavoriteRouteServiceImpl  implements FavoriteRouteService {
     private final FavoriteRouteRepository favoriteRouteRepository;
     private final RouteRepository routeRepository;
 
-    public FavoriteRouteServiceImpl(FavoriteRouteRepository favoriteRouteRepository, RouteRepository routeRepository) {
+    private RideRepository rideRepository;
+
+    public FavoriteRouteServiceImpl(FavoriteRouteRepository favoriteRouteRepository, RouteRepository routeRepository, RideRepository rideRepository) {
         this.favoriteRouteRepository = favoriteRouteRepository;
         this.routeRepository = routeRepository;
+        this.rideRepository = rideRepository;
     }
 
     @Override
@@ -44,6 +50,35 @@ public class FavoriteRouteServiceImpl  implements FavoriteRouteService {
                 route.getEstimatedDistanceMeters(),
                 route.getEstimatedDurationSeconds()
         );
+    }
+
+    @Override
+    public void addFavoriteRoute(Long passengerId, Long rideId) {
+
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        Long routeId = ride.getRoute().getId();
+
+
+        boolean exists = favoriteRouteRepository
+                .existsByUserIdAndRouteId(passengerId, routeId);
+
+        if (exists) {
+            throw new RuntimeException("Route already in favorites");
+        }
+
+        FavoriteRoute favoriteRoute = new FavoriteRoute(passengerId, routeId);
+        favoriteRouteRepository.save(favoriteRoute);
+    }
+
+    @Override
+    public void removeFavoriteRoute(Long passengerId, Long routeId) {
+        FavoriteRoute favoriteRoute = favoriteRouteRepository
+                .findByUserIdAndRouteId(passengerId, routeId)
+                .orElseThrow(() -> new RuntimeException("Favorite route not found"));
+
+        favoriteRouteRepository.delete(favoriteRoute);
     }
 
 }

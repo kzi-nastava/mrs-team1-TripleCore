@@ -1,5 +1,4 @@
 <app-navbar>
-
   <li class="nav-item">
         <a class="img-and-link" routerLink="/passenger-my-rides">
             <span class="nav-link">My Rides</span>
@@ -36,27 +35,24 @@
   
   <div class="routes-grid">
     <div class="route-card" *ngFor="let route of favoriteRoutes">
-      <h3 class="route-header">{{ route.startName }} - {{ route.destName }}</h3>
-      
+      <h3 class="route-header">{{ route.startAddress }} - {{ route.endAddress }}</h3>
+   
       <div class="route-details">
         <div class="detail-item">
           <img src="icons/icons8-address-80.png" class="route-icon" alt="Start Point">
-          <span><strong>Start Point:</strong> {{ route.startName }}</span>
+          <span><strong>Start Point:</strong> {{ route.startAddress }}</span>
         </div>
         
         <div class="detail-item">
           <img src="icons/icons8-destination-40.png" class="route-icon" alt="Destination">
-          <span><strong>Destination Point:</strong> {{ route.destName }}</span>
+          <span><strong>Destination Point:</strong> {{ route.endAddress }}</span>
         </div>
-        
-        <div class="stations-info">
-          <p><strong>Stations:</strong> {{ route.stations[0] || 'None' }}</p>
-          <p class="indent" *ngFor="let station of route.stations.slice(1)">{{ station }}</p>
-        </div>
+      
       </div>
       
       <div class="card-action">
         <button class="btn-select-route" (click)="orderRideFromFavorite(route)">Select Route</button>
+          <button class="btn-remove-favorite" (click)="removeFavoriteRoute(route)">Remove</button>
       </div>
     </div>
   </div>

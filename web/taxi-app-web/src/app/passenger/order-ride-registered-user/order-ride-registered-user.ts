@@ -3,6 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OsmService } from '../../services/osm';
 import { Router } from '@angular/router';
+import { OnInit } from '@angular/core';
+import { FavoriteRouteStateService } from '../../services/favorite-route-state-service/favorite-route-state-serivce';
+import { RideService } from '../../services/ride-service/ride-service';
+import { VehicleType } from '../../models/vehicle-type';
+import { RideRequest } from '../../models/ride-request';
 
 @Component({
   selector: 'app-order-ride-registered-user',
@@ -11,8 +16,7 @@ import { Router } from '@angular/router';
   templateUrl: './order-ride-registered-user.html',
   styleUrl: './order-ride-registered-user.css',
 })
-export class OrderRideRegisteredUser implements OnChanges {
-  @Input() initialData: any = null;
+export class OrderRideRegisteredUser implements OnInit {
   @Output() rideOrderedEvent = new EventEmitter<void>();
 
   isStartFocused = false;
@@ -33,34 +37,37 @@ export class OrderRideRegisteredUser implements OnChanges {
   babyTransport: boolean = false;
   petsTransport: boolean = false;
 
-  constructor(private osmService: OsmService, private router: Router) {}
+  constructor(private osmService: OsmService, private router: Router, private rideService: RideService, private favoriteRouteState: FavoriteRouteStateService) {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['initialData'] && changes['initialData'].currentValue) {
-      this.fillFormFromFavorite(changes['initialData'].currentValue);
+  ngOnInit() {
+  this.favoriteRouteState.selectedRoute$.subscribe(route => {
+    if (route) {
+      this.fillFormFromFavorite(route);
     }
-  }
+  });
+}
+
+
 
   goToFavorites() {
     this.router.navigate(['/favorite-routes']);
   }
 
   private fillFormFromFavorite(data: any) {
+    this.startPointQuery = data.startAddress;
+    this.destinationPointQuery = data.endAddress;
 
-    this.startPointQuery = data.startName;
-    this.destinationPointQuery = data.destName;
-
-  
-    this.startPointLocation = { address: data.startName, lat: 0, lon: 0 };
-    this.destinationPointLocation = { address: data.destName, lat: 0, lon: 0 };
-
+    this.startPointLocation = { address: data.startAddress, lat: data.startLat, lon: data.startLon };
+    this.destinationPointLocation = { address: data.endAddress, lat: data.endLat, lon: data.endLon };
 
     if (data.stations && data.stations.length > 0) {
-      this.stations = data.stations.map((s: string) => ({
-        query: s,
+      this.stations = data.stations.map((s: any) => ({
+        query: s.name,
         results: [],
-        location: { address: s, lat: 0, lon: 0 }
+        location: { address: s.name, lat: s.lat, lon: s.lon }
       }));
+    } else {
+      this.stations = [{ query: "", results: [], location: null }];
     }
   }
 
@@ -131,24 +138,63 @@ export class OrderRideRegisteredUser implements OnChanges {
      return index; 
     }
 
-  orderRide() {
-    if (!this.startPointLocation || !this.destinationPointLocation) {
-      alert("Please select points from the list."); return;
-    }
-    const rideOrder = {
-      startPoint: this.startPointLocation,
-      destinationPoint: this.destinationPointLocation,
-      stations: this.stations.map(s => s.location).filter(l => l !== null),
-      passengersEmails: this.passengersEmails.filter(e => e.trim() !== ""),
-      scheduledTime: this.startTime,
-      vehicleType: this.selectedVehicle,
-      options: { babyTransport: this.babyTransport, petsTransport: this.petsTransport }
-    };
-    console.log("ORDERED:", rideOrder);
-    alert("Ride ordered!");
-    this.clearForm();
-    this.rideOrderedEvent.emit();
+orderRide() {
+  if (!this.startPointLocation || !this.destinationPointLocation) {
+    alert("Please select points from the list.");
+    return;
   }
+
+  const userEmail = localStorage.getItem('userEmail'); 
+  if (!userEmail) {
+    alert("User not logged in!");
+    return;
+  }
+
+  const rideRequest: RideRequest = {
+    startLocation: {
+      address: this.startPointLocation.address,
+      latitude: +this.startPointLocation.lat,
+      longitude: +this.startPointLocation.lon
+    },
+    endLocation: {
+      address: this.destinationPointLocation.address,
+      latitude: +this.destinationPointLocation.lat,
+      longitude: +this.destinationPointLocation.lon
+    },
+    intermediateStops: this.stations
+      .map(s => s.location)
+      .filter(l => l !== null)
+      .map(l => ({ address: l.address, latitude: +l.lat, longitude: +l.lon })),
+    linkedPassengerEmails: this.passengersEmails
+      .filter(e => e.trim() !== ""),
+    vehicleType: this.selectedVehicle as VehicleType,
+    babyFriendly: this.babyTransport,
+    petFriendly: this.petsTransport
+  };
+
+  if (this.startTime) {
+     const [hours, minutes] = this.startTime.split(':').map(Number);
+  const now = new Date();
+  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+  rideRequest.startTime = date.toISOString();
+  }
+
+  console.log("Ordering ride with userEmail:", userEmail, "rideRequest:", rideRequest);
+
+  this.rideService.orderRide(rideRequest, userEmail).subscribe({
+    next: res => {
+      console.log("Ride ordered successfully:", res);
+      alert("Ride ordered!");
+      this.clearForm();
+      this.rideOrderedEvent.emit();
+    },
+    error: err => {
+      console.error("Error ordering ride:", err);
+      alert("Failed to order ride. You might have an active ride.");
+    }
+  });
+}
+
 
   clearForm() {
     this.startPointQuery = ""; this.destinationPointQuery = "";

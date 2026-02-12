@@ -58,5 +58,25 @@ public class PassengerController {
         return ResponseEntity.ok(favorites);
     }
 
+    @PostMapping("/{id}/favorite-routes/{rideId}")
+    public ResponseEntity<?> addFavoriteRoute(@PathVariable Long id, @PathVariable Long rideId) {
+
+        try {
+            favoriteRouteService.addFavoriteRoute(id, rideId);
+            return ResponseEntity.ok("Added to favorites");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}/favorite-routes/{routeId}")
+    public ResponseEntity<?> removeFavoriteRoute(@PathVariable Long id, @PathVariable Long routeId) {
+        try {
+            favoriteRouteService.removeFavoriteRoute(id, routeId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
 }
