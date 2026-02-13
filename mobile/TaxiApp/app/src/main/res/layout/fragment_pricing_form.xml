@@ -98,14 +98,14 @@
             android:gravity="end">
 
             <Button
-                android:id="@+id/resetButton"
+                android:id="@+id/pricingResetButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Reset"
                 android:layout_marginEnd="16dp"/>
 
             <Button
-                android:id="@+id/saveButton"
+                android:id="@+id/pricingSaveButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Save changes"/>

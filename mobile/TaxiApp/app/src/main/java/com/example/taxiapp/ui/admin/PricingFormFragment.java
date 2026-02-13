@@ -6,70 +6,120 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.taxiapp.R;
 
+import model.ChangePricesRequest;
 import model.VehiclePricesDTO;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.AuthService;
+import service.PricingService;
 
 public class PricingFormFragment extends Fragment {
 
-    private EditText standardInput, vanInput, luxuryInput;
-    private Button resetButton, saveButton;
+    private EditText etStandard, etVan, etLuxury;
+    private Button btnReset, btnSave;
 
-    // Hardkodovani test podatak
-    private VehiclePricesDTO prices;
+    private VehiclePricesDTO prices = new VehiclePricesDTO();
+    private Long adminId;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pricing_form, container, false);
+        adminId = AuthService.getInstance().getLoggedInUserId(requireContext());
 
-        standardInput = view.findViewById(R.id.standardInput);
-        vanInput = view.findViewById(R.id.vanInput);
-        luxuryInput = view.findViewById(R.id.luxuryInput);
+        etStandard = view.findViewById(R.id.standardInput);
+        etVan = view.findViewById(R.id.vanInput);
+        etLuxury = view.findViewById(R.id.luxuryInput);
+        btnReset = view.findViewById(R.id.pricingResetButton);
+        btnSave = view.findViewById(R.id.pricingSaveButton);
 
-        resetButton = view.findViewById(R.id.resetButton);
-        saveButton = view.findViewById(R.id.saveButton);
+        fetchPricesFromBackend();
 
-        // Hardkodovani objekat
-        prices = new VehiclePricesDTO();
-        prices.standard = 1.50;
-        prices.van = 2.00;
-        prices.luxury = 3.50;
+        btnReset.setOnClickListener(v -> populateForm(prices));
+        btnSave.setOnClickListener(v -> saveChanges());
 
-        // Postavi vrednosti u EditText-ove
-        standardInput.setText(String.valueOf(prices.standard));
-        vanInput.setText(String.valueOf(prices.van));
-        luxuryInput.setText(String.valueOf(prices.luxury));
 
-        // Reset dugme
-        resetButton.setOnClickListener(v -> {
-            standardInput.setText(String.valueOf(prices.standard));
-            vanInput.setText(String.valueOf(prices.van));
-            luxuryInput.setText(String.valueOf(prices.luxury));
-        });
-
-        // Save dugme (trenutno samo prikazuje vrednosti u logu, može da se pozove backend)
-        saveButton.setOnClickListener(v -> {
-            double standard = Double.parseDouble(standardInput.getText().toString());
-            double van = Double.parseDouble(vanInput.getText().toString());
-            double luxury = Double.parseDouble(luxuryInput.getText().toString());
-
-            // Ovde možeš pozvati backend API da sačuva nove cene
-            // Za test samo ažuriramo lokalni objekat
-            prices.standard = standard;
-            prices.van = van;
-            prices.luxury = luxury;
-        });
 
         return view;
     }
 
-    private void loadPrices(){
+    private void populateForm(VehiclePricesDTO prices) {
+        etStandard.setText(String.valueOf(prices.standard));
+        etVan.setText(String.valueOf(prices.van));
+        etLuxury.setText(String.valueOf(prices.luxury));
+    }
 
+    private void saveChanges() {
+        double standard = Double.parseDouble(etStandard.getText().toString());
+        double van = Double.parseDouble(etVan.getText().toString());
+        double luxury = Double.parseDouble(etLuxury.getText().toString());
+
+        ChangePricesRequest request = new ChangePricesRequest();
+        request.adminId = adminId;
+        request.prices = new VehiclePricesDTO();
+        request.prices.standard = standard;
+        request.prices.van = van;
+        request.prices.luxury = luxury;
+
+        PricingService.getInstance().changePrices(request).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    prices = request.prices;
+                    Toast.makeText(
+                            requireContext(),
+                            "Prices saved",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                } else {
+                    Toast.makeText(
+                            requireContext(),
+                            "Failed saving prices",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void fetchPricesFromBackend() {
+        PricingService.getInstance().getPrices().enqueue(new Callback<VehiclePricesDTO>() {
+            @Override
+            public void onResponse(Call<VehiclePricesDTO> call, Response<VehiclePricesDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    prices = response.body();
+                    populateForm(prices);
+                } else {
+                    Toast.makeText(
+                            requireContext(),
+                            "Failed fetching prices",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<VehiclePricesDTO> call, Throwable t) {
+                Toast.makeText(
+                        requireContext(),
+                        "Failed fetching prices",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
     }
 }
