@@ -13,12 +13,16 @@ import androidx.fragment.app.Fragment;
 import com.example.taxiapp.R;
 import com.example.taxiapp.ui.admin.AdminHomeFragment;
 import com.example.taxiapp.ui.admin.DriversRequestsFragment;
+import com.example.taxiapp.ui.admin.PricingFormFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
+import com.example.taxiapp.ui.live_support.AdminChatFragment;
 import com.example.taxiapp.ui.driver.DriverHomeFragment;
 import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
+import com.example.taxiapp.ui.live_support.UserChatFragment;
+import com.example.taxiapp.ui.passenger.notifications.NotificationListFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
 import com.example.taxiapp.ui.profile_info.ProfileFragment;
 import com.example.taxiapp.ui.review.ReviewsFragment;
@@ -123,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new DriverAdditionalInfoFragment();
         } else if (id == R.id.nav_reviews && "DRIVER".equals(userType)) {
             fragmentToLoad = new ReviewsFragment();
+        } else if (id == R.id.nav_user_live_support && "DRIVER".equals(userType)) {
+            fragmentToLoad = new UserChatFragment();
         }
 
         // ADMIN
@@ -133,6 +139,10 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new ProfileFragment();
         } else if (id == R.id.nav_drivers_requests && "ADMIN".equals(userType)) {
             fragmentToLoad = new DriversRequestsFragment();
+        } else if (id == R.id.nav_admin_live_support && "ADMIN".equals(userType)) {
+            fragmentToLoad = new AdminChatFragment();
+        } else if (id == R.id.nav_admin_pricing && "ADMIN".equals(userType)) {
+            fragmentToLoad = new PricingFormFragment();
         }
 
         // PASSENGER
@@ -143,7 +153,12 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new ProfileFragment();
         } else if (id == R.id.nav_reviews && "PASSENGER".equals(userType)) {
             fragmentToLoad = new ReviewsFragment();
+        } else if (id == R.id.nav_user_live_support && "PASSENGER".equals(userType)) {
+            fragmentToLoad = new UserChatFragment();
+        } else if (id == R.id.nav_user_notifications && "PASSENGER".equals(userType)) {
+            fragmentToLoad = new NotificationListFragment();
         }
+
 
         // LOGOUT
         else if (id == R.id.nav_logout) {

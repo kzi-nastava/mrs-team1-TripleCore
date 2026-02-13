@@ -2,6 +2,8 @@ package service.api;
 
 import java.util.List;
 
+import model.ChangePricesRequest;
+import model.ChatResponse;
 import model.CreateReviewRequest;
 import model.DriverProfileChangeRequest;
 import model.DriverProfileChangeRequestResponse;
@@ -9,16 +11,20 @@ import model.DriverProfileResponse;
 import model.ActiveVehicleLocationResponse;
 import model.LoginRequest;
 import model.LoginResponse;
+import model.NotificationResponse;
 import model.RegisterRequest;
 import model.RegisterResponse;
 import model.ReviewDTO;
 import model.RideCancelRequest;
 import model.RideDetailsDTO;
+import model.SaveAdminMessageRequest;
+import model.SaveUserMessageRequest;
 import model.StopRideRequest;
 import model.StopRideResponse;
 import model.RideTrackingInfo;
 import model.UpdateUserProfileRequest;
 import model.UserProfileResponse;
+import model.VehiclePricesDTO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -79,6 +85,9 @@ public interface ApiService {
 
     // Ride actions
 
+    @GET("api/rides/ride-details/{id}")
+    Call<RideDetailsDTO> getRideDetails(@Path("id") Long rideId);
+
     @POST("/api/rides/{id}/cancel")
     Call<ResponseBody> cancelRide(
             @Path("id") Long rideId,
@@ -133,7 +142,6 @@ public interface ApiService {
     Call<String> finishRide(@Path("id") Long rideId);
 
     // Reviews
-
     @POST("api/reviews/create")
     Call<ResponseBody> createReview(@Body CreateReviewRequest request);
 
@@ -142,5 +150,34 @@ public interface ApiService {
 
     @GET("api/reviews/driver/{id}")
     Call<List<ReviewDTO>> getDriverReviews(@Path("id") Long driverId);
+
+    // Chat
+    @GET("api/chats/all")
+    Call<List<ChatResponse>> getChatList();
+
+    @POST("api/chats/save-user-message")
+    Call<Void> saveUserMessage(@Body SaveUserMessageRequest request);
+
+    @POST("api/chats/save-admin-message")
+    Call<Void> saveAdminMessage(@Body SaveAdminMessageRequest request);
+
+    @GET("api/chats/user/{id}")
+    Call<ChatResponse> getUserChat(@Path("id") Long userId);
+
+    // Pricing
+
+    @GET("api/prices/get")
+    Call<VehiclePricesDTO> getPrices();
+
+    @POST("api/prices/change")
+    Call<ResponseBody> changePrices(@Body ChangePricesRequest request);
+
+    // Passenger Notifications
+
+    @GET("api/notifications/passenger/{id}")
+    Call<List<NotificationResponse>> getPassengerNotifications(@Path("id") Long passengerId);
+
+    @POST("api/notifications/{id}/mark-seen")
+    Call<ResponseBody> markNotificationSeen(@Path("id") Long notificationId);
 
 }

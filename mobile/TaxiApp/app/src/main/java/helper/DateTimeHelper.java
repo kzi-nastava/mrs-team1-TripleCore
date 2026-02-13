@@ -15,4 +15,20 @@ public class DateTimeHelper {
             return isoString;
         }
     }
+
+    public static String getDateTime(String isoString) {
+        if (isoString == null || isoString.isEmpty()) return "";
+
+        try {
+            LocalDateTime dt = LocalDateTime.parse(isoString);
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+
+            return dt.format(formatter);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return isoString;
+        }
+    }
 }

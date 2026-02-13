@@ -78,7 +78,6 @@ public class ReviewFormFragment extends Fragment {
         setupStars(vehicleStarsLayout, false);
 
         cancelButton.setOnClickListener(v -> {
-            // Očisti formu ili zatvori fragment
             driverRating = 0;
             vehicleRating = 0;
             commentEditText.setText("");
