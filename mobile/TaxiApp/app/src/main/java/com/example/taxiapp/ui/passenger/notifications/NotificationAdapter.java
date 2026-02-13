@@ -1,7 +1,6 @@
-package com.example.taxiapp.ui.passenger;
+package com.example.taxiapp.ui.passenger.notifications;
 
 import static helper.DateTimeHelper.getDateTime;
-import static helper.DateTimeHelper.getTimeOnly;
 
 import android.view.LayoutInflater;
 import android.view.View;

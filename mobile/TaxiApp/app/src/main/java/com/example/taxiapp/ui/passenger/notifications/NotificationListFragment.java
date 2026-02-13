@@ -1,4 +1,4 @@
-package com.example.taxiapp.ui.passenger;
+package com.example.taxiapp.ui.passenger.notifications;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.NotificationResponse;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -87,10 +88,43 @@ public class NotificationListFragment extends Fragment {
     }
 
     private void openPopup(NotificationResponse notification) {
-        Toast.makeText(
-                getContext(),
-                "Open popup",
-                Toast.LENGTH_SHORT
-        ).show();
+        NotificationFragment fragment =
+                NotificationFragment.newInstance(notification);
+
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, fragment)
+                .addToBackStack(null)
+                .commit();
+
+        markAsSeen(notification);
+    }
+
+    private void markAsSeen(NotificationResponse notification) {
+
+        if (notification.seen) return;
+
+        NotificationService.getInstance()
+                .markNotificationSeen(notification.id,
+                        new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                if (response.isSuccessful()) {
+                                    notification.seen = true;
+
+                                    int position = notifications.indexOf(notification);
+                                    if (position != -1) {
+                                        adapter.notifyItemChanged(position);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Toast.makeText(getContext(),
+                                        "Failed to mark notification as seen",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
     }
 }

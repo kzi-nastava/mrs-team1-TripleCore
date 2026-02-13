@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class NotificationResponse {
+public class NotificationResponse implements Serializable {
     public Long id;
     public Long recipientId;
     public String title;
