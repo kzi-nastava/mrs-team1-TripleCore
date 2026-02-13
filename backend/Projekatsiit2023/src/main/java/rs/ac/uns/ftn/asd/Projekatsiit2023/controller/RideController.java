@@ -131,9 +131,6 @@ public class  RideController {
         return ResponseEntity.ok("Email sent");
     }
 
-    public boolean getRandomBoolean() {
-        return ThreadLocalRandom.current().nextBoolean();
-    }
 
     @PostMapping
     public ResponseEntity<RideResponse> orderRide(

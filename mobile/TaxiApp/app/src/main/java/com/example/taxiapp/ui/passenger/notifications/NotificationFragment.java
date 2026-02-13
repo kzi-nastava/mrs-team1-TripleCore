@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.taxiapp.R;
@@ -51,6 +52,7 @@ public class NotificationFragment extends Fragment {
         TextView tvTitle = view.findViewById(R.id.tvTitle);
         TextView tvTime = view.findViewById(R.id.tvTime);
         TextView tvMessage = view.findViewById(R.id.tvMessage);
+        Button btnLink = view.findViewById(R.id.btn_notification_link);
 
         if (notification != null) {
             tvTitle.setText(notification.title);
@@ -61,6 +63,23 @@ public class NotificationFragment extends Fragment {
         return view;
     }
 
+    private void handleNotificationLink(NotificationResponse notification) {
+        if (notification.link == null || notification.link.isEmpty()) return;
+
+        String[] parts = notification.link.split("[:]");
+        if (parts.length != 2) return;
+
+        String type = parts[0];      // review ili ride-tracking
+        Long rideId;
+        try {
+            rideId = Long.parseLong(parts[1]);
+        } catch (NumberFormatException e) {
+            return;
+        }
+
+        // Pozovi backend i otvori fragment
+        fetchRideAndOpenFragment(type, rideId);
+    }
 
 
 
