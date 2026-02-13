@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import helper.PanicHelper;
 import helper.RouteHelper;
 import helper.StopRideHelper;
 import model.LocationDTO;
@@ -429,9 +430,61 @@ public class RideTrackingFragment extends Fragment {
         }
     }
 
+    /* ===================== PANIC ===================== */
+
     private void panic() {
-        // TODO: implement panic logic
-        Toast.makeText(requireContext(), "PANIC button pressed", Toast.LENGTH_SHORT).show();
+        if (ride != null && ride.panic) {
+            Toast.makeText(requireContext(),
+                    "Panic is already activated for this ride",
+                    Toast.LENGTH_SHORT).show();
+
+            btnPanic.setEnabled(false);
+            btnPanic.setText("PANIC ACTIVATED");
+            return;
+        }
+
+        Long userId = getLoggedInUserId();
+
+        if (userId == null) {
+            Toast.makeText(requireContext(),
+                    "User not authenticated",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        PanicHelper.showPanicDialog(
+                requireContext(),
+                ride,
+                userId,
+                new PanicHelper.PanicCallback() {
+                    @Override
+                    public void onSuccess(String message) {
+                        requireActivity().runOnUiThread(() -> {
+                            btnPanic.setEnabled(false);
+                            btnPanic.setText("PANIC");
+                            btnPanic.setBackgroundColor(Color.RED);
+                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+
+                            ride.panic = true;
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                        Log.e("Panic", "Failed: " + error);
+                    }
+                }
+        );
+    }
+
+    private Long getLoggedInUserId() {
+        try {
+            return AuthService.getInstance().getLoggedInUserId(requireContext());
+        } catch (Exception e) {
+            Log.e("RideTracking", "Error getting userId", e);
+            return null;
+        }
     }
 
     private void refresh() {

@@ -54,4 +54,9 @@ public class RideService {
         api.getRideDetails(rideId).enqueue(callback);
     }
 
+    public void activatePanic(Long rideId,
+                              Long userId,
+                              Callback<ResponseBody> callback) {
+        api.activatePanic(rideId, userId).enqueue(callback);
+    }
 }
