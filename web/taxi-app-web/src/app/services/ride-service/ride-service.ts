@@ -47,6 +47,16 @@ export class RideService {
   orderRide(request: any, userEmail: string): Observable<any> {
   const headers = { 'X-User-Email': userEmail };  
   return this.http.post<any>(`${this.apiUrl}`, request, { headers });
+  }
+
+  startRide(rideId: number, driverId: number): Observable<string> {
+  const headers = { 'X-User-Id': driverId.toString() };
+  return this.http.post(`${this.apiUrl}/${rideId}/start`, null, { headers, responseType: 'text' });
+  }
+
+  getRideToStart(driverId: number): Observable<RideDetailsResponse | string> {
+  return this.http.get<RideDetailsResponse | string>(`${this.apiUrl}/to-start/${driverId}`);
 }
+
 
 }

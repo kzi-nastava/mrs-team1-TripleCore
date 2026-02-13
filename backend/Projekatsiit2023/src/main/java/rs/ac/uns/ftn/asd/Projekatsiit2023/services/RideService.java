@@ -489,4 +489,41 @@ public class RideService {
         return null;
     }
 
+    public void startRide(Long driverId, Long rideId) {
+
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        if (!ride.getDriver().getId().equals(driverId)) {
+            throw new RuntimeException("This ride does not belong to this driver");
+        }
+
+        if (ride.getStatus() != RideStatus.REQUESTED) {
+            throw new RuntimeException("Ride must be REQUESTED to start");
+        }
+
+        Driver driver = ride.getDriver();
+
+        driver.setCurrentlyWorking(true);
+        driver.setAvailable(false);
+
+        driverRepository.save(driver);
+
+        ride.setStatus(RideStatus.IN_PROGRESS);
+
+        rideRepository.save(ride);
+
+        notificationService.rideStartNotifyPassengers(ride);
+
+    }
+
+    public Ride getRideToStartForDriver(Long driverId) {
+        List<RideStatus> startableStatuses = List.of(RideStatus.REQUESTED);
+        System.out.println(driverId);
+        return rideRepository.findByDriverIdAndStatusIn(driverId, startableStatuses)
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
+
 }
