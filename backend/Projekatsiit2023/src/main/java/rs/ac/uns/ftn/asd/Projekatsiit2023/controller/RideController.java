@@ -185,9 +185,24 @@ public class  RideController {
 //        return ResponseEntity.ok(favorites);
 //    }
 
-    @PostMapping("/{rideId}/start") public ResponseEntity<String> startRide(@PathVariable Long rideId) {
-        System.out.println("Ride " + rideId + " started");
-        return ResponseEntity.ok("Ride started");
+    @PostMapping("/{rideId}/start")
+    public ResponseEntity<?> startRide(
+            @PathVariable Long rideId,
+            @RequestHeader(value = "X-User-Id", required = true) Long driverId) {
+
+        try {
+            rideService.startRide(driverId, rideId);
+
+            return ResponseEntity.ok("Ride started successfully");
+
+        } catch (RuntimeException e) {
+
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error starting ride: " + e.getMessage());
+        }
     }
 
 //     Database test
@@ -212,4 +227,19 @@ public class  RideController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
         }
     }
+
+    @GetMapping("/to-start/{driverId}")
+    public ResponseEntity<?> getRideToStart(@PathVariable Long driverId) {
+        try {
+            Ride ride = rideService.getRideToStartForDriver(driverId);
+            if (ride == null) {
+                return ResponseEntity.ok(null);
+            }
+            return ResponseEntity.ok(rideService.createRideDetails(ride));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
 }
