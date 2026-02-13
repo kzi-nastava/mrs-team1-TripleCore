@@ -1,6 +1,7 @@
 package service;
 
 import model.RideCancelRequest;
+import model.RideDetailsDTO;
 import model.StopRideRequest;
 import model.StopRideResponse;
 import network.RetrofitClient;
@@ -47,6 +48,10 @@ public class RideService {
 
         api.stopRide(rideId, request)
                 .enqueue(callback);
+    }
+
+    public void getRideDetails(Long rideId, Callback<RideDetailsDTO> callback) {
+        api.getRideDetails(rideId).enqueue(callback);
     }
 
 }

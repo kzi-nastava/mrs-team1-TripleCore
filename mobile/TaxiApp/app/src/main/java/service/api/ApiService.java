@@ -85,6 +85,9 @@ public interface ApiService {
 
     // Ride actions
 
+    @GET("api/rides/ride-details/{id}")
+    Call<RideDetailsDTO> getRideDetails(@Path("id") Long rideId);
+
     @POST("/api/rides/{id}/cancel")
     Call<ResponseBody> cancelRide(
             @Path("id") Long rideId,
