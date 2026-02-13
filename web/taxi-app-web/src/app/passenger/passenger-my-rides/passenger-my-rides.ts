@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSortModule, Sort } from '@angular/material/sort'; 
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PassengerCancelRideDialogComponent } from '../passenger-cancel-ride-dialog/passenger-cancel-ride-dialog';
@@ -23,7 +24,6 @@ import { RideCancelRequest } from '../../models/ride-cancel-request';
 import { ReviewFormComponent } from '../../reviews/review-form/review-form';
 import { ActiveRideTrackingComponent } from '../../active-ride-tracking/active-ride-tracking';
 import { UserChatComponent } from '../../live-chat/user-chat/user-chat';
-import { FavoriteRouteResponse } from '../../models/favorite-route-response';
 
 @Component({
   selector: 'app-passenger-my-rides',
@@ -38,6 +38,7 @@ import { FavoriteRouteResponse } from '../../models/favorite-route-response';
     MatDatepickerModule,
     MatSelectModule,
     MatNativeDateModule,
+    MatSortModule, 
     CommonModule,
     FormsModule,
     NavbarComponent,
@@ -200,6 +201,39 @@ export class PassengerMyRidesComponent implements OnInit {
     this.toDate = null;
     this.filteredRides = [...this.allRides];
     this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
+  }
+
+  sortData(sort: Sort): void {
+    const data = this.filteredRides.slice();
+    
+    if (!sort.active || sort.direction === '') {
+      this.filteredRides = data.sort((a, b) => b.date.getTime() - a.date.getTime());
+      return;
+    }
+
+    this.filteredRides = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'driver':
+          return this.compare(a.driverName, b.driverName, isAsc);
+        case 'vehicle':
+          return this.compare(a.vehicleModel, b.vehicleModel, isAsc);
+        case 'route':
+          return this.compare(a.pickup + a.destination, b.pickup + b.destination, isAsc);
+        case 'datetime':
+          return this.compare(a.date.getTime(), b.date.getTime(), isAsc);
+        case 'status':
+          return this.compare(a.status, b.status, isAsc);
+        case 'price':
+          return this.compare(a.price, b.price, isAsc);
+        default:
+          return 0;
+      }
+    });
+  }
+
+  compare(a: number | string, b: number | string, isAsc: boolean): number {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
   getStatusClass(status: string): string {
@@ -368,17 +402,15 @@ export class PassengerMyRidesComponent implements OnInit {
   }
 
   addToFavorites(rideId: number) {
-  const passengerId = Number(localStorage.getItem('userId'));
+    const passengerId = Number(localStorage.getItem('userId'));
 
-  this.passengerService.addToFavorites(passengerId, rideId)
-    .subscribe({
-      next: () => alert("Added to favorites"),
-      error: (err) => {
-        console.error('Error adding to favorites:', err);
-        alert('Failed to add to favorites. This ride might already be in your favorites.');
-
-      }
-    });
+    this.passengerService.addToFavorites(passengerId, rideId)
+      .subscribe({
+        next: () => alert("Added to favorites"),
+        error: (err) => {
+          console.error('Error adding to favorites:', err);
+          alert('Failed to add to favorites. This ride might already be in your favorites.');
+        }
+      });
   }
-
 }
