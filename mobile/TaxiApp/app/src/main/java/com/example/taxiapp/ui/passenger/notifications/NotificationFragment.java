@@ -13,9 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.taxiapp.R;
+import com.example.taxiapp.ui.review.ReviewFormFragment;
+import com.example.taxiapp.ui.ride_tracking.RideTrackingFragment;
+
 import model.NotificationResponse;
+import model.RideDetailsDTO;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import service.RideService;
 
 
 public class NotificationFragment extends Fragment {
@@ -23,6 +32,8 @@ public class NotificationFragment extends Fragment {
     private static final String ARG_NOTIFICATION = "notification";
 
     private NotificationResponse notification;
+    private String linkType;
+    private Long linkRideId;
 
     public static NotificationFragment newInstance(NotificationResponse notification) {
         NotificationFragment fragment = new NotificationFragment();
@@ -58,29 +69,74 @@ public class NotificationFragment extends Fragment {
             tvTitle.setText(notification.title);
             tvMessage.setText(notification.message);
             tvTime.setText(getDateTime(notification.time));
+
+            if (handleNotificationLink(notification)){
+                btnLink.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        fetchRideAndOpenFragment();
+                    }
+                });
+                btnLink.setVisibility(View.VISIBLE);
+            }
         }
 
         return view;
     }
 
-    private void handleNotificationLink(NotificationResponse notification) {
-        if (notification.link == null || notification.link.isEmpty()) return;
+    private boolean handleNotificationLink(NotificationResponse notification) {
+        if (notification.link == null || notification.link.isEmpty()) return false;
 
         String[] parts = notification.link.split("[:]");
-        if (parts.length != 2) return;
+        if (parts.length != 2) return false;
 
-        String type = parts[0];      // review ili ride-tracking
-        Long rideId;
+        String type = parts[0];
+        if (!type.equals("review") && !type.equals("ride-tracking")){
+            return false;
+        }
+        linkType = type;
+
         try {
-            rideId = Long.parseLong(parts[1]);
+            linkRideId = Long.parseLong(parts[1]);
+            return true;
         } catch (NumberFormatException e) {
-            return;
+            return false;
         }
 
-        // Pozovi backend i otvori fragment
-        fetchRideAndOpenFragment(type, rideId);
     }
 
+    public void fetchRideAndOpenFragment(){
+        RideService.getInstance().getRideDetails(linkRideId, new Callback<RideDetailsDTO>() {
+            @Override
+            public void onResponse(Call<RideDetailsDTO> call, Response<RideDetailsDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    RideDetailsDTO ride = response.body();
+                    if (linkType.equals("review")){
+                        ReviewFormFragment reviewFormFragment = ReviewFormFragment.newInstance(ride);
+                        getParentFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_container, reviewFormFragment)
+                                .addToBackStack(null)
+                                .commit();
+
+                    } else if (linkType.equals("ride-tracking")) {
+                        RideTrackingFragment rideTrackingFragment = RideTrackingFragment.newInstance(ride);
+                        getParentFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.main_container, rideTrackingFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RideDetailsDTO> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to load ride details", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
 
 
 }
