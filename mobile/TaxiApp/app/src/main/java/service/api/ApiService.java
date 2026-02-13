@@ -11,6 +11,7 @@ import model.DriverProfileResponse;
 import model.ActiveVehicleLocationResponse;
 import model.LoginRequest;
 import model.LoginResponse;
+import model.NotificationResponse;
 import model.RegisterRequest;
 import model.RegisterResponse;
 import model.ReviewDTO;
@@ -138,7 +139,6 @@ public interface ApiService {
     Call<String> finishRide(@Path("id") Long rideId);
 
     // Reviews
-
     @POST("api/reviews/create")
     Call<ResponseBody> createReview(@Body CreateReviewRequest request);
 
@@ -168,4 +168,13 @@ public interface ApiService {
 
     @POST("api/prices/change")
     Call<ResponseBody> changePrices(@Body ChangePricesRequest request);
+
+    // Passenger Notifications
+
+    @GET("api/notifications/passenger/{id}")
+    Call<List<NotificationResponse>> getPassengerNotifications(@Path("id") Long passengerId);
+
+    @POST("api/notifications/{id}/mark-seen")
+    Call<ResponseBody> markNotificationSeen(@Path("id") Long notificationId);
+
 }

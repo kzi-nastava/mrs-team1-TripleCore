@@ -23,6 +23,7 @@ import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.live_support.ChatFragment;
 import com.example.taxiapp.ui.live_support.UserChatFragment;
+import com.example.taxiapp.ui.passenger.NotificationListFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
 import com.example.taxiapp.ui.profile_info.ProfileFragment;
 import com.example.taxiapp.ui.review.ReviewsFragment;
@@ -155,7 +156,10 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new ReviewsFragment();
         } else if (id == R.id.nav_user_live_support && "PASSENGER".equals(userType)) {
             fragmentToLoad = new UserChatFragment();
+        } else if (id == R.id.nav_user_notifications && "PASSENGER".equals(userType)) {
+            fragmentToLoad = new NotificationListFragment();
         }
+
 
         // LOGOUT
         else if (id == R.id.nav_logout) {
