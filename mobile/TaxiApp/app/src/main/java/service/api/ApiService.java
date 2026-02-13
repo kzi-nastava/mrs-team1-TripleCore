@@ -100,6 +100,11 @@ public interface ApiService {
             @Body StopRideRequest request
     );
 
+    @POST("/api/rides/{id}/panic")
+    Call<ResponseBody> activatePanic(
+            @Path("id") Long rideId,
+            @Query("userId") Long userId
+    );
 
     // Profile
     @GET("/api/profile/user")
