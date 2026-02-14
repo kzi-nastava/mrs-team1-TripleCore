@@ -22,7 +22,8 @@ import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragmen
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.live_support.UserChatFragment;
-import com.example.taxiapp.ui.passenger.notifications.NotificationListFragment;
+import com.example.taxiapp.ui.panic.PanicFragment;
+//import com.example.taxiapp.ui.passenger.notifications.NotificationListFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
 import com.example.taxiapp.ui.profile_info.ProfileFragment;
 import com.example.taxiapp.ui.review.ReviewsFragment;
@@ -143,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new AdminChatFragment();
         } else if (id == R.id.nav_admin_pricing && "ADMIN".equals(userType)) {
             fragmentToLoad = new PricingFormFragment();
+        } else if (id == R.id.nav_panic_notifications && "ADMIN".equals(userType)) {
+            fragmentToLoad = new PanicFragment();
         }
 
         // PASSENGER
@@ -155,9 +158,9 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new ReviewsFragment();
         } else if (id == R.id.nav_user_live_support && "PASSENGER".equals(userType)) {
             fragmentToLoad = new UserChatFragment();
-        } else if (id == R.id.nav_user_notifications && "PASSENGER".equals(userType)) {
+        } /*else if (id == R.id.nav_user_notifications && "PASSENGER".equals(userType)) {
             fragmentToLoad = new NotificationListFragment();
-        }
+        }*/
 
 
         // LOGOUT
