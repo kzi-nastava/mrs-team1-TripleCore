@@ -22,12 +22,24 @@ import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragmen
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.live_support.UserChatFragment;
-import com.example.taxiapp.ui.passenger.notifications.NotificationListFragment;
+import com.example.taxiapp.ui.panic.PanicFragment;
+//import com.example.taxiapp.ui.passenger.notifications.NotificationListFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
 import com.example.taxiapp.ui.profile_info.ProfileFragment;
 import com.example.taxiapp.ui.review.ReviewsFragment;
 import com.example.taxiapp.ui.ride_history.RideHistoryFragment;
 import com.google.android.material.navigation.NavigationView;
+
+import android.widget.Toast;
+import android.util.Log;
+
+import helper.SoundManager;
+import model.Panic;
+import retrofit2.Callback;
+import service.PanicService;
+import retrofit2.Call;
+import retrofit2.Response;
+import java.util.List;
 
 import service.AuthService;
 
@@ -143,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new AdminChatFragment();
         } else if (id == R.id.nav_admin_pricing && "ADMIN".equals(userType)) {
             fragmentToLoad = new PricingFormFragment();
+        } else if (id == R.id.nav_panic_notifications && "ADMIN".equals(userType)) {
+            fragmentToLoad = new PanicFragment();
         }
 
         // PASSENGER
@@ -155,9 +169,9 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new ReviewsFragment();
         } else if (id == R.id.nav_user_live_support && "PASSENGER".equals(userType)) {
             fragmentToLoad = new UserChatFragment();
-        } else if (id == R.id.nav_user_notifications && "PASSENGER".equals(userType)) {
+        } /*else if (id == R.id.nav_user_notifications && "PASSENGER".equals(userType)) {
             fragmentToLoad = new NotificationListFragment();
-        }
+        }*/
 
 
         // LOGOUT
@@ -210,6 +224,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void onAdminLoginSuccess() {
         reloadAfterLogin("ADMIN");
+        checkActivePanicsAndPlaySound();
+    }
+
+    private void checkActivePanicsAndPlaySound() {
+        PanicService.getInstance().getActivePanics(new Callback<List<Panic>>() {
+            @Override
+            public void onResponse(Call<List<Panic>> call, Response<List<Panic>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    int activeCount = response.body().size();
+                    if (activeCount > 0) {
+                        SoundManager.getInstance(MainActivity.this).playPanicSound();
+
+                        String message = activeCount == 1
+                                ? "1 active panic notification"
+                                : activeCount + " active panic notifications";
+
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Panic>> call, Throwable t) {
+                Log.e("MainActivity", "Failed to check active panics: " + t.getMessage());
+            }
+        });
     }
 
     public void onDriverLoginSuccess() {
@@ -245,5 +285,11 @@ public class MainActivity extends AppCompatActivity {
         loadUserState();
         setupMenu();
         loadStartFragment();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SoundManager.getInstance(this).release();
     }
 }
