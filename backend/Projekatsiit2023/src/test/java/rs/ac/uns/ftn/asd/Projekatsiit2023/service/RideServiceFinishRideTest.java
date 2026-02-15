@@ -1,7 +1,6 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.ActiveVehicleRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.ActiveVehicleRepositoryTest;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.DriverRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.RideRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.NotificationService;
@@ -30,7 +29,7 @@ public class RideServiceFinishRideTest {
     DriverRepository driverRepository;
 
     @Mock
-    ActiveVehicleRepository activeVehicleRepository;
+    ActiveVehicleRepositoryTest activeVehicleRepository;
 
     @Mock
     NotificationService notificationService;

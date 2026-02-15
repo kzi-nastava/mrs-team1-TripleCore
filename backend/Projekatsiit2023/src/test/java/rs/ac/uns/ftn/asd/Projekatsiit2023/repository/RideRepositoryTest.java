@@ -139,5 +139,21 @@ class RideRepositoryTest {
     void existsByDriverIdAndStatus_whenRideDoesNotExist_thenReturnFalse() {
         assertFalse(rideRepository.existsByDriverIdAndStatus(driver.getId(), RideStatus.ACCEPTED));
     }
+
+    @Test
+    void findByDriverId_whenDriverHasRides_thenReturnAllDriverRides(){
+        Ride ride1 = createRide();
+        Ride ride2 = createRide();
+
+        List<Ride> rides = rideRepository.findByDriverId(driver.getId());
+
+        assertEquals(2, rides.size());
+    }
+
+    @Test
+    void findByDriverId_whenDriverHasNoRides_thenReturnEmptyList(){
+        List<Ride> rides = rideRepository.findByDriverId(999L);
+        assertTrue(rides.isEmpty());
+    }
 }
 
