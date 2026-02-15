@@ -12,6 +12,7 @@ import model.ActiveVehicleLocationResponse;
 import model.LoginRequest;
 import model.LoginResponse;
 import model.NotificationResponse;
+import model.Panic;
 import model.RegisterRequest;
 import model.RegisterResponse;
 import model.ReviewDTO;
@@ -66,6 +67,19 @@ public interface ApiService {
     @GET("/api/admin/rides/{id}")
     Call<RideDetailsDTO> getRideById(@Path("id") Long rideId);
 
+    // Admin - Panic notifications
+    @GET("/api/admin/panics")
+    Call<List<Panic>> getAllPanics();
+
+    @GET("/api/admin/panics/active")
+    Call<List<Panic>> getActivePanics();
+
+    @GET("/api/admin/panics/resolved")
+    Call<List<Panic>> getResolvedPanics();
+
+    @PUT("/api/admin/panics/{id}/resolve")
+    Call<Void> resolvePanic(@Path("id") Long panicId);
+
     // Passenger
     @GET("/api/passengers/{id}/ride-history")
     Call<List<RideDetailsDTO>> getPassengerRideHistory(@Path("id") Long passengerId);
@@ -100,6 +114,11 @@ public interface ApiService {
             @Body StopRideRequest request
     );
 
+    @POST("/api/rides/{id}/panic")
+    Call<ResponseBody> activatePanic(
+            @Path("id") Long rideId,
+            @Query("userId") Long userId
+    );
 
     // Profile
     @GET("/api/profile/user")
