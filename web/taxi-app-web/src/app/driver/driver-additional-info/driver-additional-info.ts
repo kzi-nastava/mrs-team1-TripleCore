@@ -35,6 +35,9 @@ export class DriverAdditionalInfoComponent implements OnInit {
 
   driverProfile: DriverProfileResponse | null = null;
 
+  isBlocked: boolean = false;
+  blockedNote: string = "";
+
   constructor(
     private router: Router,
      private logoutService: LogoutService,
@@ -52,6 +55,9 @@ export class DriverAdditionalInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.loadBlockedNote();
+
     const driverId = this.getDriverId();
     this.isActive = this.driverStatusService.isActive();
 
@@ -121,5 +127,34 @@ export class DriverAdditionalInfoComponent implements OnInit {
           return '';
       }
   }
+
+  loadBlockedNote() {
+
+  const userId = Number(localStorage.getItem('userId'));
+  if (!userId) return;
+
+  this.userProfileService.getBlockedNote(userId)
+      .subscribe({
+        next: res => {
+
+          if (res.note != "") {
+          this.isBlocked = true;
+          this.blockedNote = res.note || "";
+
+          console.log("User is blocked. Note:", this.blockedNote);
+          }
+      
+
+        },
+
+        error: err => {
+
+          this.isBlocked = false;
+          this.blockedNote = "";
+
+          console.log("User is NOT blocked");
+        }
+      });
+  } 
 
 }

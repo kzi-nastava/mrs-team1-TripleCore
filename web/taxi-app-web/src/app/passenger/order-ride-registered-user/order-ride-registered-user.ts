@@ -8,6 +8,7 @@ import { FavoriteRouteStateService } from '../../services/favorite-route-state-s
 import { RideService } from '../../services/ride-service/ride-service';
 import { VehicleType } from '../../models/vehicle-type';
 import { RideRequest } from '../../models/ride-request';
+import { UserProfileService } from '../../services/user-info-service/user-info-service';
 
 @Component({
   selector: 'app-order-ride-registered-user',
@@ -37,9 +38,13 @@ export class OrderRideRegisteredUser implements OnInit {
   babyTransport: boolean = false;
   petsTransport: boolean = false;
 
-  constructor(private osmService: OsmService, private router: Router, private rideService: RideService, private favoriteRouteState: FavoriteRouteStateService) {}
+  isBlocked: boolean = false;
+  blockedNote: string = "";
+
+  constructor(private osmService: OsmService, private router: Router, private rideService: RideService, private favoriteRouteState: FavoriteRouteStateService, private userProfileService: UserProfileService) {}
 
   ngOnInit() {
+  this.loadBlockedNote();
   this.favoriteRouteState.selectedRoute$.subscribe(route => {
     if (route) {
       this.fillFormFromFavorite(route);
@@ -189,8 +194,14 @@ orderRide() {
       this.rideOrderedEvent.emit();
     },
     error: err => {
-      console.error("Error ordering ride:", err);
-      alert("Failed to order ride. You might have an active ride.");
+  console.error("Error ordering ride:", err);
+
+  if (err.error) {
+    alert(err.error); 
+  } else {
+    alert("Failed to order ride. You might have an active ride or your account is blocked.");
+  }
+
     }
   });
 }
@@ -204,4 +215,35 @@ orderRide() {
     this.selectedVehicle = 'STANDARD';
     this.babyTransport = false; this.petsTransport = false;
   }
+
+loadBlockedNote() {
+
+  const userId = Number(localStorage.getItem('userId'));
+  if (!userId) return;
+
+  this.userProfileService.getBlockedNote(userId)
+    .subscribe({
+      next: res => {
+
+        if (res.note != "") {
+        this.isBlocked = true;
+        this.blockedNote = res.note || "";
+
+        console.log("User is blocked. Note:", this.blockedNote);
+        }
+    
+
+      },
+
+      error: err => {
+
+        this.isBlocked = false;
+        this.blockedNote = "";
+
+        console.log("User is NOT blocked");
+      }
+    });
+}
+
+
 }

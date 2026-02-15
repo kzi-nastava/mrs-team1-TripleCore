@@ -13,7 +13,7 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link img-and-link selected-nav-link" routerLink="/admin-home">
+      <a class="nav-link img-and-link" routerLink="/admin-home">
         Dashboard
       </a>
     </li>
@@ -31,7 +31,7 @@
   </li>
 
   <li class="nav-item">
-    <a class="nav-link" routerLink="/admin/block-user">
+    <a class="nav-link selected-nav-link" routerLink="/admin/block-user">
       Block User
     </a>
   </li>
@@ -81,5 +81,37 @@
     </li>
   </app-navbar>
 
-  <app-map></app-map>
+  <div class="block-user-container">
+  <h2>Block Users</h2>
+
+  <div class="user-card" *ngFor="let user of users">
+    <div class="user-info">
+      <p><strong>{{ user.firstname }} {{ user.lastname }}</strong></p>
+      <p>{{ user.email }}</p>
+      <p>Status: <span [class.blocked]="user.blocked">{{ user.blocked ? 'Blocked' : 'Active' }}</span></p>
+    </div>
+
+    <div class="block-action">
+      <textarea
+        placeholder="Reason for blocking (optional)"
+        [(ngModel)]="blockNotes[user.id]"
+        class="reason-input"
+        [disabled]="user.blocked">
+      </textarea>
+
+      <button 
+        *ngIf="!user.blocked"
+        (click)="blockUser(user)"
+        class="block-btn">
+        Block
+      </button>
+
+      <span *ngIf="user.blocked" class="already-blocked">
+        Already blocked
+      </span>
+    </div>
+  </div>
+</div>
+
+
 </div>

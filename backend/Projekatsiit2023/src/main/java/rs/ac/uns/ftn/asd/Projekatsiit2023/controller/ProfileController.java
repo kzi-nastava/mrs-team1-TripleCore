@@ -11,6 +11,7 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.UserProfileResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.UserRole;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.VehicleType;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.DriverProfileChangeRequest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.AdminService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.UserProfileService;
 
 import java.util.Collections;
@@ -22,9 +23,12 @@ import java.util.Map;
 public class ProfileController {
 
     private final UserProfileService userProfileService;
+    private final AdminService adminService;
 
-    public ProfileController(UserProfileService userProfileService) {
+    public ProfileController(UserProfileService userProfileService, AdminService adminService)
+    {
         this.userProfileService = userProfileService;
+        this.adminService = adminService;
     }
 
 
@@ -85,5 +89,13 @@ public class ProfileController {
         return ResponseEntity.ok().build();
     }
 
+
+    @GetMapping("/blocked-note")
+    public ResponseEntity<Map<String, String>> getBlockedNote(@RequestParam Long userId) {
+
+        String note = adminService.getBlockedNoteForUser(userId);
+
+        return ResponseEntity.ok(Collections.singletonMap("note", note));
+    }
 
 }
