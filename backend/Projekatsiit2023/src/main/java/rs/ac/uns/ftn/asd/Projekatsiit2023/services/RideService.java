@@ -265,7 +265,7 @@ public class RideService {
 
         Driver driver = ride.getDriver();
         Vehicle vehicle = driver.getVehicle();
-        ActiveVehicle av = activeVehicleRepository.findById(vehicle.getId()).orElseThrow(
+        ActiveVehicle av = activeVehicleRepository.findByVehicleId(vehicle.getId()).orElseThrow(
                 () -> new EntityNotFoundException("Vehicle not found in active vehicles")
         );
 
