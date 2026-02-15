@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class RideStopServiceImplTest {
+public class  RideStopServiceImplTest {
 
     @Mock
     private RideRepository rideRepository;

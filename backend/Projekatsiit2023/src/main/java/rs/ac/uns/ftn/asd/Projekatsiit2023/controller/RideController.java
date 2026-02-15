@@ -117,7 +117,6 @@ public class  RideController {
         try{
             Ride ride = rideService.getRideById(id);
             rideService.finishRide(ride.getId());
-            notificationService.rideFinishNotifyPassengers(ride);
             return ResponseEntity.ok("Ride finished successfully");
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
