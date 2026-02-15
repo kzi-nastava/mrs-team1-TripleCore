@@ -12,9 +12,9 @@ import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.ride.RideDetailsResponse;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.services.AdminService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.DriverProfileChangeRequestService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.PanicService;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.services.ReviewService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
 
 import java.time.LocalDate;
@@ -32,11 +32,14 @@ public class AdminController {
     private final RideService rideService;
     private final DriverProfileChangeRequestService driverProfileChangeRequestService;
 
+    private final AdminService adminService;
     public AdminController(PanicService panicService,
-                           RideService rideService, DriverProfileChangeRequestService driverProfileChangeRequestService) {
+                           RideService rideService, DriverProfileChangeRequestService driverProfileChangeRequestService,
+                            AdminService adminService) {
         this.panicService = panicService;
         this.rideService = rideService;
         this.driverProfileChangeRequestService = driverProfileChangeRequestService;
+        this.adminService = adminService;
     }
 
     @GetMapping("/rides")
@@ -149,6 +152,17 @@ public class AdminController {
         } catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/users/non-admin")
+    public List<UserBlockedResponse> getNonAdminUsers(){
+        return adminService.getAllNonAdminUsers();
+    }
+
+    @PutMapping("/users/{id}/block")
+    public UserBlockedResponse blockUser(@PathVariable Long id, @RequestParam(required = false) String note)
+            throws Exception {
+        return adminService.blockUser(id, note);
     }
 
 }

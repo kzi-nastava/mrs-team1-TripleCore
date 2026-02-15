@@ -104,7 +104,16 @@
         </section>
 
         <div class="action-buttons">
+
+          <div *ngIf="isBlocked" class="blocked-note">
+            Your account is blocked.
+            <div *ngIf="blockedNote && blockedNote.length > 0">
+              Reason: {{ blockedNote }}
+            </div>
+          </div>
+
           <button type="submit" class="btn-primary">Order ride</button>
+
         </div>
       </div>
     </form>
