@@ -5,5 +5,6 @@
     <item android:id="@+id/nav_admin_ride_history" android:title="Ride History" />
     <item android:id="@+id/nav_admin_live_support" android:title="Live Support" />
     <item android:id="@+id/nav_admin_pricing" android:title="Pricing" />
+    <item android:id="@+id/nav_panic_notifications" android:title="Panic Notifications"/>
     <item android:id="@+id/nav_logout" android:title="Logout" />
 </menu>

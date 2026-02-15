@@ -38,9 +38,9 @@ public class LoginServiceImpl implements LoginService {
             throw new RuntimeException("Account is not activated");
         }
 
-        if (user.isAccountBlocked()) {
-            throw new RuntimeException("Account is blocked");
-        }
+//        if (user.isAccountBlocked()) {
+//            throw new RuntimeException("Account is blocked");
+//        }
 
         // check password
         if (!user.getPassword().equals(request.getPassword())) {

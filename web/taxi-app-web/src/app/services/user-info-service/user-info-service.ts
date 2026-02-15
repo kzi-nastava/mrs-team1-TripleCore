@@ -35,4 +35,8 @@ createDriverProfileChangeRequest(driverId: number, request: UpdateUserProfileReq
   return this.http.post(`${this.baseUrl}/driver/${driverId}/change-request`, request);
 }
 
+  getBlockedNote(userId: number): Observable<{ note: string }> {
+    return this.http.get<{ note: string }>(`${this.baseUrl}/blocked-note?userId=${userId}`);
+  }
+
 }

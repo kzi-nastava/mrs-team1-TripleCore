@@ -61,10 +61,19 @@
                         <span>Active hours in last 24 hours: <strong>{{workingHoursToday}} hours</strong></span>
                     </div>
 
+
                     <div class="info-item d-flex align-items-center mb-4">
                         <img src="icons/icons8-profile-96.png" alt="Profile icon" class="card-icon me-3">
                         <span>View and change profile info</span>
                     </div>
+
+                    <div *ngIf="isBlocked" class="blocked-note">
+                        Your account is blocked.
+                        <div *ngIf="blockedNote && blockedNote.length > 0">
+                        Reason: {{ blockedNote }}
+                        </div>
+                    </div>
+
 
                     <button class="btn btn-purple px-4" routerLink="/user-info">Change info</button>
                 </div>

@@ -1,100 +1,161 @@
 <div class="ride-history-container">
 
+  <!-- Filter Section -->
   <div class="filter-container">
-    <!-- Search -->
+    <!-- Search filter -->
     <mat-form-field appearance="fill" class="filter-input">
+      <mat-label>Search route / location</mat-label>
       <input
         matInput
-        placeholder="Search route / location"
+        placeholder="Search..."
         [(ngModel)]="searchText"
         (keyup)="applyFilters()">
     </mat-form-field>
 
-    <!-- From Date -->
+    <!-- From Date Filter -->
     <mat-form-field appearance="fill" class="filter-input">
-      <input matInput [(ngModel)]="fromDate" [matDatepicker]="fromPicker" placeholder="From">
+      <mat-label>From</mat-label>
+      <input matInput [matDatepicker]="fromPicker" placeholder="From" [(ngModel)]="fromDate">
       <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
       <mat-datepicker #fromPicker></mat-datepicker>
     </mat-form-field>
 
-    <!-- To Date -->
+    <!-- To Date Filter -->
     <mat-form-field appearance="fill" class="filter-input">
-      <input matInput [(ngModel)]="toDate" [matDatepicker]="toPicker" placeholder="To">
+      <mat-label>To</mat-label>
+      <input matInput [matDatepicker]="toPicker" placeholder="To" [(ngModel)]="toDate">
       <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
       <mat-datepicker #toPicker></mat-datepicker>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" (click)="applyFilters()">Apply</button>
-    <button mat-stroked-button color="accent" (click)="clearFilters()">Clear</button>
+    <button mat-raised-button id="apply-btn" (click)="applyFilters()">
+      Apply
+    </button>
+
+    <button mat-stroked-button id="clear-btn" (click)="clearFilters()">
+      Clear
+    </button>
   </div>
 
-  <table mat-table [dataSource]="rides" matSort class="mat-elevation-z8">
+  <!-- Rides Table -->
+  <table 
+    mat-table 
+    [dataSource]="rides" 
+    class="rides-table"
+    matSort
+    (matSortChange)="sortData($event)"
+    matSortActive="startDate"
+    matSortDirection="desc"
+    matSortDisableClear>
 
-    <!-- Route -->
+    <!-- Route Column -->
     <ng-container matColumnDef="route">
-      <th mat-header-cell *matHeaderCellDef>Route</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Route </th>
       <td mat-cell *matCellDef="let ride">
-        {{ ride.startLocation?.address }} → {{ ride.endLocation?.address }}
+        <div class="route-cell">
+          <div class="pickup">
+            <mat-icon class="location-icon">radio_button_checked</mat-icon>
+            <span class="location-text">{{ ride.startLocation?.address || 'N/A' }}</span>
+          </div>
+          <div class="destination">
+            <mat-icon class="location-icon">place</mat-icon>
+            <span class="location-text">{{ ride.endLocation?.address || 'N/A' }}</span>
+          </div>
+        </div>
       </td>
     </ng-container>
 
-    <!-- Start -->
+    <!-- Start Date Column -->
     <ng-container matColumnDef="startDate">
-      <th mat-header-cell *matHeaderCellDef>Start</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Start </th>
       <td mat-cell *matCellDef="let ride">
-        {{ ride.startTime | date:'dd.MM.yyyy HH:mm' }}
+        <div class="datetime-cell">
+          <div class="date">{{ ride.startTime | date:'dd.MM.yyyy' }}</div>
+          <div class="time">{{ ride.startTime | date:'HH:mm' }}</div>
+        </div>
       </td>
     </ng-container>
 
-    <!-- End -->
+    <!-- End Date Column -->
     <ng-container matColumnDef="endDate">
-      <th mat-header-cell *matHeaderCellDef>End</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> End </th>
       <td mat-cell *matCellDef="let ride">
-        {{ ride.endTime | date:'dd.MM.yyyy HH:mm' }}
+        <div class="datetime-cell" *ngIf="ride.endTime">
+          <div class="date">{{ ride.endTime | date:'dd.MM.yyyy' }}</div>
+          <div class="time">{{ ride.endTime | date:'HH:mm' }}</div>
+        </div>
+        <span *ngIf="!ride.endTime">-</span>
       </td>
     </ng-container>
 
-    <!-- Cancelled -->
+    <!-- Cancelled Column -->
     <ng-container matColumnDef="cancelled">
-      <th mat-header-cell *matHeaderCellDef>Cancelled</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Cancelled </th>
       <td mat-cell *matCellDef="let ride">
-        {{ ride.cancelled ? 'Yes' : 'No' }}
+        <span [class]="'status-badge ' + (ride.cancelledBy ? 'canceled' : 'finished')">
+          {{ ride.cancelledBy ? 'Yes' : 'No' }}
+        </span>
       </td>
     </ng-container>
 
-    <!-- Cancelled By -->
+   <!-- Cancelled By Column -->
     <ng-container matColumnDef="cancelledBy">
-      <th mat-header-cell *matHeaderCellDef>Cancelled By</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Cancelled By </th>
       <td mat-cell *matCellDef="let ride">
         {{ ride.cancelledBy || '-' }}
       </td>
     </ng-container>
 
-    <!-- Price -->
+    <!-- Price Column -->
     <ng-container matColumnDef="price">
-      <th mat-header-cell *matHeaderCellDef>Price</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
       <td mat-cell *matCellDef="let ride">
-        {{ ride.price }} RSD
+        <div class="price-cell">
+          {{ ride.price | currency:'RSD':'symbol':'1.0-0' }}
+        </div>
       </td>
     </ng-container>
 
-    <!-- Panic -->
+    <!-- Panic Column -->
     <ng-container matColumnDef="panic">
-      <th mat-header-cell *matHeaderCellDef>PANIC</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Panic </th>
       <td mat-cell *matCellDef="let ride">
-        {{ ride.panicTriggered ? 'YES' : 'NO' }}
+        <span [class]="'status-badge ' + (ride.panic ? 'canceled' : 'finished')">
+          {{ ride.panic ? 'YES' : 'NO' }}
+        </span>
       </td>
     </ng-container>
 
-    <!-- Details -->
+    <!-- Details Column (Actions) -->
     <ng-container matColumnDef="details">
-      <th mat-header-cell *matHeaderCellDef>Details</th>
+      <th mat-header-cell *matHeaderCellDef> Details </th>
       <td mat-cell *matCellDef="let ride">
-        <a [routerLink]="['/admin-ride-details', ride.id]">View</a>
+        <div class="actions-cell">
+          <button
+            mat-icon-button
+            [routerLink]="['/admin-ride-details', ride.id]"
+            matTooltip="View details"
+            class="action-btn view-btn">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </div>
       </td>
     </ng-container>
 
+    <!-- Table Header Row -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    
+    <!-- Table Data Rows -->
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+
+  <!-- Empty State -->
+  <div *ngIf="rides.data.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">directions_car</mat-icon>
+    <h3>No rides found</h3>
+    <p>No rides match your search criteria.</p>
+    <button mat-stroked-button (click)="clearFilters()" class="clear-filters-btn">
+      Clear filters
+    </button>
+  </div>
 </div>

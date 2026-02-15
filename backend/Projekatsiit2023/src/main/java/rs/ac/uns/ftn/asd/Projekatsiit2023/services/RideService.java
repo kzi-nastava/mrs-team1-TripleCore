@@ -38,6 +38,10 @@ public class RideService {
     private final RouteServiceImpl routeService;
     private final NotificationService notificationService;
 
+    private final PricingService pricingService;
+
+    private final UserBlockRepository userBlockRepository;
+
 
     public RideService(
             RideRepository rideRepository,
@@ -50,7 +54,9 @@ public class RideService {
             VehicleService vehicleService,
             RouteServiceImpl routeService,
             ActiveVehicleRepository activeVehicleRepository,
-            NotificationService notificationService
+            NotificationService notificationService,
+            PricingService pricingService,
+            UserBlockRepository userBlockRepository
     ) {
         this.rideRepository = rideRepository;
         this.driverRepository = driverRepository;
@@ -63,6 +69,8 @@ public class RideService {
         this.routeService = routeService;
         this.activeVehicleRepository = activeVehicleRepository;
         this.notificationService = notificationService;
+        this.pricingService = pricingService;
+        this.userBlockRepository = userBlockRepository;
     }
 
     public List<Ride> getAllRides(){
@@ -302,6 +310,21 @@ public class RideService {
                 .map(u -> (Passenger) u)
                 .orElseThrow(() -> new IllegalStateException("Logged user is not a passenger"));
 
+        if (loggedPassenger.isAccountBlocked()) {
+            String blockNote = userBlockRepository
+                    .findByUserId(loggedPassenger.getId())
+                    .map(UserBlock::getNote)
+                    .orElse(null);
+
+            String message = "Your account is blocked.";
+
+            if (blockNote != null && !blockNote.isBlank()) {
+                message += " Reason: " + blockNote;
+            }
+
+            throw new IllegalStateException(message);
+        }
+
         List<RideStatus> activeStatuses = List.of(RideStatus.REQUESTED, RideStatus.ACCEPTED, RideStatus.IN_PROGRESS);
         boolean hasActiveRide = rideRepository.existsByOrdererAndStatusIn(loggedPassenger, activeStatuses);
         if (hasActiveRide) {
@@ -352,6 +375,10 @@ public class RideService {
 
         Driver driver = findAvailableDriverWithFullPriority(request.getVehicleType(),
                 request.getStartLocation(), request.isBabyFriendly(), request.isPetFriendly(), startTime);
+
+        if (driver != null && driver.isAccountBlocked()) {
+            throw new IllegalStateException("No available drivers at the moment (all suitable drivers are blocked)");
+        }
 
         if (driver == null) {
             throw new IllegalStateException("No available drivers at the moment");
@@ -417,6 +444,8 @@ public class RideService {
         ActiveRideVehicleDetailsResponse tracking = vehicleService.getRideTrackingResponse(activeVehicle);
         LocalDateTime estimatedEndTime = ride.getStartTime().plusSeconds(tracking.getEstimatedTime());
 
+        double ridePrice = pricingService.caclulatePriceForRide(ride);
+        ride.setPrice(ridePrice);
 
         rideRepository.save(ride);
 

@@ -139,6 +139,10 @@ const routes: Routes = [
     loadComponent: () => import('./admin/admin-pricing/admin-pricing').then(m => m.AdminPricingComponent)
   },
   {
+    path: 'admin/block-user',
+    loadComponent: () => import('./admin/block-user/block-user').then(m => m.BlockUserComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

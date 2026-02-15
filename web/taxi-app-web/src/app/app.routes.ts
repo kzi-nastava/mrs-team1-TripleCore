@@ -31,6 +31,7 @@ import { DriverProfileChangeReviewComponent } from './driver-profile-change-revi
 import { PassengerReviewsComponent } from './passenger/passenger-reviews/passenger-reviews';
 import { PassengerNotificationsComponent } from './passenger/passenger-notifications/passenger-notifications';
 import { AdminPricingComponent } from './admin/admin-pricing/admin-pricing';
+import {  BlockUserComponent } from './admin/block-user/block-user';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -68,5 +69,6 @@ export const appRoutes: Routes = [
   { path: 'passenger-reviews', component: PassengerReviewsComponent },
   { path: 'passenger-notifications', component: PassengerNotificationsComponent },
   { path: 'admin-pricing', component: AdminPricingComponent },
+  { path: 'admin/block-user', component: BlockUserComponent },
   { path: '**', redirectTo: '' },
 ];
