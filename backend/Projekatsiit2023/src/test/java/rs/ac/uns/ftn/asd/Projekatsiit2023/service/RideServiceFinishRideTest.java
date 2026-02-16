@@ -8,9 +8,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.ActiveVehicleRepositoryTest;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.ActiveVehicleRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.DriverRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.RideRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.VehicleRepository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.NotificationService;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.services.RideService;
 
@@ -29,7 +30,7 @@ public class RideServiceFinishRideTest {
     DriverRepository driverRepository;
 
     @Mock
-    ActiveVehicleRepositoryTest activeVehicleRepository;
+    ActiveVehicleRepository activeVehicleRepository;
 
     @Mock
     NotificationService notificationService;
@@ -83,7 +84,6 @@ public class RideServiceFinishRideTest {
         ride.setDriver(driver);
 
         when(rideRepository.findById(VALID_RIDE_ID)).thenReturn(Optional.of(ride));
-        when(activeVehicleRepository.findById(VEHICLE_ID)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class,
                 () -> rideService.finishRide(VALID_RIDE_ID)
@@ -114,7 +114,7 @@ public class RideServiceFinishRideTest {
         av.setRide(null);
 
         when(rideRepository.findById(VALID_RIDE_ID)).thenReturn(Optional.of(ride));
-        when(activeVehicleRepository.findById(VALID_VEHICLE_ID)).thenReturn(Optional.of(av));
+        when(activeVehicleRepository.findByVehicleId(VALID_VEHICLE_ID)).thenReturn(Optional.of(av));
 
         assertThrows(IllegalStateException.class,
                 () -> rideService.finishRide(VALID_RIDE_ID));
@@ -148,7 +148,7 @@ public class RideServiceFinishRideTest {
         av.setRide(differentRide);
 
         when(rideRepository.findById(VALID_RIDE_ID)).thenReturn(Optional.of(ride));
-        when(activeVehicleRepository.findById(VALID_VEHICLE_ID)).thenReturn(Optional.of(av));
+        when(activeVehicleRepository.findByVehicleId(VALID_VEHICLE_ID)).thenReturn(Optional.of(av));
 
         assertThrows(IllegalStateException.class,
                 () -> rideService.finishRide(VALID_RIDE_ID));
@@ -180,7 +180,7 @@ public class RideServiceFinishRideTest {
         av.setLocation(location);
 
         when(rideRepository.findById(VALID_RIDE_ID)).thenReturn(Optional.of(ride));
-        when(activeVehicleRepository.findById(VALID_VEHICLE_ID)).thenReturn(Optional.of(av));
+        when(activeVehicleRepository.findByVehicleId(VALID_VEHICLE_ID)).thenReturn(Optional.of(av));
 
         rideService.finishRide(VALID_RIDE_ID);
 

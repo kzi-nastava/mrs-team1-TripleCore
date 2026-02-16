@@ -47,7 +47,7 @@ public class RideFinishControllerTest {
     private RouteRepository routeRepository;
 
     @Autowired
-    private ActiveVehicleRepositoryTest activeVehicleRepository;
+    private ActiveVehicleRepository activeVehicleRepository;
 
     @Autowired
     private NotificationService notificationService;

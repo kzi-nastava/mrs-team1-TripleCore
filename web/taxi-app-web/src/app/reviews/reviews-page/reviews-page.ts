@@ -1,12 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { NavbarComponent } from '../../shared/navbar/navbar';
 import { ReviewDTO } from '../../models/review-dto';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-reviews-page',
   standalone: true,
-  imports: [NavbarComponent, CommonModule],
+  imports: [CommonModule],
   templateUrl: './reviews-page.html',
   styleUrls: ['./reviews-page.css'],
 })

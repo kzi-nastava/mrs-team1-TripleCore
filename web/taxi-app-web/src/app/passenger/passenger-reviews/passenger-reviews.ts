@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { NavbarComponent } from '../../shared/navbar/navbar';
-import { ReviewsPageComponent } from '../../reviews-page/reviews-page';
 import { ReviewDTO } from '../../models/review-dto';
 import { ReviewService } from '../../services/review-service/review-service';
 import { LogoutService } from '../../services/auth-service/logout-service';
+import { ReviewsPageComponent } from '../../reviews/reviews-page/reviews-page';
 
 @Component({
   selector: 'app-passenger-reviews',
