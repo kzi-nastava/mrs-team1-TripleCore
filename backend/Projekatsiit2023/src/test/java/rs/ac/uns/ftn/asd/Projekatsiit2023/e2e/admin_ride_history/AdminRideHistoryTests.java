@@ -8,11 +8,13 @@ import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.admin_ride_history.pages.AdminHomePage;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.admin_ride_history.pages.AdminRideHistoryPage;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.admin_ride_history.pages.LoginPage;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,6 +23,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AdminRideHistoryTests {
+
+    @Autowired
+    VehicleRepository vehicleRepository;
+    @Autowired
+    DriverRepository driverRepository;
+    @Autowired
+    PassengerRepository passengerRepository;
+    @Autowired
+    AdminRepository adminRepository;
+    @Autowired
+    RouteRepository routeRepository;
+    @Autowired
+    RideRepository rideRepository;
+
     WebDriver driver;
     LoginPage loginPage;
     AdminHomePage adminHomePage;
