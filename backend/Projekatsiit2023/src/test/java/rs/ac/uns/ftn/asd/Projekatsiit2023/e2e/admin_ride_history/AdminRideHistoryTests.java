@@ -1,10 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.admin_ride_history;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -14,9 +11,11 @@ import org.springframework.test.context.ActiveProfiles;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.admin_ride_history.pages.AdminHomePage;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.admin_ride_history.pages.AdminRideHistoryPage;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.admin_ride_history.pages.LoginPage;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.admin_ride_history.AdminRideHistoryTestDataFactory.*;
 
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -36,6 +35,39 @@ public class AdminRideHistoryTests {
     RouteRepository routeRepository;
     @Autowired
     RideRepository rideRepository;
+
+    Admin admin;
+
+    @BeforeAll
+    void setupData(){
+        Vehicle v1 = vehicleRepository.save(createTestVehicle1());
+        Vehicle v2 = vehicleRepository.save(createTestVehicle2());
+        Vehicle v3 = vehicleRepository.save(createTestVehicle3());
+
+        Driver d1 = createTestDriver1();
+        d1.setVehicle(v1);
+        driverRepository.save(d1);
+        Driver d2 = createTestDriver2();
+        d2.setVehicle(v2);
+        driverRepository.save(d2);
+        Driver d3 = createTestDriver3();
+        d3.setVehicle(v3);
+        driverRepository.save(d3);
+
+        Passenger p1 = passengerRepository.save(createTestPassenger1());
+        Passenger p2 = passengerRepository.save(createTestPassenger2());
+        Passenger p3 = passengerRepository.save(createTestPassenger3());
+
+        Route r1 = routeRepository.save(createTestRoute1());
+        Route r2 = routeRepository.save(createTestRoute2());
+        Route r3 = routeRepository.save(createTestRoute3());
+
+        Ride ride1 = rideRepository.save(createCancelledRide(p1, d1, r1));
+        Ride ride2 = rideRepository.save(createCancelledRide(p2, d2, r2));
+        Ride ride3 = rideRepository.save(createCancelledRide(p3, d3, r3));
+
+        admin = adminRepository.save(createTestAdmin());
+    }
 
     WebDriver driver;
     LoginPage loginPage;
@@ -59,7 +91,7 @@ public class AdminRideHistoryTests {
 
     @Test
     void testAdminRideHistory() {
-        loginPage.login("petar@example.com", "petar123");
+        loginPage.login(admin.getEmail(), admin.getPassword());
 
         assertTrue(adminHomePage.isAdminHomePageDisplayed(), "Admin home page should be displayed after login");
 
