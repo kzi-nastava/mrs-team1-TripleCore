@@ -11,10 +11,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.GuestHomePage;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.LoginPage;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.MyRidesPage;
-import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.PassengerHomePage;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.*;
 
@@ -54,6 +51,7 @@ public class ReviewFormTest {
     private LoginPage loginPage;
     private PassengerHomePage passengerHomePage;
     private MyRidesPage myRidesPage;
+    private MyReviewsPage myReviewsPage;
 
     @BeforeEach
     void setup(){
@@ -68,6 +66,7 @@ public class ReviewFormTest {
         loginPage = new LoginPage(driver);
         passengerHomePage = new PassengerHomePage(driver);
         myRidesPage = new MyRidesPage(driver);
+        myReviewsPage = new MyReviewsPage(driver);
     }
 
     @Test
@@ -84,9 +83,16 @@ public class ReviewFormTest {
         assertTrue(myRidesPage.isOpened());
         myRidesPage.OpenReviewForm();
         assertTrue(myRidesPage.isFormOpened());
-        myRidesPage.submitReview(5,5, "Amazing ride");
 
-        
+        int driverRating = 5;
+        int vehicleRating = 5;
+        String comment = "Amazing ride!";
+
+        myRidesPage.submitReview(driverRating, vehicleRating, comment);
+        myRidesPage.openMyReviews();
+
+        assertTrue(myReviewsPage.isOpened());
+        assertTrue(myReviewsPage.reviewLoaded(comment));
     }
 
 }

@@ -74,4 +74,12 @@ public class MyRidesPage {
 
         closeBtn.click();
     }
+
+    public void openMyReviews(){
+        WebElement myReviewsLink = wait.until(
+                ExpectedConditions.elementToBeClickable(By.xpath("/html/body/app-root/app-passenger-my-rides/app-navbar/nav/div/div[1]/div[2]/ul/li[2]/a"))
+        );
+
+        myReviewsLink.click();
+    }
 }
