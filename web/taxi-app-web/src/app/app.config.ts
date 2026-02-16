@@ -143,6 +143,14 @@ const routes: Routes = [
     loadComponent: () => import('./admin/block-user/block-user').then(m => m.BlockUserComponent)
   },
   {
+    path: 'report',
+    loadComponent: () => import('./report/report').then(m => m.ReportComponent)
+  },
+  {
+    path : 'admin-report',
+    loadComponent: () => import('./admin-report/admin-report').then(m => m.AdminReportComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

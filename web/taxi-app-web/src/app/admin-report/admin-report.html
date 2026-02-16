@@ -1,0 +1,43 @@
+<h2>Admin Ride Report</h2>
+
+<label>User:</label>
+
+<select [(ngModel)]="selectedUserId">
+  <option [ngValue]="'all'">All users</option>
+  <option *ngFor="let user of users" [ngValue]="user.id">
+    {{ user.email }}
+  </option>
+</select>
+
+<br><br>
+
+<label>Start date:</label>
+<input type="date" [(ngModel)]="startDate">
+
+<label>End date:</label>
+<input type="date" [(ngModel)]="endDate">
+
+<br><br>
+
+<button (click)="loadReport()">Load Report</button>
+
+<br><br>
+
+<div class="summary-container" *ngIf="summary">
+  <h3>Summary for selected period</h3>
+  <p>Total rides: {{summary.totalRides}}</p>
+  <p>Total distance: {{summary.totalDistance | number:'1.0-2'}} m</p>
+  <p>Total price: {{summary.totalPrice | number:'1.2-2'}} RSD</p>
+  <p>Average distance per ride: {{summary.averageDistance | number:'1.0-2'}} m</p>
+  <p>Average price per ride: {{summary.averagePrice | number:'1.2-2'}} RSD</p>
+</div>
+
+<div class="charts">
+
+  <canvas id="rideChart"></canvas>
+
+  <canvas id="distanceChart"></canvas>
+
+  <canvas id="priceChart"></canvas>
+
+</div>
