@@ -30,9 +30,6 @@ public class RideServiceFinishRideTest {
     DriverRepository driverRepository;
 
     @Mock
-    VehicleRepository vehicleRepository;
-
-    @Mock
     ActiveVehicleRepository activeVehicleRepository;
 
     @Mock
