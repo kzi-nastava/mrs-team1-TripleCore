@@ -1,10 +1,7 @@
 package rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -93,6 +90,13 @@ public class ReviewFormTest {
 
         assertTrue(myReviewsPage.isOpened());
         assertTrue(myReviewsPage.reviewLoaded(comment));
+    }
+
+    @AfterAll
+    void tearDownAll() {
+        if (driver != null) {
+            driver.quit();
+        }
     }
 
 }
