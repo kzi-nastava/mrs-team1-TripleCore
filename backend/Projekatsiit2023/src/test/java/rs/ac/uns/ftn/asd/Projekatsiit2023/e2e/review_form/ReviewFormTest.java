@@ -10,8 +10,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.test.context.ActiveProfiles;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.GuestHomePage;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.LoginPage;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.PassengerHomePage;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.*;
 
@@ -19,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.ReviewFormTestDataFactory.*;
 
 @Slf4j
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ReviewFormTest {
@@ -49,6 +51,7 @@ public class ReviewFormTest {
     private WebDriver driver;
     private GuestHomePage guestHomePage;
     private LoginPage loginPage;
+    private PassengerHomePage passengerHomePage;
 
     @BeforeEach
     void setup(){
@@ -61,13 +64,21 @@ public class ReviewFormTest {
         driver.get("http://localhost:4200");
         guestHomePage = new GuestHomePage(driver);
         loginPage = new LoginPage(driver);
+        passengerHomePage = new PassengerHomePage(driver);
     }
 
     @Test
     void CreateReviewTest(){
         assertTrue(guestHomePage.isOpened());
         guestHomePage.openLogin();
+
+        assertTrue(loginPage.isOpened());
         loginPage.login(passenger.getEmail(), passenger.getPassword());
+
+        assertTrue(passengerHomePage.isOpened());
+        passengerHomePage.openMyRides();
+
+
     }
 
 }

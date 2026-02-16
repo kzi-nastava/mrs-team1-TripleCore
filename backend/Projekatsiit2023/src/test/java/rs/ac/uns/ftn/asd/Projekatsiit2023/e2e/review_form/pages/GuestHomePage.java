@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form;
+package rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
