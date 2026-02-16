@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.GuestHomePage;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.LoginPage;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.MyRidesPage;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.e2e.review_form.pages.PassengerHomePage;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.*;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.*;
@@ -52,6 +53,7 @@ public class ReviewFormTest {
     private GuestHomePage guestHomePage;
     private LoginPage loginPage;
     private PassengerHomePage passengerHomePage;
+    private MyRidesPage myRidesPage;
 
     @BeforeEach
     void setup(){
@@ -65,6 +67,7 @@ public class ReviewFormTest {
         guestHomePage = new GuestHomePage(driver);
         loginPage = new LoginPage(driver);
         passengerHomePage = new PassengerHomePage(driver);
+        myRidesPage = new MyRidesPage(driver);
     }
 
     @Test
@@ -78,7 +81,12 @@ public class ReviewFormTest {
         assertTrue(passengerHomePage.isOpened());
         passengerHomePage.openMyRides();
 
+        assertTrue(myRidesPage.isOpened());
+        myRidesPage.OpenReviewForm();
+        assertTrue(myRidesPage.isFormOpened());
+        myRidesPage.submitReview(5,5, "Amazing ride");
 
+        
     }
 
 }

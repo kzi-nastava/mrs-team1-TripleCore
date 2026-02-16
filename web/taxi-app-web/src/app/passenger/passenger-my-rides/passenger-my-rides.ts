@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
@@ -85,7 +85,8 @@ export class PassengerMyRidesComponent implements OnInit {
     private datePipe: DatePipe,
     private logoutService: LogoutService,
     private passengerService: PassengerService,
-    private rideService: RideService
+    private rideService: RideService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -132,6 +133,7 @@ export class PassengerMyRidesComponent implements OnInit {
         this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
         
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Error loading rides from backend:', error);
@@ -140,6 +142,7 @@ export class PassengerMyRidesComponent implements OnInit {
         this.allRides = [];
         this.filteredRides = [];
         alert('Could not load rides. Please try again later.');
+        this.cdr.detectChanges();
       }
     });
   }
@@ -201,6 +204,7 @@ export class PassengerMyRidesComponent implements OnInit {
     this.toDate = null;
     this.filteredRides = [...this.allRides];
     this.filteredRides.sort((a, b) => b.date.getTime() - a.date.getTime());
+    this.cdr.detectChanges();
   }
 
   sortData(sort: Sort): void {
