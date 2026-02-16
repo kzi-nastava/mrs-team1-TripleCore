@@ -110,19 +110,24 @@ public class  RideController {
         }
     }
 
-    @PostMapping ("/{id}/finish")
-    public ResponseEntity<?> finishRide(
-            @PathVariable("id") Long id){
+    @PostMapping("/{id}/finish")
+    public ResponseEntity<?> finishRide(@PathVariable Long id) {
+        try {
+            rideService.finishRide(id);
 
-        try{
-            Ride ride = rideService.getRideById(id);
-            rideService.finishRide(ride.getId());
-            notificationService.rideFinishNotifyPassengers(ride);
             return ResponseEntity.ok("Ride finished successfully");
-        } catch (Exception e){
+
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
 
     @PostMapping("/{id}/test-notifications")
     public ResponseEntity<?> testNotifications(@PathVariable("id") Long id){

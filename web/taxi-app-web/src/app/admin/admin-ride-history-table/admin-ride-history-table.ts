@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -10,6 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatNativeDateModule } from '@angular/material/core';
 import { AdminRidesService } from '../../services/admin-service/admin-rides-service';
 
@@ -26,7 +28,9 @@ import { AdminRidesService } from '../../services/admin-service/admin-rides-serv
     MatFormFieldModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule
   ],
   templateUrl: './admin-ride-history-table.html',
   styleUrls: ['./admin-ride-history-table.css']
@@ -66,6 +70,7 @@ export class AdminRideHistoryTableComponent implements OnInit, AfterViewInit {
   loadRides() {
     this.adminRidesService.getAllRides().subscribe({
       next: (rides) => {
+        console.log('Loaded rides:', rides);
         this.originalRides = rides;
         this.rides.data = rides;
       },
@@ -74,34 +79,57 @@ export class AdminRideHistoryTableComponent implements OnInit, AfterViewInit {
   }
 
   applyFilters() {
+    console.log('Applying filters - fromDate:', this.fromDate, 'toDate:', this.toDate, 'search:', this.searchText);
+    
     let filtered = [...this.originalRides];
 
     // search
-    if (this.searchText) {
-      const search = this.searchText.toLowerCase();
-      filtered = filtered.filter(r =>
-        r.startLocation?.address?.toLowerCase().includes(search) ||
-        r.endLocation?.address?.toLowerCase().includes(search)
-      );
+    if (this.searchText && this.searchText.trim() !== '') {
+      const search = this.searchText.toLowerCase().trim();
+      filtered = filtered.filter(r => {
+        const startAddr = r.startLocation?.address?.toLowerCase() || '';
+        const endAddr = r.endLocation?.address?.toLowerCase() || '';
+        return startAddr.includes(search) || endAddr.includes(search);
+      });
     }
 
     // date filter
     if (this.fromDate || this.toDate) {
       filtered = filtered.filter(r => {
-        const start = new Date(r.startTime);
+        const rideDate = new Date(r.startTime);
+        console.log('Ride date:', rideDate);
+        
+        const rideDateStart = new Date(rideDate);
+        rideDateStart.setHours(0, 0, 0, 0);
 
-        if (this.fromDate && start < this.startOfDay(this.fromDate)) {
-          return false;
+        if (this.fromDate) {
+          const fromDateStart = new Date(this.fromDate);
+          fromDateStart.setHours(0, 0, 0, 0);
+          console.log('From date start:', fromDateStart, 'Ride date start:', rideDateStart);
+          
+          if (rideDateStart < fromDateStart) {
+            console.log('Ride excluded - before from date');
+            return false;
+          }
         }
 
-        if (this.toDate && start > this.endOfDay(this.toDate)) {
-          return false;
+        if (this.toDate) {
+          const toDateStart = new Date(this.toDate);
+          toDateStart.setHours(0, 0, 0, 0);
+          const toDateEnd = new Date(toDateStart);
+          toDateEnd.setDate(toDateEnd.getDate() + 1);
+          
+          if (rideDateStart >= toDateEnd) {
+            console.log('Ride excluded - after to date');
+            return false;
+          }
         }
 
         return true;
       });
     }
 
+    console.log('Filtered results count:', filtered.length);
     this.rides.data = filtered;
   }
 
@@ -110,6 +138,57 @@ export class AdminRideHistoryTableComponent implements OnInit, AfterViewInit {
     this.fromDate = null;
     this.toDate = null;
     this.rides.data = this.originalRides;
+  }
+
+  sortData(sort: Sort): void {
+    const data = this.rides.data.slice();
+    
+    if (!sort.active || sort.direction === '') {
+      this.rides.data = data.sort((a, b) => 
+        new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+      );
+      return;
+    }
+
+    this.rides.data = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'route':
+          return this.compare(
+            (a.startLocation?.address || '') + (a.endLocation?.address || ''), 
+            (b.startLocation?.address || '') + (b.endLocation?.address || ''), 
+            isAsc
+          );
+        case 'startDate':
+          return this.compare(
+            new Date(a.startTime).getTime(), 
+            new Date(b.startTime).getTime(), 
+            isAsc
+          );
+        case 'endDate':
+          return this.compare(
+            new Date(a.endTime || 0).getTime(), 
+            new Date(b.endTime || 0).getTime(), 
+            isAsc
+          );
+        case 'cancelled':
+          const aCancelled = a.cancelledBy ? true : false;
+          const bCancelled = b.cancelledBy ? true : false;
+          return this.compare(aCancelled, bCancelled, isAsc);
+        case 'cancelledBy':
+          return this.compare(a.cancelledBy || '', b.cancelledBy || '', isAsc);
+        case 'price':
+          return this.compare(a.price, b.price, isAsc);
+        case 'panic':
+          return this.compare(a.panic || false, b.panic || false, isAsc);
+        default:
+          return 0;
+      }
+    });
+  }
+
+  compare(a: number | string | boolean, b: number | string | boolean, isAsc: boolean): number {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
   private startOfDay(date: Date): Date {

@@ -263,14 +263,23 @@ public class RideService {
 
 
     public void finishRide(Long rideId) {
-        Ride ride = rideRepository.findById(rideId).orElseThrow();
+        Ride ride = rideRepository.findById(rideId).orElseThrow(
+                () -> new EntityNotFoundException("Ride with that id not found")
+        );
+
         if (!ride.getStatus().equals(RideStatus.IN_PROGRESS)) {
-            throw new IllegalArgumentException("Ride with that id is not in progress");
+            throw new IllegalStateException("Ride with that id is not in progress");
         }
 
         Driver driver = ride.getDriver();
         Vehicle vehicle = driver.getVehicle();
-        ActiveVehicle av = vehicleService.getActiveVehicle(vehicle.getId());
+        ActiveVehicle av = activeVehicleRepository.findByVehicleId(vehicle.getId()).orElseThrow(
+                () -> new EntityNotFoundException("Vehicle not found in active vehicles")
+        );
+
+        if (av.getRide() == null || !av.getRide().equals(ride)){
+            throw new IllegalStateException("Active vehicle must be linked to the ride");
+        }
 
         ride.setActualEndLocation(av.getLocation());
         ride.setEndTime(LocalDateTime.now());

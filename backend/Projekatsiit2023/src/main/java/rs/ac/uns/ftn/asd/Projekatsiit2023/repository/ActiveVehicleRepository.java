@@ -5,9 +5,11 @@ import org.springframework.stereotype.Repository;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.ActiveVehicle;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ActiveVehicleRepository extends JpaRepository<ActiveVehicle, Long> {
     List<ActiveVehicle> findByRideId(Long rideId);
     List<ActiveVehicle> findByRideIdIsNull();
+    Optional<ActiveVehicle> findByVehicleId(Long vehicleId);
 }
