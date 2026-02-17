@@ -32,6 +32,8 @@ import { PassengerReviewsComponent } from './passenger/passenger-reviews/passeng
 import { PassengerNotificationsComponent } from './passenger/passenger-notifications/passenger-notifications';
 import { AdminPricingComponent } from './admin/admin-pricing/admin-pricing';
 import {  BlockUserComponent } from './admin/block-user/block-user';
+import { ReportComponent } from './report/report';
+import { AdminReportComponent } from './admin-report/admin-report';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -70,5 +72,7 @@ export const appRoutes: Routes = [
   { path: 'passenger-notifications', component: PassengerNotificationsComponent },
   { path: 'admin-pricing', component: AdminPricingComponent },
   { path: 'admin/block-user', component: BlockUserComponent },
+  { path: 'report', component: ReportComponent },
+  { path : 'admin-report', component: AdminReportComponent },
   { path: '**', redirectTo: '' },
 ];

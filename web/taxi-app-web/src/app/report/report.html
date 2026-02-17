@@ -1,0 +1,25 @@
+<h2>My Ride Report</h2>
+
+<label>Start date:</label>
+<input type="date" [(ngModel)]="startDate">
+
+<label>End date:</label>
+<input type="date" [(ngModel)]="endDate">
+
+<button (click)="loadReport()">Load Report</button>
+
+
+<div class="summary-container" *ngIf="summary">
+  <h3>Summary for selected period</h3>
+  <p>Total rides: {{summary.totalRides}}</p>
+  <p>Total distance: {{summary.totalDistance | number:'1.0-2'}} m</p>
+  <p>Total price: {{summary.totalPrice | number:'1.2-2'}} RSD</p>
+  <p>Average distance per ride: {{summary.averageDistance | number:'1.0-2'}} m</p>
+  <p>Average price per ride: {{summary.averagePrice | number:'1.2-2'}} RSD</p>
+</div>
+
+<div class="charts-container">
+  <canvas id="ridesCountChart" width="300" height="200"></canvas>
+  <canvas id="distanceChart" width="300" height="200"></canvas>
+  <canvas id="priceChart" width="300" height="200"></canvas>
+</div>
