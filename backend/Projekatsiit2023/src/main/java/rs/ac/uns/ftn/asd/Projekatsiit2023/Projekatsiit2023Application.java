@@ -2,7 +2,9 @@ package rs.ac.uns.ftn.asd.Projekatsiit2023;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
+@EnableScheduling
 @SpringBootApplication
 public class Projekatsiit2023Application {
 

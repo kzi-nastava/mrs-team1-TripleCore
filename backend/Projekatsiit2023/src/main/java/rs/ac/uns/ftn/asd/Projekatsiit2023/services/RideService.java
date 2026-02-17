@@ -331,7 +331,7 @@ public class RideService {
             throw new IllegalStateException("Passenger already has an active ride");
         }
 
-        LocalDateTime startTime = request.getStartTime() != null ? request.getStartTime() : LocalDateTime.now();
+        LocalDateTime startTime = request.getStartTime() != null ? request.getStartTime().plusHours(1) : LocalDateTime.now();
 
 
         if (startTime.isAfter(LocalDateTime.now().plusHours(5))) {
@@ -381,6 +381,8 @@ public class RideService {
         }
 
         if (driver == null) {
+            notificationService.notifyRideRejected(loggedPassenger);
+
             throw new IllegalStateException("No available drivers at the moment");
         }
 
@@ -417,7 +419,7 @@ public class RideService {
         ride.setDriver(driver);
         ride.setRoute(route);
         ride.setStartTime(
-                request.getStartTime() != null ? request.getStartTime() : LocalDateTime.now()
+                request.getStartTime() != null ? request.getStartTime().plusHours(1) : LocalDateTime.now()
         );
         ride.setBabyFriendly(request.isBabyFriendly());
         ride.setPetFriendly(request.isPetFriendly());
@@ -448,6 +450,9 @@ public class RideService {
         ride.setPrice(ridePrice);
 
         rideRepository.save(ride);
+
+        notificationService.notifyRideAccepted(ride);
+        notificationService.notifyDriverNewRide(ride);
 
         RideResponse response = new RideResponse();
         response.setRideId(ride.getId());
