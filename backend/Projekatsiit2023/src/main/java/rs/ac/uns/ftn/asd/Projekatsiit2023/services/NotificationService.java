@@ -4,13 +4,17 @@ import jakarta.persistence.EntityNotFoundException;
 import org.aspectj.weaver.ast.Not;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.dto.response.notification.NotificationResponse;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.enums.RideStatus;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Notification;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Passenger;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.models.Ride;
 import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.NotificationRepository;
+import rs.ac.uns.ftn.asd.Projekatsiit2023.repository.RideRepository;
 
+import javax.xml.crypto.URIDereferencer;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +26,14 @@ public class NotificationService {
     private final JavaMailSender mailSender;
     private final String fromEmail = "taxiapp@example.com";
 
+    private final RideRepository rideRepository;
+
     public NotificationService(
             NotificationRepository notificationRepository,
-            JavaMailSender mailSender){
+            JavaMailSender mailSender, RideRepository rideRepository){
         this.notificationRepository = notificationRepository;
         this.mailSender = mailSender;
+        this.rideRepository = rideRepository;
     }
 
     private Notification createStartRideNotification(Passenger passenger, Ride ride){
@@ -35,12 +42,12 @@ public class NotificationService {
         notification.setLink(String.format("ride-tracking:%d", ride.getId()));
         notification.setSeen(false);
         notification.setTitle("Ride started");
-        notification.setMessage(
-                String.format("Hello %s,\nYour ride from %s to %s just started!\nYou can track it here by clicking the link.\n",
+        String msg = String.format("Hello %s,\nYour ride from %s to %s just started!\nYou can track it here by clicking the link.\n",
                         passenger.getFirstName(),
                         ride.getRoute().getStartLocation().getAddress(),
-                        ride.getRoute().getEndLocation().getAddress())
-        );
+                        ride.getRoute().getEndLocation().getAddress());
+
+        notification.setMessage(limitMessageLength(msg));
         notification.setTime(LocalDateTime.now());
         notificationRepository.save(notification);
         return notification;
@@ -148,4 +155,95 @@ public class NotificationService {
         notification.setSeen(true);
         notificationRepository.save(notification);
     }
+
+    public void notifyRideRejected(Passenger passenger) {
+
+        Notification notification = new Notification();
+        notification.setRecipient(passenger);
+        notification.setSeen(false);
+        notification.setTitle("Ride request rejected");
+
+        String msg = String.format("Hello %s,\nCurrently there are no available drivers.", passenger.getFirstName());
+        notification.setMessage(limitMessageLength(msg));
+
+        notification.setTime(LocalDateTime.now());
+
+        notificationRepository.save(notification);
+    }
+
+    public void notifyRideAccepted(Ride ride) {
+
+        Passenger passenger = ride.getOrderer();
+
+        Notification notification = new Notification();
+        notification.setRecipient(passenger);
+        notification.setLink(String.format("ride-tracking:%d", ride.getId()));
+        notification.setSeen(false);
+        notification.setTitle("Ride accepted");
+        String msg = String.format("Hello %s,\nYour ride has been accepted. Driver %s is on the way.",
+                passenger.getFirstName(),
+                ride.getDriver().getFirstName());
+
+        notification.setMessage(limitMessageLength(msg));
+        notification.setTime(LocalDateTime.now());
+
+        notificationRepository.save(notification);
+    }
+
+    public void notifyDriverNewRide(Ride ride) {
+
+        Notification notification = new Notification();
+        notification.setRecipient(ride.getDriver());
+        notification.setSeen(false);
+        notification.setTitle("New ride assigned");
+        notification.setMessage(
+                String.format("You have been assigned a new ride from %s to %s.",
+                        ride.getRoute().getStartLocation().getAddress(),
+                        ride.getRoute().getEndLocation().getAddress())
+        );
+        notification.setTime(LocalDateTime.now());
+
+        notificationRepository.save(notification);
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void sendRideReminders() {
+
+        List<Ride> rides =
+                rideRepository.findByStatus(RideStatus.REQUESTED);
+
+        for (Ride ride : rides) {
+
+            long minutesUntilStart = java.time.Duration.between(java.time.LocalDateTime.now(), ride.getStartTime()).toMinutes();
+
+            if (minutesUntilStart <= 15 && minutesUntilStart > 0 && minutesUntilStart % 5 == 0) {
+
+                Passenger passenger = ride.getOrderer();
+
+                Notification notification = new Notification();
+                notification.setRecipient(passenger);
+                notification.setTitle("Ride reminder");
+                notification.setMessage("Reminder: Your ride starts in " + minutesUntilStart + " minutes."
+                );
+                notification.setSeen(false);
+                notification.setTime(java.time.LocalDateTime.now());
+
+                notificationRepository.save(notification);
+            }
+        }
+    }
+
+
+    private String limitMessageLength(String message) {
+        if (message == null) {
+            return null;
+        }
+
+        if (message.length() > 255) {
+            return message.substring(0, 254);
+        }
+
+        return message;
+    }
+
 }

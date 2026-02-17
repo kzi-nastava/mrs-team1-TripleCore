@@ -27,5 +27,6 @@ public interface RideRepository extends JpaRepository<Ride, Long> {
 
     List<Ride> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 
+    List<Ride> findByStatus(RideStatus status);
 
 }

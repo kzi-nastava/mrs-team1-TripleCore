@@ -181,6 +181,11 @@ orderRide() {
      const [hours, minutes] = this.startTime.split(':').map(Number);
   const now = new Date();
   const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+      if (date < now) {
+    alert("Start time cannot be in the past!");
+    return; 
+  }
+    
   rideRequest.startTime = date.toISOString();
   }
 
@@ -199,7 +204,7 @@ orderRide() {
   if (err.error) {
     alert(err.error); 
   } else {
-    alert("Failed to order ride. You might have an active ride or your account is blocked.");
+    alert("Failed to order ride. Don't have available driver or might have an active ride or your account is blocked.");
   }
 
     }
