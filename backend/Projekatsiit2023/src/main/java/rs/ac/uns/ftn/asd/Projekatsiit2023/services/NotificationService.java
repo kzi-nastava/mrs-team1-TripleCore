@@ -196,11 +196,9 @@ public class NotificationService {
         notification.setRecipient(ride.getDriver());
         notification.setSeen(false);
         notification.setTitle("New ride assigned");
-        notification.setMessage(
-                String.format("You have been assigned a new ride from %s to %s.",
-                        ride.getRoute().getStartLocation().getAddress(),
-                        ride.getRoute().getEndLocation().getAddress())
-        );
+        String msg = String.format("You have been assigned a new ride from %s to %s.", ride.getRoute().getStartLocation().getAddress(),
+                ride.getRoute().getEndLocation().getAddress());
+        notification.setMessage(limitMessageLength(msg));
         notification.setTime(LocalDateTime.now());
 
         notificationRepository.save(notification);

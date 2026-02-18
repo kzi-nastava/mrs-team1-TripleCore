@@ -30,7 +30,6 @@
       <div class="stations-info" *ngIf="activeRide.routeStops?.length > 0">
         <p><strong>Stations:</strong></p>
         <p *ngFor="let stop of activeRide.routeStops">
-          <img src="icons/icons8-stop-40.png" class="route-icon" alt="Stop">
           {{ stop.address }}
         </p>
       </div>
