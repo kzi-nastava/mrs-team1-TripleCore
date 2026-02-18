@@ -29,31 +29,7 @@ public class DrivingSimulationService {
         this.routeService = routeService;
     }
 
-    public static Location moveNorthBy10Meters(Location location) {
-        final double METERS_PER_DEGREE_LATITUDE = 111_320.0;
-        final double DELTA_LAT = 10.0 / METERS_PER_DEGREE_LATITUDE;
-
-        Location newLocation = new Location();
-        newLocation.setLatitude(location.getLatitude() + DELTA_LAT);
-        newLocation.setLongitude(location.getLongitude());
-
-        return newLocation;
-    }
-
-    public void MoveVehicle(Long vehicleId){
-        Optional<ActiveVehicle> avOpt = activeVehicleRepository.findById(vehicleId);
-
-        if (avOpt.isEmpty()){
-            throw new EntityNotFoundException("Active vehicle not found");
-        }
-
-        ActiveVehicle av = avOpt.get();
-        Location newLocation = moveNorthBy10Meters(av.getLocation());
-        av.setLocation(newLocation);
-
-        activeVehicleRepository.save(av);
-    }
-
+    @Transactional
     public void moveAllIdleVehicles(){
         // all active vehicles not currently driving a scheduled ride
         List<ActiveVehicle> avs = activeVehicleRepository.findByRideIdIsNull();
@@ -90,6 +66,25 @@ public class DrivingSimulationService {
         } catch (IndexOutOfBoundsException ex){
             activeVehicleRepository.saveAndFlush(av);
         }
+    }
+
+    @Transactional
+    public void moveAllBusyVehicles(){
+        List<ActiveVehicle> avs = activeVehicleRepository.findByRideIdIsNotNull();
+        for (ActiveVehicle av : avs){
+            try{
+                Location loc = vehicleService.getLocationAtRouteIndex(av.getRouteCoordinates(), av.getRouteIndex() + 1);
+
+                av.setRouteIndex(av.getRouteIndex() + 1);
+                av.setLocation(loc);
+                activeVehicleRepository.save(av);
+            } catch (IndexOutOfBoundsException ex){
+                // When the vehicle reaches the end of the ride route it should stop
+                // So that when the driver finishes the ride the car is not on a random location
+            }
+        }
+
+
     }
 
 

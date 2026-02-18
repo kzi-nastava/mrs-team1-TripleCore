@@ -538,6 +538,14 @@ public class RideService {
 
         driverRepository.save(driver);
 
+        vehicleService.addActiveVehicle(
+                driver.getVehicle(),
+                ride.getRoute().getStartLocation(),
+                routeService.calculateRouteThroughPoints(routeService.convertRouteToLocationList(ride.getRoute())),
+                false,
+                ride
+        );
+
         ride.setStatus(RideStatus.IN_PROGRESS);
 
         rideRepository.save(ride);
@@ -554,5 +562,47 @@ public class RideService {
                 .findFirst()
                 .orElse(null);
     }
+
+    @Transactional
+    public void generateRide() {
+
+        Passenger orderer = passengerRepository.findById(1146L)
+                .orElseThrow(() -> new RuntimeException("Passenger 1141 not found"));
+
+        Driver driver = driverRepository.findById(1140L)
+                .orElseThrow(() -> new RuntimeException("Driver 1135 not found"));
+
+        // Kreiranje rute u Novom Sadu
+        Location start = new Location();
+        start.setLatitude(45.2678);
+        start.setLongitude(19.8204);
+        start.setAddress("Rumenačka 150, Detelinara, Novi Sad");
+
+        Location end = new Location();
+        end.setLatitude(45.2460);
+        end.setLongitude(19.8665);
+        end.setAddress("Preradovićeva 30, Petrovaradin");
+
+        Route route = new Route();
+        route.setStartLocation(start);
+        route.setEndLocation(end);
+        route.setEstimatedDurationSeconds(950L);    // ~16 min
+        route.setEstimatedDistanceMeters(6000);     // ~6 km
+
+        routeRepository.save(route);
+
+        Ride ride = new Ride();
+        ride.setOrderer(orderer);
+        ride.setDriver(driver);
+        ride.setRoute(route);
+        ride.setStartTime(LocalDateTime.now());
+        ride.setStatus(RideStatus.REQUESTED);
+        ride.setBabyFriendly(false);
+        ride.setPetFriendly(false);
+        ride.setPanic(false);
+
+        rideRepository.save(ride);
+    }
+
 
 }
