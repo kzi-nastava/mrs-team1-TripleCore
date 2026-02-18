@@ -204,7 +204,7 @@ orderRide() {
   if (err.error) {
     alert(err.error); 
   } else {
-    alert("Failed to order ride. Don't have available driver or might have an active ride or your account is blocked.");
+    alert("Failed to order ride. Don't have available driver or your account is blocked.");
   }
 
     }

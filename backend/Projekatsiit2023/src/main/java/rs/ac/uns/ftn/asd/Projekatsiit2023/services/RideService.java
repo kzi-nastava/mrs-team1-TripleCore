@@ -325,11 +325,6 @@ public class RideService {
             throw new IllegalStateException(message);
         }
 
-        List<RideStatus> activeStatuses = List.of(RideStatus.REQUESTED, RideStatus.ACCEPTED, RideStatus.IN_PROGRESS);
-        boolean hasActiveRide = rideRepository.existsByOrdererAndStatusIn(loggedPassenger, activeStatuses);
-        if (hasActiveRide) {
-            throw new IllegalStateException("Passenger already has an active ride");
-        }
 
         LocalDateTime startTime = request.getStartTime() != null ? request.getStartTime().plusHours(1) : LocalDateTime.now();
 
@@ -462,7 +457,7 @@ public class RideService {
         response.setRoutePoints(routePoints);
         response.setStatus(ride.getStatus());
 
-        System.out.println("Ride ordered successfully with ID (this is in orderRide function): " + response);
+        System.out.println("Ride ordered successfully with ID : " + response);
 
         return response;
     }
@@ -501,15 +496,6 @@ public class RideService {
                 .toList();
 
         if (candidates.isEmpty()) return null;
-
-
-//        candidates.sort(Comparator.comparingDouble(d -> {
-//            ActiveVehicle av = vehicleService.getActiveVehicle(d.getVehicle().getId());
-//            System.out.println("Calculating distance for driver: " + d.getFirstName() + " " + d.getLastName());
-//            System.out.println(av.getLocation());
-//
-//            return routeService.calculateDistanceBetweenTwoPoints(av.getLocation(), startLocation);
-//        }));
 
 
         for (Driver d : candidates) {
