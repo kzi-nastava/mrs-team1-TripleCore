@@ -1,5 +1,10 @@
 package service;
 
+import static android.content.ContentValues.TAG;
+
+import android.util.Log;
+
+import model.RegisterDriverRequest;
 import network.RetrofitClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -36,4 +41,12 @@ public class DriverService {
         ApiService api = RetrofitClient.getApiService();
         api.getDriverRideHistory(driverId).enqueue(callback);
     }
+
+
+    public void registerDriver(RegisterDriverRequest request, Callback<ResponseBody> callback) {
+        Log.d("DriverService", "Attempting to register driver: " + request.getEmail());
+        RetrofitClient.getApiService().registerDriver(request).enqueue(callback);
+    }
+
+
 }
