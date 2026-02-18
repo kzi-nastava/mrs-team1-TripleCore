@@ -68,6 +68,7 @@ public class DrivingSimulationService {
         }
     }
 
+    @Transactional
     public void moveAllBusyVehicles(){
         List<ActiveVehicle> avs = activeVehicleRepository.findByRideIdIsNotNull();
         for (ActiveVehicle av : avs){

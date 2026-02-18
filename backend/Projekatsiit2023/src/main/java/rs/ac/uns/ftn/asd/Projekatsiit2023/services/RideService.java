@@ -547,6 +547,14 @@ public class RideService {
 
         driverRepository.save(driver);
 
+        vehicleService.addActiveVehicle(
+                driver.getVehicle(),
+                ride.getRoute().getStartLocation(),
+                routeService.calculateRouteThroughPoints(routeService.convertRouteToLocationList(ride.getRoute())),
+                false,
+                ride
+        );
+
         ride.setStatus(RideStatus.IN_PROGRESS);
 
         rideRepository.save(ride);

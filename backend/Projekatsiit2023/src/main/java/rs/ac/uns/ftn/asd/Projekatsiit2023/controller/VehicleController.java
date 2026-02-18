@@ -46,7 +46,6 @@ public class VehicleController {
     public ResponseEntity<?> getVehicleLocations() {
         try{
             List<ActiveVehicleLocationResponse> vehicles = vehicleService.getActiveVehicleLocations();
-            drivingSimulationService.moveAllIdleVehicles();
             return ResponseEntity.ok(vehicles);
         } catch (Exception e){
             return ResponseEntity
@@ -57,11 +56,8 @@ public class VehicleController {
 
     @GetMapping("/active-ride/{id}")
     public ResponseEntity<?> getActiveRideVehicleTracking(@PathVariable("id") Long id){
-        /* There needs to be a check if the ride is actually in progress */
         try{
             ActiveVehicle av = rideService.getActiveVehicleForRide(id);
-            vehicleService.moveActiveVehicle(av.getVehicleId());
-
             ActiveRideVehicleDetailsResponse response =
                     vehicleService.getRideTrackingResponse(av);
 
