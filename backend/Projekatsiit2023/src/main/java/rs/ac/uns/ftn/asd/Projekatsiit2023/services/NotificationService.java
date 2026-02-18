@@ -64,7 +64,7 @@ public class NotificationService {
     }
 
     private void sendStartRideEmail(Passenger passenger, Ride ride){
-        String link = "http://localhost:4200/active-ride-tracking/36";
+        String link = String.format("http://localhost:4200/active-ride-tracking/%d", ride.getId());
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(ride.getOrderer().getEmail());
