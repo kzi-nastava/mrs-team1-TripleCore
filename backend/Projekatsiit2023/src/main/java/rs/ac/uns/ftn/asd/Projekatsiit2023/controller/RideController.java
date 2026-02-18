@@ -210,11 +210,10 @@ public class  RideController {
         }
     }
 
-//     Database test
     @PostMapping("/create")
     public ResponseEntity<?> createTestRide(){
         try{
-//            testService.generateMockRides();
+            rideService.generateRide();
             return ResponseEntity.ok("Ride created");
         }
         catch (Exception e){
