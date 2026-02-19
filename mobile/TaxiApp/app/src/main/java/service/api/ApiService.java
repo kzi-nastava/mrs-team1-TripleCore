@@ -19,6 +19,7 @@ import model.RegisterResponse;
 import model.ReviewDTO;
 import model.RideCancelRequest;
 import model.RideDetailsDTO;
+import model.RideRequest;
 import model.SaveAdminMessageRequest;
 import model.SaveUserMessageRequest;
 import model.StopRideRequest;
@@ -31,6 +32,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -204,5 +206,9 @@ public interface ApiService {
     @POST("/api/driver-auth/register-driver")
     Call<ResponseBody> registerDriver(@Body RegisterDriverRequest request);
 
+    // order ride
+
+    @POST("api/rides")
+    Call<Void> orderRide(@Header("X-User-Email") String email, @Body RideRequest request);
 
 }

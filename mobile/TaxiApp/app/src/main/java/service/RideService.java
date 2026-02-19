@@ -1,7 +1,10 @@
 package service;
 
+import android.util.Log;
+
 import model.RideCancelRequest;
 import model.RideDetailsDTO;
+import model.RideRequest;
 import model.StopRideRequest;
 import model.StopRideResponse;
 import network.RetrofitClient;
@@ -59,4 +62,10 @@ public class RideService {
                               Callback<ResponseBody> callback) {
         api.activatePanic(rideId, userId).enqueue(callback);
     }
+
+    public void orderRide(String email, RideRequest request, Callback<Void> callback) {
+        Log.d("RideService", "Ordering ride for email: " + email + " with request: " + request);
+        api.orderRide(email, request).enqueue(callback);
+    }
+
 }
