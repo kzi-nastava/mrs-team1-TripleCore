@@ -10,6 +10,10 @@
         android:title="Profile" />
 
     <item
+        android:id="@+id/nav_start_ride"
+        android:title="Start Ride" />
+
+    <item
         android:id="@+id/nav_ride_history"
         android:title="Ride History"/>
 

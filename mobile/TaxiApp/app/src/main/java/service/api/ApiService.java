@@ -20,6 +20,7 @@ import model.ReviewDTO;
 import model.RideCancelRequest;
 import model.RideDetailsDTO;
 import model.RideRequest;
+import model.RideResponse;
 import model.SaveAdminMessageRequest;
 import model.SaveUserMessageRequest;
 import model.StopRideRequest;
@@ -210,5 +211,14 @@ public interface ApiService {
 
     @POST("api/rides")
     Call<Void> orderRide(@Header("X-User-Email") String email, @Body RideRequest request);
+
+
+    @GET("api/rides/to-start/{driverId}")
+    Call<RideResponse> getRideToStart(@Path("driverId") long driverId);
+
+
+    @POST("api/rides/{rideId}/start")
+    Call<ResponseBody> startRide(@Path("rideId") Long rideId, @Header("X-User-Id") Long driverId
+    );
 
 }
