@@ -5,6 +5,7 @@ import android.util.Log;
 import model.RideCancelRequest;
 import model.RideDetailsDTO;
 import model.RideRequest;
+import model.RideResponse;
 import model.StopRideRequest;
 import model.StopRideResponse;
 import network.RetrofitClient;
@@ -66,6 +67,14 @@ public class RideService {
     public void orderRide(String email, RideRequest request, Callback<Void> callback) {
         Log.d("RideService", "Ordering ride for email: " + email + " with request: " + request);
         api.orderRide(email, request).enqueue(callback);
+    }
+
+    public void getRideToStart(Long driverId, Callback<RideResponse> callback) {
+        api.getRideToStart(driverId).enqueue(callback);
+    }
+
+    public void startRide(Long rideId, Long driverId, Callback<ResponseBody> callback) {
+        api.startRide(rideId, driverId).enqueue(callback);
     }
 
 }

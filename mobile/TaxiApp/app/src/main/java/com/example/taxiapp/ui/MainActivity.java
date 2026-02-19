@@ -24,6 +24,7 @@ import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.live_support.UserChatFragment;
 import com.example.taxiapp.ui.order_ride.OrderRideFragment;
 import com.example.taxiapp.ui.panic.PanicFragment;
+import com.example.taxiapp.ui.start_ride.StartRideFragment;
 //import com.example.taxiapp.ui.passenger.notifications.NotificationListFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
 import com.example.taxiapp.ui.profile_info.ProfileFragment;
@@ -143,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new ReviewsFragment();
         } else if (id == R.id.nav_user_live_support && "DRIVER".equals(userType)) {
             fragmentToLoad = new UserChatFragment();
+        } else if (id == R.id.nav_start_ride && "DRIVER".equals(userType)) {
+            fragmentToLoad = new StartRideFragment();
         }
 
         // ADMIN
