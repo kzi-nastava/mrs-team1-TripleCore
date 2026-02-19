@@ -35,7 +35,13 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").permitAll() // Dozvoli pristup API endpoint-ima
+                        .requestMatchers(
+                                "/api/**",
+                                "/error",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**")
+                        .permitAll() // Dozvoli pristup API endpoint-ima
                         .requestMatchers("/error").permitAll() // Dozvoli pristup error endpoint-ima
                         .anyRequest().authenticated() // Sve ostalo zahteva autentikaciju
                 );
