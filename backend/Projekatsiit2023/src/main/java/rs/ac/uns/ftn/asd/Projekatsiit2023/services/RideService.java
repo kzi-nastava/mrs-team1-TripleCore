@@ -473,7 +473,7 @@ public class RideService {
 
 
         List<Driver> candidates = potentialDrivers.stream()
-                .filter(d -> d.getWorkingHoursToday() < 8 && d.isAvailable())
+                .filter(d -> d.getWorkingHoursToday() < 8)
                 .filter(d -> {
                     ActiveVehicle av = vehicleService.getActiveVehicle(d.getVehicle().getId());
 

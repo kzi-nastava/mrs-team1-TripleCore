@@ -33,8 +33,6 @@ describe('RegisterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // ---------------- FORM VALIDATION ----------------
-
   // group form validation tests
   describe('Form validation', () => {
     // test invalid form with empty fields
@@ -82,8 +80,8 @@ describe('RegisterComponent', () => {
     });
   });
 
-  // ---------------- FIELD VALIDATION ----------------
 
+  // field validation tests
   describe('Field validation', () => {
     // test email format validation
     it('should validate email format', () => {
@@ -116,8 +114,8 @@ describe('RegisterComponent', () => {
     });
   });
 
-  // ---------------- SUCCESS REGISTRATION ----------------
 
+  // successful registration tests
   describe('Successful registration', () => {
     beforeEach(() => {
       component.firstName = 'John';
@@ -167,8 +165,8 @@ describe('RegisterComponent', () => {
     });
   });
 
-  // ---------------- FAILED REGISTRATION ----------------
 
+  // failed registration tests
   describe('Failed registration', () => {
     beforeEach(() => {
       component.firstName = 'John';
@@ -215,8 +213,8 @@ describe('RegisterComponent', () => {
     });
   });
 
-  // ---------------- PROFILE PICTURE ----------------
 
+  // profile picture handling tests
   describe('Profile picture handling', () => {
     it('should set default profile picture on init', () => {
       expect(component.profilePic).toBe('icons/profile.png');
@@ -233,8 +231,8 @@ describe('RegisterComponent', () => {
     });
   });
 
-  // ---------------- CANCEL REGISTRATION ----------------
 
+  // cancel functionality tests
   describe('Cancel functionality', () => {
     // cancel should reset form and navigate to login if confirmed
     it('should reset and navigate when confirmed', () => {
