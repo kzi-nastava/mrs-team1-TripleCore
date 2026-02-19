@@ -25,7 +25,9 @@ public class RouteServiceImpl implements RouteService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    private static final String GRAPHHOPPER_API_KEY = "5dbed131-8591-46a7-af62-dc68f408e453";
+//    private static final String GRAPHHOPPER_API_KEY = "5dbed131-8591-46a7-af62-dc68f408e453";
+    private static final String GRAPHHOPPER_API_KEY = "f7dabe5f-5827-487d-8e31-9dce646443ab"; // Aleksandrov key
+
     private static final String GRAPHHOPPER_URL = "https://graphhopper.com/api/1/route";
 
     public RouteServiceImpl(RouteRepository routeRepository, RestTemplate restTemplate, ObjectMapper objectMapper) {

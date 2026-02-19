@@ -22,6 +22,7 @@ import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragmen
 import com.example.taxiapp.ui.estimate_route.EstimateRouteFragment;
 import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.live_support.UserChatFragment;
+import com.example.taxiapp.ui.order_ride.OrderRideFragment;
 import com.example.taxiapp.ui.panic.PanicFragment;
 //import com.example.taxiapp.ui.passenger.notifications.NotificationListFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
@@ -172,7 +173,12 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new ReviewsFragment();
         } else if (id == R.id.nav_user_live_support && "PASSENGER".equals(userType)) {
             fragmentToLoad = new UserChatFragment();
-        } /*else if (id == R.id.nav_user_notifications && "PASSENGER".equals(userType)) {
+        } else if ( id == R.id.nav_order_ride && "PASSENGER".equals(userType) ) {
+            fragmentToLoad = new OrderRideFragment();
+
+        }
+
+        /*else if (id == R.id.nav_user_notifications && "PASSENGER".equals(userType)) {
             fragmentToLoad = new NotificationListFragment();
         }*/
 
