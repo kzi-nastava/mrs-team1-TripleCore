@@ -13,6 +13,7 @@ import model.LoginRequest;
 import model.LoginResponse;
 import model.NotificationResponse;
 import model.Panic;
+import model.RegisterDriverRequest;
 import model.RegisterRequest;
 import model.RegisterResponse;
 import model.ReviewDTO;
@@ -198,5 +199,10 @@ public interface ApiService {
 
     @POST("api/notifications/{id}/mark-seen")
     Call<ResponseBody> markNotificationSeen(@Path("id") Long notificationId);
+
+    // driver registration
+    @POST("/api/driver-auth/register-driver")
+    Call<ResponseBody> registerDriver(@Body RegisterDriverRequest request);
+
 
 }

@@ -26,6 +26,7 @@ import com.example.taxiapp.ui.panic.PanicFragment;
 //import com.example.taxiapp.ui.passenger.notifications.NotificationListFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
 import com.example.taxiapp.ui.profile_info.ProfileFragment;
+import com.example.taxiapp.ui.register_driver_info.RegisterDriverInfoFragment;
 import com.example.taxiapp.ui.review.ReviewsFragment;
 import com.example.taxiapp.ui.ride_history.RideHistoryFragment;
 import com.google.android.material.navigation.NavigationView;
@@ -157,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new PricingFormFragment();
         } else if (id == R.id.nav_panic_notifications && "ADMIN".equals(userType)) {
             fragmentToLoad = new PanicFragment();
+        } else if (id == R.id.nav_driver_registration && "ADMIN".equals(userType)) {
+            fragmentToLoad = new RegisterDriverInfoFragment();
         }
 
         // PASSENGER
