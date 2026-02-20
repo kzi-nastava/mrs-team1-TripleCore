@@ -47,6 +47,8 @@ public class RideDetailsFragment extends Fragment {
     private Button btnCancelRide;
     private Button btnReview;
 
+    private Button btnAddToFavorites;
+
     private Double savedLat = null;
     private Double savedLon = null;
     private Double savedZoom = null;
@@ -106,11 +108,17 @@ public class RideDetailsFragment extends Fragment {
         btnCancelRide = view.findViewById(R.id.btnCancelRide);
         btnReview = view.findViewById(R.id.btnReview);
 
+        btnAddToFavorites = view.findViewById(R.id.btnAddToFavorites);
+        btnAddToFavorites.setOnClickListener(v -> handleAddToFavorites());
+
         btnCancelRide.setOnClickListener(v -> handleCancelRide());
         btnReview.setOnClickListener(v -> handleReview());
 
         setupCancelButtonVisibility();
         setupReviewButtonVisibility();
+
+
+        setupFavoriteButtonVisibility();
 
         setMapViewAppearance(mapFragment);
         populateRideDetails(view);
@@ -339,6 +347,43 @@ public class RideDetailsFragment extends Fragment {
     public void onPause() {
         super.onPause();
         if (mapFragment != null) mapFragment.onPause();
+    }
+
+
+    /* ===================== FAVORITES ===================== */
+
+    private void setupFavoriteButtonVisibility() {
+        if (ride == null || currentUserRole == null) {
+            btnAddToFavorites.setVisibility(View.GONE);
+            return;
+        }
+
+
+        boolean show = "PASSENGER".equals(currentUserRole);
+        btnAddToFavorites.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    private void handleAddToFavorites() {
+        if (ride == null || currentUserId == null) return;
+
+
+        network.RetrofitClient.getApiService().addFavoriteRoute(currentUserId, ride.id)
+                .enqueue(new retrofit2.Callback<okhttp3.ResponseBody>() {
+                    @Override
+                    public void onResponse(retrofit2.Call<okhttp3.ResponseBody> call, retrofit2.Response<okhttp3.ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(requireContext(), "Added to favorite routes!", Toast.LENGTH_SHORT).show();
+                            btnAddToFavorites.setVisibility(View.GONE); // Sakrij dugme nakon uspeha
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to add to favorites", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(retrofit2.Call<okhttp3.ResponseBody> call, Throwable t) {
+                        Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override
