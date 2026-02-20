@@ -17,6 +17,7 @@ import com.example.taxiapp.ui.admin.PricingFormFragment;
 import com.example.taxiapp.ui.admin_report.AdminReportFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
+import com.example.taxiapp.ui.block_user.BlockUserFragment;
 import com.example.taxiapp.ui.live_support.AdminChatFragment;
 import com.example.taxiapp.ui.driver.DriverHomeFragment;
 import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
@@ -170,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new RegisterDriverInfoFragment();
         } else if (id == R.id.nav_admin_report && "ADMIN".equals(userType)) {
             fragmentToLoad = new AdminReportFragment();
+        } else if (id == R.id.nav_block && "ADMIN".equals(userType)) {
+            fragmentToLoad = new BlockUserFragment();
         }
 
         // PASSENGER

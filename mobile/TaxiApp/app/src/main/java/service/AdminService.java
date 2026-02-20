@@ -3,6 +3,7 @@ package service;
 import android.util.Log;
 
 import model.RideDetailsDTO;
+import model.UserBlockedResponse;
 import network.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,4 +63,14 @@ public class AdminService {
             }
         });
     }
+
+    public void getNonAdminUsers(Callback<List<UserBlockedResponse>> callback) {
+        RetrofitClient.getApiService().getNonAdminUsers().enqueue(callback);
+    }
+
+
+    public void blockUser(Long userId, String note, Callback<UserBlockedResponse> callback) {
+        RetrofitClient.getApiService().blockUser(userId, note).enqueue(callback);
+    }
+
 }
