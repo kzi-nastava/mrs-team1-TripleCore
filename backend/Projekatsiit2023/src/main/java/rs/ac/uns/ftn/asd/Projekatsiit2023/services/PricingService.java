@@ -72,7 +72,8 @@ public class PricingService {
     public double caclulatePriceForRide(Ride ride){
         double distance = ride.getRoute().getEstimatedDistanceMeters();
         double vehiclePrice = getPrices().getPriceForType(ride.getDriver().getVehicle().getType());
+        double distanceInKm = distance / 1000.0;
 
-        return vehiclePrice + distance * 120;
+        return vehiclePrice + distanceInKm * 120;
     }
 }
