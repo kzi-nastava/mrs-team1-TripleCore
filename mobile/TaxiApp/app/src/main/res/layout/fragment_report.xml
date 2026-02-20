@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fafafa"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My Ride Report"
+            android:textAlignment="center"
+            android:textColor="#6a1b9a"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp" />
+
+        <Button
+            android:id="@+id/btnPickDates"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:backgroundTint="#6a1b9a"
+            android:text="Pick Date Range"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:cornerRadius="8dp" />
+
+        <LinearLayout
+            android:id="@+id/summaryContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/rounded_background"
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Summary for selected period"
+                android:textColor="#6a1b9a"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="15dp" />
+
+            <TextView
+                android:id="@+id/tvTotalRides"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total rides: 0"
+                android:textSize="15sp"
+                android:layout_marginVertical="3dp"/>
+
+            <TextView
+                android:id="@+id/tvTotalDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total distance: 0 m"
+                android:textSize="15sp"
+                android:layout_marginVertical="3dp"/>
+
+            <TextView
+                android:id="@+id/tvTotalPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total price: 0 RSD"
+                android:textSize="15sp"
+                android:layout_marginVertical="3dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#eeeeee"
+                android:layout_marginVertical="10dp"/>
+
+            <TextView
+                android:id="@+id/tvAvgDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Average distance: 0 m"
+                android:textSize="15sp"
+                android:layout_marginVertical="3dp"/>
+
+            <TextView
+                android:id="@+id/tvAvgPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Average price: 0 RSD"
+                android:textSize="15sp"
+                android:layout_marginVertical="3dp"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ride Count Analysis"
+            android:layout_marginTop="30dp"
+            android:textStyle="bold"
+            android:textColor="#333" />
+
+        <ImageView
+            android:id="@+id/imgRidesChart"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="10dp"
+            android:background="#ffffff"
+            android:elevation="2dp"
+            android:padding="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Financial Report (RSD)"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold"
+            android:textColor="#333" />
+
+        <ImageView
+            android:id="@+id/imgMoneyChart"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="10dp"
+            android:background="#ffffff"
+            android:elevation="2dp"
+            android:padding="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Distance Traveled (m)"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold"
+            android:textColor="#333" />
+
+        <ImageView
+            android:id="@+id/imgDistanceChart"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:background="#ffffff"
+            android:elevation="2dp"
+            android:padding="10dp" />
+
+    </LinearLayout>
+</ScrollView>

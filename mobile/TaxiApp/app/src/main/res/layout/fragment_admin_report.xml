@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Admin Ride Report"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#6a1b9a"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User"
+            android:textStyle="bold"/>
+
+        <Spinner
+            android:id="@+id/userSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@android:drawable/btn_dropdown" />
+
+        <Button
+            android:id="@+id/btnPickDates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pick Date Range"
+            android:backgroundTint="#6a1b9a"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="20dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/summaryContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Summary for selected period"
+                    android:textStyle="bold"
+                    android:textColor="#6a1b9a"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView android:id="@+id/tvTotalRides" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ukupno vožnji: 0" android:layout_marginBottom="4dp"/>
+                <TextView android:id="@+id/tvTotalDistance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ukupna distanca: 0 m" android:layout_marginBottom="4dp"/>
+                <TextView android:id="@+id/tvTotalPrice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ukupna cena: 0 RSD" android:layout_marginBottom="4dp"/>
+                <TextView android:id="@+id/tvAvgDistance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Prosečna distanca: 0 m" android:layout_marginBottom="4dp"/>
+                <TextView android:id="@+id/tvAvgPrice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Prosečna cena: 0 RSD" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Graphs"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"/>
+
+        <ImageView
+            android:id="@+id/imgRidesChart"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="16dp"
+            android:background="#FFFFFF"/>
+
+        <ImageView
+            android:id="@+id/imgDistanceChart"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="16dp"
+            android:background="#FFFFFF"/>
+
+        <ImageView
+            android:id="@+id/imgMoneyChart"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="16dp"
+            android:background="#FFFFFF"/>
+
+    </LinearLayout>
+</ScrollView>

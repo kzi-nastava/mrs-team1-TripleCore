@@ -14,6 +14,7 @@ import com.example.taxiapp.R;
 import com.example.taxiapp.ui.admin.AdminHomeFragment;
 import com.example.taxiapp.ui.admin.DriversRequestsFragment;
 import com.example.taxiapp.ui.admin.PricingFormFragment;
+import com.example.taxiapp.ui.admin_report.AdminReportFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
 import com.example.taxiapp.ui.live_support.AdminChatFragment;
@@ -24,6 +25,7 @@ import com.example.taxiapp.ui.guest.GuestHomeFragment;
 import com.example.taxiapp.ui.live_support.UserChatFragment;
 import com.example.taxiapp.ui.order_ride.OrderRideFragment;
 import com.example.taxiapp.ui.panic.PanicFragment;
+import com.example.taxiapp.ui.report.ReportFragment;
 import com.example.taxiapp.ui.start_ride.StartRideFragment;
 //import com.example.taxiapp.ui.passenger.notifications.NotificationListFragment;
 import com.example.taxiapp.ui.passenger.PassengerHomeFragment;
@@ -146,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new UserChatFragment();
         } else if (id == R.id.nav_start_ride && "DRIVER".equals(userType)) {
             fragmentToLoad = new StartRideFragment();
+        } else if( id == R.id.nav_reports && "DRIVER".equals(userType) ) {
+            fragmentToLoad = new ReportFragment();
         }
 
         // ADMIN
@@ -164,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new PanicFragment();
         } else if (id == R.id.nav_driver_registration && "ADMIN".equals(userType)) {
             fragmentToLoad = new RegisterDriverInfoFragment();
+        } else if (id == R.id.nav_admin_report && "ADMIN".equals(userType)) {
+            fragmentToLoad = new AdminReportFragment();
         }
 
         // PASSENGER
@@ -178,7 +184,8 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new UserChatFragment();
         } else if ( id == R.id.nav_order_ride && "PASSENGER".equals(userType) ) {
             fragmentToLoad = new OrderRideFragment();
-
+        } else if( id == R.id.nav_reports && "PASSENGER".equals(userType) ) {
+            fragmentToLoad = new ReportFragment();
         }
 
         /*else if (id == R.id.nav_user_notifications && "PASSENGER".equals(userType)) {

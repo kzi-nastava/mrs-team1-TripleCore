@@ -5,6 +5,7 @@ import java.util.List;
 import model.ChangePricesRequest;
 import model.ChatResponse;
 import model.CreateReviewRequest;
+import model.DailyReportDTO;
 import model.DriverProfileChangeRequest;
 import model.DriverProfileChangeRequestResponse;
 import model.DriverProfileResponse;
@@ -26,8 +27,11 @@ import model.SaveUserMessageRequest;
 import model.StopRideRequest;
 import model.StopRideResponse;
 import model.RideTrackingInfo;
+
+import model.SummaryDTO;
 import model.UpdateUserProfileRequest;
 import model.UserProfileResponse;
+import model.UserReportResponse;
 import model.VehiclePricesDTO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -212,7 +216,7 @@ public interface ApiService {
     @POST("api/rides")
     Call<Void> orderRide(@Header("X-User-Email") String email, @Body RideRequest request);
 
-
+    // start ride
     @GET("api/rides/to-start/{driverId}")
     Call<RideResponse> getRideToStart(@Path("driverId") long driverId);
 
@@ -220,5 +224,18 @@ public interface ApiService {
     @POST("api/rides/{rideId}/start")
     Call<ResponseBody> startRide(@Path("rideId") Long rideId, @Header("X-User-Id") Long driverId
     );
+
+    // reports
+    @GET("api/reports/user/{userId}")
+    Call<List<DailyReportDTO>> getDailyReport(@Path("userId") Long userId, @Query("startDate") String startDate, @Query("endDate") String endDate);
+
+    @GET("api/reports/user/{userId}/summary")
+    Call<SummaryDTO> getSummary(@Path("userId") Long userId, @Query("startDate") String startDate, @Query("endDate") String endDate);
+
+    @GET("api/reports/users")
+    Call<List<UserReportResponse>> getAllUsers();
+
+    @GET("api/reports/all")
+    Call<List<DailyReportDTO>> getReportForAllUsers(@Query("startDate") String startDate, @Query("endDate") String endDate);
 
 }
