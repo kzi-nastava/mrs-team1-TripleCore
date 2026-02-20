@@ -10,6 +10,11 @@
         android:title="Order ride" />
 
     <item
+        android:id="@+id/nav_favorite_routes"
+        android:title="Favorite Routes" />
+
+
+    <item
         android:id="@+id/nav_ride_history"
         android:title="Ride History"/>
 

@@ -417,4 +417,34 @@ public class OrderRideFragment extends Fragment {
 
         osmService = retrofit.create(OsmService.class);
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "onViewCreated called. Checking for arguments...");
+        Log.d(TAG, "Arguments: " + (getArguments() != null ? getArguments().toString() : "NULL"));
+        if (getArguments() != null) {
+            // --- START POINT ---
+            String startAddr = getArguments().getString("startAddr");
+            if (startAddr != null) {
+                etStartPoint.setText(startAddr, false);
+                startLocation = new OsmPlace();
+                startLocation.setDisplayName(startAddr);
+                startLocation.setLat(String.valueOf(getArguments().getDouble("startLat")));
+                startLocation.setLon(String.valueOf(getArguments().getDouble("startLon")));
+            }
+
+
+            String destAddr = getArguments().getString("endAddr");
+            if (destAddr != null) {
+                etDestinationPoint.setText(destAddr, false);
+                destinationLocation = new OsmPlace();
+                destinationLocation.setDisplayName(destAddr);
+                destinationLocation.setLat(String.valueOf(getArguments().getDouble("destLat")));
+                destinationLocation.setLon(String.valueOf(getArguments().getDouble("destLon")));
+            }
+
+            Log.d(TAG, "Favoriti učitani. Start: " + startAddr + ", Dest: " + destAddr);
+        }
+    }
 }

@@ -15,4 +15,9 @@ public class OsmPlace {
     public String toString() {
         return display_name;
     }
+
+    public void setDisplayName(String display_name) { this.display_name = display_name; }
+    public void setLat(String lat) { this.lat = lat; }
+    public void setLon(String lon) { this.lon = lon; }
+
 }

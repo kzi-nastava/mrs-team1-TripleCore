@@ -18,6 +18,7 @@ import com.example.taxiapp.ui.admin_report.AdminReportFragment;
 import com.example.taxiapp.ui.auth.login.LoginFragment;
 import com.example.taxiapp.ui.auth.register.RegisterFragment;
 import com.example.taxiapp.ui.block_user.BlockUserFragment;
+import com.example.taxiapp.ui.favorite_routes.FavoriteRoutesFragment;
 import com.example.taxiapp.ui.live_support.AdminChatFragment;
 import com.example.taxiapp.ui.driver.DriverHomeFragment;
 import com.example.taxiapp.ui.driver_additional_info.DriverAdditionalInfoFragment;
@@ -189,7 +190,10 @@ public class MainActivity extends AppCompatActivity {
             fragmentToLoad = new OrderRideFragment();
         } else if( id == R.id.nav_reports && "PASSENGER".equals(userType) ) {
             fragmentToLoad = new ReportFragment();
+        } else if( id == R.id.nav_favorite_routes && "PASSENGER".equals(userType) ) {
+            fragmentToLoad = new FavoriteRoutesFragment();
         }
+
 
         /*else if (id == R.id.nav_user_notifications && "PASSENGER".equals(userType)) {
             fragmentToLoad = new NotificationListFragment();

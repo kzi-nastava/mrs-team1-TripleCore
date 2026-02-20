@@ -11,6 +11,7 @@ import model.DriverProfileChangeRequest;
 import model.DriverProfileChangeRequestResponse;
 import model.DriverProfileResponse;
 import model.ActiveVehicleLocationResponse;
+import model.FavoriteRouteResponse;
 import model.LoginRequest;
 import model.LoginResponse;
 import model.NotificationResponse;
@@ -38,6 +39,7 @@ import model.VehiclePricesDTO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
@@ -251,5 +253,14 @@ public interface ApiService {
 
     @GET("/api/profile/blocked-note")
     Call<Map<String, String>> getBlockedNote(@Query("userId") Long userId);
+
+    @GET("api/passengers/{id}/favorite-routes")
+    Call<List<FavoriteRouteResponse>> getFavoriteRoutes(@Path("id") Long id);
+
+    @DELETE("api/passengers/{id}/favorite-routes/{routeId}")
+    Call<Void> removeFavoriteRoute(@Path("id") Long passengerId, @Path("routeId") Long routeId);
+
+    @POST("api/passengers/{id}/favorite-routes/{rideId}")
+    Call<ResponseBody> addFavoriteRoute(@Path("id") Long passengerId, @Path("rideId") Long rideId);
 
 }
