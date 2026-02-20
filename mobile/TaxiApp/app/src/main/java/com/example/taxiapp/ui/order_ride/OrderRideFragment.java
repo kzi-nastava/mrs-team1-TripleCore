@@ -32,7 +32,10 @@ import com.google.android.material.card.MaterialCardView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
+import model.UserBlockedResponse;
+import network.RetrofitClient;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Call;
@@ -43,11 +46,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OrderRideFragment extends Fragment {
 
+
+
     private static final String TAG = "OrderRide";
 
 
     private boolean isSelecting = false;
 
+    private boolean isUserBlocked = false;
     private AutoCompleteTextView etStartPoint, etDestinationPoint;
     private EditText etStartTime;
     private LinearLayout containerStations, containerPassengers;
@@ -73,6 +79,8 @@ public class OrderRideFragment extends Fragment {
         setupLocationField(etStartPoint, true);
         setupLocationField(etDestinationPoint, false);
 
+        checkUserStatus();
+
         return view;
     }
 
@@ -91,6 +99,70 @@ public class OrderRideFragment extends Fragment {
         view.findViewById(R.id.btnAddStation).setOnClickListener(v -> addStationRow());
         view.findViewById(R.id.btnAddPassenger).setOnClickListener(v -> addPassengerRow());
         view.findViewById(R.id.btnOrderRide).setOnClickListener(v -> orderRide());
+    }
+
+    private void checkUserStatus() {
+        SharedPreferences prefs = requireContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        long userId = prefs.getLong("userId", -1);
+        Log.d(TAG, "Provera statusa za userId: " + userId);
+        if (userId == -1) return;
+
+
+
+        RetrofitClient.getApiService().getUserById(userId).enqueue(new Callback<UserBlockedResponse>() {
+            @Override
+            public void onResponse(Call<UserBlockedResponse> call, Response<UserBlockedResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    isUserBlocked = response.body().isBlocked();
+
+                    if (isUserBlocked) {
+
+                        fetchBlockedNote(userId);
+                    } else {
+                        layoutBlocked.setVisibility(View.GONE);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<UserBlockedResponse> call, Throwable t) {
+                Log.e(TAG, "Status check failed");
+            }
+        });
+    }
+
+    private void fetchBlockedNote(long userId) {
+        RetrofitClient.getApiService().getBlockedNote(userId).enqueue(new Callback<Map<String, String>>() {
+            @Override
+            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
+                layoutBlocked.setVisibility(View.VISIBLE);
+                if (response.isSuccessful() && response.body() != null) {
+                    String note = response.body().get("note");
+                    if (note != null && !note.isEmpty()) {
+                        tvBlockedNote.setText("Blocked: " + note);
+                    } else {
+                        tvBlockedNote.setText("Your account is blocked.");
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<Map<String, String>> call, Throwable t) {
+                layoutBlocked.setVisibility(View.VISIBLE);
+                tvBlockedNote.setText("Your account is blocked.");
+            }
+        });
+    }
+
+    private void applyBlockedUI() {
+        if (!isAdded()) return;
+
+
+        layoutBlocked.setVisibility(View.VISIBLE);
+        tvBlockedNote.setText("Your account is blocked. You cannot order new rides.");
+
+
+
+        etStartPoint.setEnabled(false);
+        etDestinationPoint.setEnabled(false);
     }
 
     private void setupLocationField(AutoCompleteTextView editText, boolean isStart) {
@@ -294,7 +366,7 @@ public class OrderRideFragment extends Fragment {
         SharedPreferences prefs = requireContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         String userEmail = prefs.getString("userEmail", "");
 
-        Log.d("EMAIL_DEBUG", "Email iz prefs: " + userEmail);
+        Log.d("EMAIL_DEBUG", "Email from prefs: " + userEmail);
 
         service.RideService.getInstance().orderRide(userEmail, rideRequest, new Callback<Void>() {
             @Override
@@ -302,7 +374,7 @@ public class OrderRideFragment extends Fragment {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "Ride Ordered Successfully!", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getContext(), "Failed: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "There is no avaliable driver for ride or your account is blocked", Toast.LENGTH_SHORT).show();
                 }
             }
 

@@ -1,6 +1,7 @@
 package service.api;
 
 import java.util.List;
+import java.util.Map;
 
 import model.ChangePricesRequest;
 import model.ChatResponse;
@@ -30,6 +31,7 @@ import model.RideTrackingInfo;
 
 import model.SummaryDTO;
 import model.UpdateUserProfileRequest;
+import model.UserBlockedResponse;
 import model.UserProfileResponse;
 import model.UserReportResponse;
 import model.VehiclePricesDTO;
@@ -237,5 +239,17 @@ public interface ApiService {
 
     @GET("api/reports/all")
     Call<List<DailyReportDTO>> getReportForAllUsers(@Query("startDate") String startDate, @Query("endDate") String endDate);
+
+    @GET("api/admin/users/non-admin")
+    Call<List<UserBlockedResponse>> getNonAdminUsers();
+
+    @PUT("api/admin/users/{id}/block")
+    Call<UserBlockedResponse> blockUser(@Path("id") Long id, @Query("note") String note);
+
+    @GET("/api/admin/users/{id}")
+    Call<UserBlockedResponse> getUserById(@Path("id") Long id);
+
+    @GET("/api/profile/blocked-note")
+    Call<Map<String, String>> getBlockedNote(@Query("userId") Long userId);
 
 }
