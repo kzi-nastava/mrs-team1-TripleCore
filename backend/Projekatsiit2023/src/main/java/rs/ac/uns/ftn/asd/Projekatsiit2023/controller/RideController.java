@@ -138,13 +138,13 @@ public class  RideController {
 
 
     @PostMapping
-    public ResponseEntity<RideResponse> orderRide(
+    public ResponseEntity<?> orderRide(
             @Valid @RequestBody RideRequest request,
             @RequestHeader(value = "X-User-Email", required = true) String userEmail) {
 
         try {
             if (userEmail == null || userEmail.isEmpty()) {
-                return ResponseEntity.status(400).body(null);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User email is required");
             }
 
             System.out.println("Received rideRequest:");
@@ -157,9 +157,11 @@ public class  RideController {
 
             return ResponseEntity.ok(rideResponse);
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
